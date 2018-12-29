@@ -1,0 +1,27 @@
+{
+	"name": "savitskyi-hub/bx-helpers",
+	"description": "Local packages that are necessary for the development and support of the project",
+	"type": "project",
+	"keywords": ["bx-helpers", "composer"],
+	"authors": [
+		{
+			"name": "Andrew Savitskyi",
+			"email": "admin@savitskyi.com.ua",
+			"homepage": "https://savitskyi.com.ua",
+			"role": "Developer"
+		}
+	],
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/savitskyi-hub/bx-helpers"
+		}
+	],
+	"config": {
+		"secure-http": false,
+		"preferred-install": "dist"
+	},
+	"require-dev": {},
+	"require": {},
+	"license": "MIT"
+}
