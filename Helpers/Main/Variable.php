@@ -22,6 +22,7 @@ final class Variable
 	static $bxServer;
 	static $bxRequest;
 	
+	
 	/**
 	 * !!!!!!!!!!!!!!! хранит информацию об всех пользовательских полях;
 	 * @var array
