@@ -9,7 +9,7 @@ use Bitrix\Main\SystemException;
 
 /**
  * Class Variable
- * @package Local\Helpers\Main
+ * @package SavitskyiHub\BxHelpers\Helpers\Main
  */
 final class Variable
 {

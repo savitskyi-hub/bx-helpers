@@ -6,7 +6,7 @@ use Bitrix\Main\Config\Option;
 
 /**
  * Class Base
- * @package Local\Helpers\Main
+ * @package SavitskyiHub\BxHelpers\Helpers\Main
  *
  * Класс предназначен для создания базовых методов и решения глобальных задач
  */

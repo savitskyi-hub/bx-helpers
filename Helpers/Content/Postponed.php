@@ -6,7 +6,7 @@ use Bitrix\Main\Text\HtmlFilter;
 
 /**
  * Class Postponed
- * @package Local\Helpers\Content
+ * @package SavitskyiHub\BxHelpers\Helpers\Content
  *
  * Класс предназначен для добавления контента методом отложенного вызова
  */

@@ -9,7 +9,7 @@ use Bitrix\Main\SystemException;
 
 /**
  * Class Installer
- * @package Local\Helpers\Highload
+ * @package SavitskyiHub\BxHelpers\Helpers\Highload
  *
  * Класс родитель (не выполняется самостоятельно) для инсталяции Highload-таблиц (не совсем, но своего рода Factory)
  */

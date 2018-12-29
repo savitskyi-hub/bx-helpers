@@ -7,7 +7,7 @@ use Bitrix\Main\Text\HtmlFilter;
 
 /**
  * Class Image
- * @package Local\Helpers\Content
+ * @package SavitskyiHub\BxHelpers\Helpers\Content
  *
  * Класс предназначен для вывода изображений в формате HTML тега
  */

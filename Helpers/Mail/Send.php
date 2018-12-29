@@ -7,7 +7,7 @@ namespace SavitskyiHub\BxHelpers\Helpers\Mail;
 
 /**
  * Class Send
- * @package Local\Helpers\Mail
+ * @package SavitskyiHub\BxHelpers\Helpers\Mail
  *
  * ...................................
  */

@@ -4,7 +4,7 @@ namespace SavitskyiHub\BxHelpers\Helpers\IO;
 
 /**
  * Class File
- * @package Local\Helpers\IO
+ * @package SavitskyiHub\BxHelpers\Helpers\IO
  *
  * Класс предназначен для работы/получения файлов
  */

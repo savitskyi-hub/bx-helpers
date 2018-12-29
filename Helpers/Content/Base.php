@@ -7,11 +7,11 @@ use Bitrix\Main\Page\Asset;
 use Bitrix\Main\Config\Option;
 use Bitrix\Main\Text\HtmlFilter;
 use Bitrix\Main\Authentication\ApplicationPasswordTable as Password;
-use Local\Helpers\IO\File;
+use SavitskyiHub\BxHelpers\Helpers\IO\File;
 
 /**
  * Class Base
- * @package Local\Helpers\Content
+ * @package SavitskyiHub\BxHelpers\Helpers\Content
  *
  * Класс предназначен для вывода участков статического контента который часто используется на сайте (с дополнительными проверками)
  */

@@ -4,11 +4,11 @@ namespace SavitskyiHub\BxHelpers\Helpers\Main;
 
 use Bitrix\Main\Application;
 use Bitrix\Main\Page\Asset;
-use Local\Helpers\IO\File;
+use SavitskyiHub\BxHelpers\Helpers\IO\File;
 
 /**
  * Class Includes
- * @package Local\Helpers\Main
+ * @package SavitskyiHub\BxHelpers\Helpers\Main
  *
  * Класс предназначен для подключения необходимых файлов, что нужны для работы пакета библиотеки на уровне JS и CCS
  */

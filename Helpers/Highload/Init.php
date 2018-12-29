@@ -7,7 +7,7 @@ use Bitrix\Main\Loader;
 
 /**
  * Class Init
- * @package Local\Helpers\Highload
+ * @package SavitskyiHub\BxHelpers\Helpers\Highload
  *
  * Класс предоставляет возможность работать с записями из Highload таблиц через одну инициализацию простым методом
  */

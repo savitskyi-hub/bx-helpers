@@ -4,7 +4,7 @@ namespace SavitskyiHub\BxHelpers\Helpers\Mail;
 
 /**
  * Class Install_HighloadTable
- * @package Local\Helpers\Mail
+ * @package SavitskyiHub\BxHelpers\Helpers\Mail
  *
  * Класс устанавливает Highload-блок на сайте с необходимыми свойствами которые нужны для роботы с текущим пространством имен;
  * ВАЖНО!!! При повторном запуске, перезапись таблицы не будет осуществлятся, нужно удалить Highload-блок, и перезапустить процес инсталяции

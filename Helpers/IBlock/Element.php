@@ -6,7 +6,7 @@ use Bitrix\Main\Loader;
 
 /**
  * Class Element
- * @package Local\Helpers\IBlock
+ * @package SavitskyiHub\BxHelpers\Helpers\IBlock
  *
  * Класс предназначен для получения информации нестандартного функционала который связан с елементами информационных блоков
  */
