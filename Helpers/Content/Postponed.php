@@ -1,6 +1,6 @@
 <?php
 
-namespace Local\Helpers\Content;
+namespace SavitskyiHub\BxHelpers\Helpers\Content;
 
 use Bitrix\Main\Text\HtmlFilter;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Local\Helpers\Content;
+namespace SavitskyiHub\BxHelpers\Helpers\Content;
 
 use Bitrix\Main\Application;
 use Bitrix\Main\Page\Asset;
@@ -22,7 +22,6 @@ class Base
 	 * @param string $ariaID - идентификатор включаемой области
 	 * @return string
 	 */
-	
 	public static function getAriaID(string $ariaID): string {
 		if ($GLOBALS["APPLICATION"]->GetShowIncludeAreas()) {
 			$return = 'id="'.$ariaID.'"';

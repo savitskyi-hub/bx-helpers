@@ -1,6 +1,6 @@
 <?php
 
-namespace Local\Helpers\IBlock;
+namespace SavitskyiHub\BxHelpers\Helpers\IBlock;
 
 use Bitrix\Main\Loader;
 

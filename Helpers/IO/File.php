@@ -1,6 +1,6 @@
 <?php
 
-namespace Local\Helpers\IO;
+namespace SavitskyiHub\BxHelpers\Helpers\IO;
 
 /**
  * Class File

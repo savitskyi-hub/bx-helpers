@@ -1,6 +1,6 @@
 <?php
 
-namespace Local\Helpers\Highload;
+namespace SavitskyiHub\BxHelpers\Helpers\Highload;
 
 use Bitrix\Highloadblock\HighloadBlockLangTable;
 use Bitrix\Highloadblock\HighloadBlockTable;

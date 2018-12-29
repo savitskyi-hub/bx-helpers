@@ -1,8 +1,8 @@
 {
 	"name": "savitskyi-hub/bx-helpers",
 	"description": "Local packages that are necessary for the development and support of the project",
-	"type": "project",
-	"keywords": ["bx-helpers", "composer"],
+	"type": "library",
+	"keywords": ["bx-helpers", "composer", "savitskyi-hub"],
 	"authors": [
 		{
 			"name": "Andrew Savitskyi",
@@ -11,7 +11,6 @@
 			"role": "Developer"
 		}
 	],
-
 	"repositories": [
 		{
 			"type": "vcs",
@@ -24,5 +23,10 @@
 	},
 	"require-dev": {},
 	"require": {},
-	"license": "MIT"
+	"license": "MIT",
+	"autoload": {
+		"psr-4": {
+			"SavitskyiHub\\BxHelpers\\Helpers\\": ""
+		}
+	}
 }

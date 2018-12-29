@@ -1,6 +1,6 @@
 <?php
 
-namespace Local\Helpers\Main;
+namespace SavitskyiHub\BxHelpers\Helpers\Main;
 
 use Bitrix\Main\Config\Option;
 

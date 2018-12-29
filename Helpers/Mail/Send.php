@@ -1,6 +1,6 @@
 <?php
 
-namespace Local\Helpers\Mail;
+namespace SavitskyiHub\BxHelpers\Helpers\Mail;
 
 //use Bitrix\Main\Mail\Event;
 //use Bitrix\Main\SystemException;
