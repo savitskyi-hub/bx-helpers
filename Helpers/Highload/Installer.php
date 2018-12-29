@@ -158,7 +158,7 @@ class Installer
 	 * @param string $prefixTableName
 	 * @return bool
 	 */
-	private static function installHighloadTable(string $prefixTableName) {
+	private static function installHighloadTable(string $prefixTableName): bool {
 		$tableName = $prefixTableName.self::$tableName;
 		
 		if (!self::isInstallHighloadTable($tableName)) {
@@ -184,7 +184,7 @@ class Installer
 	 * @param string $tableName
 	 * @return bool
 	 */
-	private static function isInstallHighloadTable(string $tableName) {
+	private static function isInstallHighloadTable(string $tableName): bool {
 		$rsIsInstall = HighloadBlockTable::getList([
 			"filter" => ["TABLE_NAME" => $tableName],
 			"select" => ["ID"],
@@ -204,7 +204,7 @@ class Installer
 	 * Метод добавляет языкозависимые названия к Highload-блоку
 	 * @return bool
 	 */
-	private static function installHighloadTableLangName() {
+	private static function installHighloadTableLangName(): bool {
 		if (!self::isInstalledHighloadTableLangName()) {
 			$rsLangRu = HighloadBlockLangTable::add(["ID" => self::$tableID, "LID" => "ru", "NAME" => self::$langNameRU]);
 			$rsLangEn = HighloadBlockLangTable::add(["ID" => self::$tableID, "LID" => "en", "NAME" => self::$langNameEN]);
@@ -223,7 +223,7 @@ class Installer
 	 * Метод проверяет существуют ли языкозависимые названия
 	 * @return bool
 	 */
-	private static function isInstalledHighloadTableLangName() {
+	private static function isInstalledHighloadTableLangName(): bool {
 		$rsIsLangName = HighloadBlockLangTable::getList([
 			"filter" => ['ID' => self::$tableID],
 			"select" => ["ID"],
@@ -242,7 +242,7 @@ class Installer
 	 * @throws SystemException
 	 * @return bool
 	 */
-	private static function installHighloadFields() {
+	private static function installHighloadFields(): bool {
 		
 		if (!self::$mapCreatedField) {
 			throw new SystemException('Параметры для создания пользовательських свойств отсутствуют');

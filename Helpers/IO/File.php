@@ -16,7 +16,7 @@ class File
 	 * @param $fileTypePattern - тип расширения файла, по нему будет происходить отбор файлов, например ("css", "min.js")
 	 * @return array
 	 */
-	public static function getRecursiveFilesInDir($path, $fileTypePattern) {
+	public static function getRecursiveFilesInDir($path, $fileTypePattern): array {
 		$handle = opendir($path) or die("Can't open directory ".$path);
 		$files = $subFiles = [];
 		
