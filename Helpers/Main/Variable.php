@@ -5,11 +5,11 @@ namespace SavitskyiHub\BxHelpers\Helpers\Main;
 use Bitrix\Main\Application;
 use Bitrix\Main\SystemException;
 
-// Класс предназначен для хранения вспомогательных свойств и методов, которые нужны будут в дальнейших обработках. Чтоб избавиться от дублирования кода, для получения необходимых свойств.
-
 /**
  * Class Variable
  * @package SavitskyiHub\BxHelpers\Helpers\Main
+ *
+ * Класс предназначен для хранения вспомогательных свойств, которые будут нужны в реализации или поддержки проекта (чтоб избавиться от дублирования кода при получения необходимых свойств)
  */
 final class Variable
 {

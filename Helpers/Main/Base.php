@@ -2,13 +2,14 @@
 
 namespace SavitskyiHub\BxHelpers\Helpers\Main;
 
+use Bitrix\Main\Application;
 use Bitrix\Main\Config\Option;
 
 /**
  * Class Base
  * @package SavitskyiHub\BxHelpers\Helpers\Main
  *
- * Класс предназначен для создания базовых методов и решения глобальных задач
+ * Класс предназначен для создания базовых методов что нужны при реализации или поддержки проекта
  */
 class Base
 {
@@ -42,11 +43,10 @@ class Base
 	}
 	
 	/**
-	 *
+	 * Метод возвращает префикс (из названия домена) для указания в названии директории хранения кеша
 	 * @return string
 	 */
 	public static function getCacheDirectoryPrefixName(): string {
-		///explode(".", SERVER_NAME)[0];
-		/// Variable::$bxRequest;
+		return explode(".", Application::getInstance()->getContext()->getServer()->get("SERVER_NAME"))[0];
 	}
 }

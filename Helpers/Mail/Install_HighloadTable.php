@@ -9,7 +9,7 @@ namespace SavitskyiHub\BxHelpers\Helpers\Mail;
  * Класс устанавливает Highload-блок на сайте с необходимыми свойствами которые нужны для роботы с текущим пространством имен;
  * ВАЖНО!!! При повторном запуске, перезапись таблицы не будет осуществлятся, нужно удалить Highload-блок, и перезапустить процес инсталяции
  */
-class Install_HighloadTable extends SavitskyiHub\BxHelpers\Helpers\Highload\Installer
+class Install_HighloadTable extends \SavitskyiHub\BxHelpers\Helpers\Highload\Installer
 {
 	protected static $name = 'HelpersMailSend';
 	protected static $tableName = '2hlblock_helpers_mail_send';
