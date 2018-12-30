@@ -64,11 +64,4 @@ class Base
 	public static function getCacheDirectoryPrefixName(): string {
 		return explode(".", Application::getInstance()->getContext()->getServer()->get("SERVER_NAME"))[0];
 	}
-	
-	/**
-	 *
-	 */
-	public static function getPackagePath() {
-		echo __DIR__;
-	}
 }

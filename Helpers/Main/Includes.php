@@ -14,27 +14,24 @@ namespace SavitskyiHub\BxHelpers\Helpers\Main;
 use Bitrix\Main\Application;
 use Bitrix\Main\Page\Asset;
 use SavitskyiHub\BxHelpers\Helpers\IO\File;
+use SavitskyiHub\BxHelpers\Helpers\IO\Dir;
 
 /**
  * Class Includes
  * @package SavitskyiHub\BxHelpers\Helpers\Main
  * @author Andrew Savitskyi <admin@savitskyi.com.ua>
  *
- * Класс предназначен для подключения необходимых файлов, что нужны для работы пакета библиотеки на уровне JS и CCS
+ * Класс предназначен для подключения JS и CCS файлов, что нужны для работы библиотеки или проекта на уровне
  */
 class Includes
 {
 	/**
-	 * Метод подключает все стили локальной библиотки с пространством имен что находятся в директории
-	 
-	   //"SITE_TEMPLATE_PATH./css/library/"
-	 *
-	 *
+	 * Метод подключает все стили библиотки
 	 *
 	 * @return void
 	 */
 	public static function libraryCss() {
-		$startPath = Application::getDocumentRoot().SITE_TEMPLATE_PATH.'/css/library';
+		$startPath = Dir::getPackagePath().'/HelpersCss/';
 		$resultCssList = File::getRecursiveFilesInDir($startPath, (Base::isUseMinifiedAssets()? 'min.css' : 'css'));
 		$resultCssList = ($resultCssList? array_reverse($resultCssList) : []);
 		
@@ -44,19 +41,12 @@ class Includes
 	}
 	
 	/**
-	 * Метод подключает все скрипты локальной библиотки с пространством имен что находятся в директории
-	
-	 
-	  
-	    * //"SITE_TEMPLATE_PATH./js/library/"!!!!!!!!!!!!!!!!!!!!!!!!!
-	 *
-	 *
-	 *
+	 * Метод подключает все скрипты библиотки
 	 *
 	 * @return void
 	 */
 	public static function libraryJs() {
-		$startPath = Application::getDocumentRoot().SITE_TEMPLATE_PATH.'/js/library';
+		$startPath = Dir::getPackagePath().'/HelpersJs/';
 		$resultJsList = File::getRecursiveFilesInDir($startPath, (Base::isUseMinifiedAssets()? 'min.js' : 'js'));
 		$resultJsList = ($resultJsList? array_reverse($resultJsList) : []);
 		
