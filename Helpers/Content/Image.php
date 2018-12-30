@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * This file is part of the savitskyi-hub/bx-helpers package.
+ *
+ * (c) Andrew Savitskyi <admin@savitskyi.com.ua>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace SavitskyiHub\BxHelpers\Helpers\Content;
 
 use Bitrix\Main\Application;
@@ -8,6 +17,7 @@ use Bitrix\Main\Text\HtmlFilter;
 /**
  * Class Image
  * @package SavitskyiHub\BxHelpers\Helpers\Content
+ * @author Andrew Savitskyi <admin@savitskyi.com.ua>
  *
  * Класс предназначен для вывода изображений в формате HTML тега
  */
@@ -15,42 +25,50 @@ class Image
 {
 	/**
 	 * Версия подзагрузки файлов
+	 *
 	 * @var string
 	 */
 	protected static $sxFileVersion = "?fv=00001";
 	
 	/**
 	 * Путь до дефолтного изображения, начиная с шаблонной директории сайта
+	 *
 	 * @var string
 	 */
 	protected static $pathNoImg = '/img/no-image.png';
 	
 	/**
 	 * Дефолтное название атрибута "alt" для тега <img>
+	 *
 	 * @var string
 	 */
 	protected static $defaultImgAlt = 'No Image';
 	
 	/**
 	 * Дефолтное название атрибута "class" для тега <img>
+	 *
 	 * @var string
 	 */
 	protected static $defaultImgClass = '';
 	
 	/**
-	 * Значение максимальной ширины от которой будет работать дефолтное значение технологии гибких (responsive) изображений
-	 * - ВАЖНО! нужно следить чтобы в проекте нигде небыло большего значения, иначе испортится порядок отображения разных размеров изображений
+	 * Значение максимальной ширины от которой будет работать дефолтное значение технологии гибких (responsive) изображений.
+	 * ВАЖНО!!! Нужно следить в проекте чтобы небыло большего значения, иначе испортится порядок отображения разных размеров изображений
+	 *
 	 * @var string
 	 */
 	protected static $srcsetMaxSize = '1680';
 	
 	/**
 	 * Вывод изображения в виде сформированного HTML тега, в случае если нет изображения будет подставляться дефолтное
-	 * @param mixed $img - может быть как массив с параметрами, так и простая строка в которой расположен путь к изображению
+	 *
+	 * @param $img - может быть как массив с параметрами, так и простая строка в которой расположен путь к изображению;
 	 * @param string $alt
-	 * @param bool $srcset - при включенном параметре изображение будет формироваться с помощью технологии гибких (responsive) изображений
-	 * @param bool $async - сохраняет все в блочном теге, чтобы не загружать изображения сразу после открытия страницы, а подгрузить позже на события JS
-	 * @param string $attrs - перечисленные в строке атрибуты с их значением (для асинхронной загрузки двойные кавычки будуn заменены на одинарные, нужно это учесть при возвращении в нормальное состояния)
+	 * @param string $class
+	 * @param bool $srcset - при включенном параметре изображение будет формироваться с помощью технологии гибких (responsive) изображений;
+	 * @param bool $async - сохраняет в блочном теге, чтобы не загружать изображения сразу после открытия страницы, а подгрузить через события JS;
+	 * @param array $attrs - перечисленные в строке атрибуты с их значением;
+	 *
 	 * @return string
 	 */
 	public static function show($img, string $alt = '', string $class = '', bool $srcset = false, bool $async = false, array $attrs = []): string {
@@ -122,9 +140,10 @@ class Image
 				}
 				
 				/**
-				 * При включенной технологиии асинхронной загрузки, подразумевается, что разработчик самостоятельно спомощу JS конвертнет в необходимый момент блок в натуральное изображение, которое будет использовать технологию гибких изображений.
+				 * При включенной технологиии асинхронной загрузки, подразумевается, что разработчик самостоятельно спомощу JS конвертнет
+				 * в необходимый момент блок в натуральное изображение, которое будет использовать технологию гибких изображений.
 				 *
-				 * Пример метода можно подсмотреть тут: BX.Local.Helpers.Content.Image
+				 * Пример метода можно подсмотреть тут: SavitskyiHub.BxHelpers.Helpers.Content.Image
 				 */
 				if (!$async) {
 					$createImg = '<img '.$alt.' '.$class.' '.$attrs.' ';
@@ -190,6 +209,7 @@ class Image
 	
 	/**
 	 * Метод возвращает путь к дефолтному изображению
+	 *
 	 * @return string
 	 */
 	public static function getPathNoImg(): string {
@@ -206,7 +226,9 @@ class Image
 	
 	/**
 	 * Метод возвращает альтернативный текст для изображения методом перебора, находя первое истинное значение
-	 * @param array $listNames - в массив должны присваивать значения в уже отсортировано-приоритетном порядке
+	 *
+	 * @param array $listNames - в массив должны присваивать значения в уже отсортировано-приоритетном порядке;
+	 *
 	 * @return string
 	 */
 	public static function getFirstNotEmptyAlt(array $listNames): string {
@@ -223,7 +245,9 @@ class Image
 	
 	/**
 	 * Метод возвращает строку из перечисленных атрибутов HTML тега
+	 *
 	 * @param array $arAttrs
+	 *
 	 * @return string
 	 */
 	public static function parseAttrs(array $arAttrs): string {
@@ -238,7 +262,9 @@ class Image
 	
 	/**
 	 * Метод проверяет указаный путь к изображению на наличие GET параметров
+	 *
 	 * @param string $path
+	 *
 	 * @return bool
 	 */
 	public static function isUseUriParam(string $path): bool {
@@ -251,7 +277,9 @@ class Image
 	
 	/**
 	 * Метод возвращает GET параметры что были указаны в пути к изображению
+	 *
 	 * @param string $path
+	 *
 	 * @return string
 	 */
 	public static function getUriParam(string $path): string {
@@ -266,7 +294,9 @@ class Image
 	
 	/**
 	 * Метод возвращает путь к изображению удаляя из него GET параметры
+	 *
 	 * @param string $path
+	 *
 	 * @return string
 	 */
 	public static function cleanUriParam(string $path): string {

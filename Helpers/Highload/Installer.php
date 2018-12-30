@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * This file is part of the savitskyi-hub/bx-helpers package.
+ *
+ * (c) Andrew Savitskyi <admin@savitskyi.com.ua>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace SavitskyiHub\BxHelpers\Helpers\Highload;
 
 use Bitrix\Highloadblock\HighloadBlockLangTable;
@@ -10,6 +19,7 @@ use Bitrix\Main\SystemException;
 /**
  * Class Installer
  * @package SavitskyiHub\BxHelpers\Helpers\Highload
+ * @author Andrew Savitskyi <admin@savitskyi.com.ua>
  *
  * Класс родитель (не выполняется самостоятельно) для инсталяции Highload-таблиц (не совсем, но своего рода Factory)
  */
@@ -155,7 +165,9 @@ class Installer
 	
 	/**
 	 * Метод инициализирует Highload-блок в БД с необходимыми свойствами которые нужны для работы функционала этого класса
+	 *
 	 * @param string $prefixTableName
+	 *
 	 * @return bool
 	 */
 	private static function installHighloadTable(string $prefixTableName): bool {
@@ -181,7 +193,9 @@ class Installer
 	
 	/**
 	 * Метод проверяет существует ли уже таблица в БД перед инсталляцией
+	 *
 	 * @param string $tableName
+	 *
 	 * @return bool
 	 */
 	private static function isInstallHighloadTable(string $tableName): bool {
@@ -202,6 +216,7 @@ class Installer
 	
 	/**
 	 * Метод добавляет языкозависимые названия к Highload-блоку
+	 *
 	 * @return bool
 	 */
 	private static function installHighloadTableLangName(): bool {
@@ -221,6 +236,7 @@ class Installer
 	
 	/**
 	 * Метод проверяет существуют ли языкозависимые названия
+	 *
 	 * @return bool
 	 */
 	private static function isInstalledHighloadTableLangName(): bool {
@@ -239,7 +255,9 @@ class Installer
 	
 	/**
 	 * Метод устанавливает пользовательские поля к Highload-блоку
+	 *
 	 * @throws SystemException
+	 *
 	 * @return bool
 	 */
 	private static function installHighloadFields(): bool {

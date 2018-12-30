@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * This file is part of the savitskyi-hub/bx-helpers package.
+ *
+ * (c) Andrew Savitskyi <admin@savitskyi.com.ua>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace SavitskyiHub\BxHelpers\Helpers\Main;
 
 use Bitrix\Main\Application;
@@ -8,6 +17,7 @@ use Bitrix\Main\SystemException;
 /**
  * Class Variable
  * @package SavitskyiHub\BxHelpers\Helpers\Main
+ * @author Andrew Savitskyi <admin@savitskyi.com.ua>
  *
  * Класс предназначен для хранения вспомогательных свойств, которые будут нужны в реализации или поддержки проекта (чтоб избавиться от дублирования кода при получения необходимых свойств)
  */

@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * This file is part of the savitskyi-hub/bx-helpers package.
+ *
+ * (c) Andrew Savitskyi <admin@savitskyi.com.ua>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace SavitskyiHub\BxHelpers\Helpers\IBlock;
 
 use Bitrix\Main\Loader;
@@ -7,6 +16,7 @@ use Bitrix\Main\Loader;
 /**
  * Class Element
  * @package SavitskyiHub\BxHelpers\Helpers\IBlock
+ * @author Andrew Savitskyi <admin@savitskyi.com.ua>
  *
  * Класс предназначен для получения информации нестандартного функционала который связан с елементами информационных блоков
  */
@@ -14,13 +24,15 @@ class Element
 {
 	/**
 	 * Получение ссылок на следующий и предыдущий елемент информационного блока с учетом стандартного функционала сортировки елементов
-	 * @param int $elementID - ID текущего елемента от которого будет происходить поиск
-	 * @param int $sectionID - ID родительського раздела
-	 * @param int $iBlockID - ID информационного блока к которому принадлежит текущий элемент
+	 *
+	 * @param int $elementID - ID текущего елемента от которого будет происходить поиск;
+	 * @param int $sectionID - ID родительського раздела;
+	 * @param int $iBlockID - ID информационного блока к которому принадлежит текущий элемент;
 	 * @param string $sortBy_1
 	 * @param string $sortBy_2
 	 * @param string $orderBy_1
 	 * @param string $orderBy_2
+	 *
 	 * @return array
 	 */
 	public static function getPrevNextElement(

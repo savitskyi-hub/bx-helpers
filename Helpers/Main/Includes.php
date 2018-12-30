@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * This file is part of the savitskyi-hub/bx-helpers package.
+ *
+ * (c) Andrew Savitskyi <admin@savitskyi.com.ua>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace SavitskyiHub\BxHelpers\Helpers\Main;
 
 use Bitrix\Main\Application;
@@ -9,6 +18,7 @@ use SavitskyiHub\BxHelpers\Helpers\IO\File;
 /**
  * Class Includes
  * @package SavitskyiHub\BxHelpers\Helpers\Main
+ * @author Andrew Savitskyi <admin@savitskyi.com.ua>
  *
  * Класс предназначен для подключения необходимых файлов, что нужны для работы пакета библиотеки на уровне JS и CCS
  */
