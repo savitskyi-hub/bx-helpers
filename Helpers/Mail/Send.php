@@ -13,13 +13,14 @@ namespace SavitskyiHub\BxHelpers\Helpers\Mail;
 
 use Bitrix\Main\Mail\Event;
 use Bitrix\Main\SystemException;
+use SavitskyiHub\BxHelpers\Helpers\Highload\Instance;
 
 /**
  * Class Send
  * @package SavitskyiHub\BxHelpers\Helpers\Mail
  * @author Andrew Savitskyi <admin@savitskyi.com.ua>
  *
- * ...................................
+ * Класс
  */
 class Send
 {
@@ -29,12 +30,6 @@ class Send
      */
     private static $periodBlocked = 1;
     
-    /**
-	 * Нужно ли логировать отправку сообщения
-     * @var bool
-     */
-	private static $logging = false;
-    
 	/**
 	 * Количество доступных отправок определенного типа в допустимый интервал времени
 	 * @var int
@@ -42,44 +37,67 @@ class Send
 	private static $limitTypeSend =  3;
 	
 	/**
+	 * Нужно ли логировать отправку сообщения
+	 * @var bool
+	 */
+	////////////////////////////////////////////////////private static $logging = false;
+	
+	/**
+	 * @var string
+	 */
+	////////////////////////////////////////////////////////public static $sendTo = '';
+	
+	/**
 	 * Метод реализует отправку письма администрации сайта в случаи возникновения ошибки или предупреждения в функционале проекта
+	 *
 	 * @param string $message
 	 * @param string $typeSendEvent - символьный код почтового события;
 	 * @param string $typeReporting - тип оповещения;
 	 * @param bool $skip - пропустить проверку на повторною отправку;
+	 *
 	 * @return bool
+	 * @throws SystemException
 	 */
 	static function Admin(string $message, string $typeSendEvent, string $typeReporting, bool $skip = false): bool {
 		try {
+			$entityName = Install_HighloadTable::get("name");
+			$entityID = Instance::getIdByEntityName($entityName);
 			
-			if (!$skip && !self::checkLimitSendAdmin($typeSendEvent, $typeReporting)) {
+			$timeSend = date("d.m.Y H:i:s");
+			$isSuccess = false;
+			//$typeReporting = Variable::$bxEnumFields["XML2ID"]["HLBLOCK_3_UF_TYPE_SEND"][$typeReporting],;
+			
+			if (!$skip && !self::checkLimitSendAdmin($typeSendEvent, $typeReporting, $entityID)) {
 				return false;
 			}
-			
-			$rSend = Event::send([
+
+			$rsSend = Event::send([
 				"EVENT_NAME" => $typeSendEvent,
 				"LID" => SITE_ID,
 				"C_FIELDS" => ["TEXT_MESSAGE" => $message]
 			]);
-			
+
 			/**
 			 * Логируем отправку
 			 */
-			if (!$rSend->isSuccess()) {
-				//throw new SystemException('Ошибка отправки письма (type_email_event: '.$type_email_event.' | emailToSend: '.$email2Send.')');
+			if (!$rsSend->isSuccess()) {
+				throw new SystemException("Ошибка отправки письма:\r\ntypeSendEvent: ".$typeSendEvent."\r\ntypeReporting: ".$typeReporting."\r\ntime: ".$timeSend);
 			} else {
-				//				$arParams = [
-				//					"UF_TEXT" => $message,
-				//					"UF_TYPE_SEND" => Variable::$bxEnumFields["XML2ID"]["HLBLOCK_3_UF_TYPE_SEND"][$typeReporting],
-				//					"UF_TYPE_EMAIL_EVENT" => $typeSendEvent,
-				//					"UF_DATETIME" => date("d.m.Y H:i:s")
-				//				];
-				//
-				//				Highload::set(Highload::getTableId('ST2SendMailAdminHistory'), $arParams);
-				//				return true;
+				
+				//new Instance($entityID);
+				
+//				$arParams = [
+//					"UF_TYPE_EMAIL_EVENT" => $typeSendEvent,
+//					"UF_TYPE_SEND" => $typeReporting,
+//					"UF_TEXT" => $message
+//				];
+//
+//				//				Highload::set(Highload::getTableId('ST2SendMailAdminHistory'), $arParams);
+//				//				return true;
 			}
 			
 		} catch (SystemException $e) {
+			throw $e;
 			
 			//            if (self::get('logging')) {
 			//                $logging = Log::Initial('LogFile');
@@ -87,35 +105,36 @@ class Send
 			//                $logging->setWhereLogging('email-error');
 			//                $logging->push();
 			//            }
-			
 		}
+		
+		return $isSuccess;
 	}
 	
 	/**
 	 * Метод проверяет доступно ли отправлять "повторно" администрации письма
+	 *
 	 * @param string $typeEmailEvent - символьный код почтового события;
 	 * @param string $typeReporting - тип оповещения;
+	 * @param int $entityID
+	 *
 	 * @return bool
 	 */
-	private static function checkLimitSendAdmin(string $typeEmailEvent, string $typeReporting): bool {
+	private static function checkLimitSendAdmin(string $typeEmailEvent, string $typeReporting, int $entityID): bool {
+		$obHd = new Instance($entityID);
+		$rsHistory = $obHd->entityDataClass::getList([
+			'select' => ['ID'],
+			'filter' => [
+				"UF_TYPE_EMAIL_EVENT" => $typeEmailEvent,
+				"UF_TYPE_SEND" => $typeReporting,
+				">=UF_DATETIME_CREATE" => [ConvertTimeStamp(time() - 3600 * self::$periodBlocked, "FULL")]
+			]
+		]);
 		
+		if ($rsHistory && ($rsHistory->getSelectedRowsCount() >= self::$limitTypeSend)) {
+			return true;
+		}
 		
-		//			$arHistorySendEmail = Highload::getList(Highload::getTableId('ST2SendMailAdminHistory'), [
-		//				'select' => ['ID'],
-		//				'filter' => [
-		//					">=UF_DATETIME" => [ConvertTimeStamp(time() - 3600 * self::$periodBlocked, "FULL")],
-		//					"UF_TYPE_EMAIL_EVENT" => $type_email_event,
-		//					"UF_TYPE_SEND" => Variable::$bxEnumFields["XML2ID"]["HLBLOCK_3_UF_TYPE_SEND"][$type_send],
-		//				],
-		//				'count_total' => true
-		//			]);
-		//
-		//			if ($arHistorySendEmail && $arHistorySendEmail->getCount() >= self::get('limitTypeSend')[$type_send]) {
-		//				return false;
-		//			} else {
-		//				return true;
-		//			}
-		
+		return false;
 	}
 	
 	/**
@@ -128,6 +147,8 @@ class Send
 	 */
 	static function Mail(string $typeEmailEvent, string $sendTo, string $message = "", string $title = ""): bool {
 		try {
+			
+			$entityName = Install_HighloadTable::get("name");
 			
 			if (!$typeEmailEvent || !$sendTo) {
 				throw new SystemException('Передано не все данные для отправки уведомления');

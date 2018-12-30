@@ -33,6 +33,8 @@ class Logs
 	public function __construct(string $type) {
 		//if (in_array($type, self::$typeLog)) {
 			//return new ('\\'.__NAMESPACE__.'\\Logs\\'.$type)();
+		//} else {
+		//
 		//}
 	}
 }

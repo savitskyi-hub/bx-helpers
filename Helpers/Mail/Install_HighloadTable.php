@@ -11,6 +11,8 @@
 
 namespace SavitskyiHub\BxHelpers\Helpers\Mail;
 
+use SavitskyiHub\BxHelpers\Helpers\ClassTrait;
+
 /**
  * Class Install_HighloadTable
  * @package SavitskyiHub\BxHelpers\Helpers\Mail
@@ -21,6 +23,8 @@ namespace SavitskyiHub\BxHelpers\Helpers\Mail;
  */
 class Install_HighloadTable extends \SavitskyiHub\BxHelpers\Helpers\Highload\Installer
 {
+	use ClassTrait;
+	
 	protected static $name = 'HelpersMailSend';
 	protected static $tableName = '2hlblock_helpers_mail_send';
 	protected static $langNameRU = '✉ Письма - Администрация';

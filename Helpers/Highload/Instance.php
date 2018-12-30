@@ -15,13 +15,13 @@ use Bitrix\Highloadblock\HighloadBlockTable;
 use Bitrix\Main\Loader;
 
 /**
- * Class Init
+ * Class Instance
  * @package SavitskyiHub\BxHelpers\Helpers\Highload
  * @author Andrew Savitskyi <admin@savitskyi.com.ua>
  *
  * Класс предоставляет возможность работать с записями из Highload таблиц через одну инициализацию простым методом
  */
-class Init
+class Instance
 {
 	/**
 	 * Объект entityDataClass
@@ -36,6 +36,12 @@ class Init
 	public $tableName = "";
 	
 	/**
+	 * Название сущности
+	 * @var string
+	 */
+	public $entityName = "";
+	
+	/**
 	 * Query constructor - Инициализируем объект сущности
 	 *
 	 * @param int $highloadBlockID - идентификатор Highload-блока;
@@ -48,7 +54,31 @@ class Init
 		
 		$this->entityDataClass = $entityDataClass;
 		$this->tableName = $hlBlock["TABLE_NAME"];
+		$this->entityName = $hlBlock["NAME"];
 		
 		return $this;
+	}
+	
+	/**
+	 * Метод возвращает идентификатор Highload-блока производя поиск по названию сущности
+	 *
+	 * @param string $entityName - название сущностиж
+	 *
+	 * @return int
+	 */
+	static function getIdByEntityName(string $entityName): int {
+		Loader::includeModule("highloadblock");
+		
+		$rs = HighloadBlockTable::getList([
+			"filter" => ["NAME" => $entityName],
+			"select" => ["ID"],
+			"limit" => 1
+		]);
+		
+		if ($rs && $rs->getSelectedRowsCount()) {
+			return (int) $rs->fetch()["ID"];
+		}
+		
+		return 0;
 	}
 }

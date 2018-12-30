@@ -9,22 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace SiteApi\Log;
+namespace SavitskyiHub\BxHelpers\Helpers\File;
 
-use Bitrix\Main\SystemException;
-use SiteApi\MainTrait;
-use SiteApi\Variable;
+//use Bitrix\Main\SystemException;
 
 /**
  * Class LogFile
  * @package SiteApi
  * @author Andrew Savitskyi <admin@savitskyi.com.ua>
  */
-class LogFile implements LogInterface
+class Logging implements LogsInterface
 {
-    
-    use MainTrait;
-    
     /**
      * @var string - путь к файлу логирования;
      */
@@ -107,11 +102,10 @@ class LogFile implements LogInterface
                 throw new SystemException('The value must not exceed 20 characters in length');
             } elseif (mb_strlen($where) < 3) {
                 throw new SystemException('The value must exceed 3 characters in length');
-            } elseif (preg_match("#[^a-z-]{1}#ui", $where)) {
-                throw new SystemException('Value has invalid characters');
             }
-            
-            self::set('path2log', dirname(__FILE__).'/logs/'.$where.'.log');
+            //HtmlFilter::
+            //$where
+			self::set('path2log', dirname(__FILE__).'/logs/'.$where.'.log');
             
         } catch (SystemException $e) {
     
