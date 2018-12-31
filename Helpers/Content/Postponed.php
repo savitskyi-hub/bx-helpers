@@ -23,10 +23,9 @@ use Bitrix\Main\Text\HtmlFilter;
 class Postponed
 {
 	/**
-	 * Метод добавляет тегу <main> атрибут "class" со значением
+	 * Добавляет тегу <main> атрибут "class" со значением
 	 *
 	 * @param string $pagePropName - название свойства страницы в котором указано название класса для тега <main>;
-	 *
 	 * @return string
 	 */
 	public static function getMainClassName(string $pagePropName): string {

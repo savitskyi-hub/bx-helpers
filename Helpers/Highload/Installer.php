@@ -164,10 +164,9 @@ class Installer
 	}
 	
 	/**
-	 * Метод инициализирует Highload-блок в БД с необходимыми свойствами которые нужны для работы функционала этого класса
+	 * Инициализирует Highload-блок в БД с необходимыми свойствами которые нужны для работы функционала этого класса
 	 *
 	 * @param string $prefixTableName
-	 *
 	 * @return bool
 	 */
 	private static function installHighloadTable(string $prefixTableName): bool {
@@ -192,10 +191,9 @@ class Installer
 	}
 	
 	/**
-	 * Метод проверяет существует ли уже таблица в БД перед инсталляцией
+	 * Проверяет существует ли уже таблица в БД перед инсталляцией
 	 *
 	 * @param string $tableName
-	 *
 	 * @return bool
 	 */
 	private static function isInstallHighloadTable(string $tableName): bool {
@@ -215,7 +213,7 @@ class Installer
 	}
 	
 	/**
-	 * Метод добавляет языкозависимые названия к Highload-блоку
+	 * Добавляет языкозависимые названия к Highload-блоку
 	 *
 	 * @return bool
 	 */
@@ -235,7 +233,7 @@ class Installer
 	}
 	
 	/**
-	 * Метод проверяет существуют ли языкозависимые названия
+	 * Проверяет существуют ли языкозависимые названия
 	 *
 	 * @return bool
 	 */
@@ -254,14 +252,12 @@ class Installer
 	}
 	
 	/**
-	 * Метод устанавливает пользовательские поля к Highload-блоку
+	 * Устанавливает пользовательские поля к Highload-блоку
 	 *
 	 * @throws SystemException
-	 *
 	 * @return bool
 	 */
 	private static function installHighloadFields(): bool {
-		
 		if (!self::$mapCreatedField) {
 			throw new SystemException('Параметры для создания пользовательських свойств отсутствуют');
 		}

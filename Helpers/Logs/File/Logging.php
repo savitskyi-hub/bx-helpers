@@ -9,114 +9,106 @@
  * file that was distributed with this source code.
  */
 
-namespace SavitskyiHub\BxHelpers\Helpers\File;
+namespace SavitskyiHub\BxHelpers\Helpers\Logs\File;
 
-//use Bitrix\Main\SystemException;
+use Bitrix\Main\SystemException;
+use Bitrix\Main\Diag\Debug;
+use SavitskyiHub\BxHelpers\Helpers\Logs\LogsInterface;
 
 /**
- * Class LogFile
- * @package SiteApi
+ * Class Logging
+ * @package SavitskyiHub\BxHelpers\Helpers\Logs\File
  * @author Andrew Savitskyi <admin@savitskyi.com.ua>
+ *
+ * ////////////////////////
  */
 class Logging implements LogsInterface
 {
     /**
-     * @var string - путь к файлу логирования;
+	 * Значение что логируется
+     * @var string
      */
-    private static $path2log = '';
+    private $value = '';
+	
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @param string $value
+	 */
+	public function setValue(string $value) {
+		try {
+			if (2000 < mb_strlen($value)) {
+				throw new SystemException('Значение для логирования не должно превышать 2000 символов в длину');
+			}
+
+			$this->value = $value;
+		} catch (SystemException $e) {
+			$caller = \debug_backtrace()[0];
+			$caller["message"] = $e->getMessage();
+			
+			Debug::dumpToFile($caller);
+		}
+	}
+	
+	/**
+	 * {@inheritdoc}
+	 */
+	public function push() {
+		try {
+			
+			//$path2log = self::get('path2log');
+			//$value = self::get('value');
+			
+			//if (!$path2log || !$value) {
+			//	throw new SystemException('Отсутствуют обязательные свойства для операции логирования');
+			//}
+			
+			//return file_put_contents($path2log, date("Y-m-d H:i:s")." ".$value."\r\n", FILE_APPEND);
+			
+		} catch (SystemException $e) {
+			$caller = \debug_backtrace()[0];
+			$caller["message"] = $e->getMessage();
+			
+			Debug::dumpToFile($caller);
+		}
+	}
+	
+	
+	
+	/**
+	 * @param $where
+	 * @throws SystemException
+	 */
+	    public function setFileLogName($name) {
+	        
+	        try {
+	           
+	            if (!is_string($name)) {
+	                throw new SystemException('Value does not match &ldquo;string&rdquo; type');
+	            } elseif (mb_strlen($name) > 20) {
+	                throw new SystemException('The value must not exceed 20 characters in length');
+	            } elseif (mb_strlen($name) < 3) {
+	                throw new SystemException('The value must exceed 3 characters in length');
+	            }
+	            //HtmlFilter::
+	            //$where
+				self::set('path2log', dirname(__FILE__).'/logs/'.$name.'.log');
+	        
+	        } catch (SystemException $e) {
+	    
+	            if (self::get('exceptionGlobal')) {
+	                Variable::set('error', $e->getMessage().self::getSuffixError());
+	            } else {
+	                throw $e;
+	            }
+	            
+	        }
+	        
+	    }
     
-    /**
-     * @var string - значение что логируется;
-     */
-    private static $value = '';
     
-    /**
-     * Запись значения в лог файл.
-     * @return bool|int
-     * @throws SystemException
-     */
-    public function push() {
-        
-        try {
-            
-            $path2log = self::get('path2log');
-            $value = self::get('value');
-            
-            if (!$path2log || !$value) {
-                throw new SystemException('Missing required properties');
-            }
-            
-            return file_put_contents($path2log, date("Y-m-d H:i:s")." ".$value."\r\n", FILE_APPEND);
-            
-        } catch (SystemException $e) {
+    public function isCreatedPath() {
     
-            if (self::get('exceptionGlobal')) {
-                Variable::set('error', $e->getMessage().self::getSuffixError());
-            } else {
-                throw $e;
-            }
-            
-        }
-        
-    }
-    
-    /**
-     * @param $value
-     * @throws SystemException
-     */
-    public function setValue($value) {
-        
-        try {
-            
-            if (!is_string($value)) {
-                throw new SystemException('Value does not match &ldquo;string&rdquo; type');
-            } elseif (mb_strlen($value) > 1000) {
-                throw new SystemException('The value must not exceed 1000 characters in length');
-            }
-            
-            self::set('value', $value);
-            
-        } catch (SystemException $e) {
-    
-            if (self::get('exceptionGlobal')) {
-                Variable::set('error', $e->getMessage().self::getSuffixError());
-            } else {
-                throw $e;
-            }
-            
-        }
-        
-    }
-    
-    /**
-     * @param $where
-     * @throws SystemException
-     */
-    public function setWhereLogging($where) {
-        
-        try {
-           
-            if (!is_string($where)) {
-                throw new SystemException('Value does not match &ldquo;string&rdquo; type');
-            } elseif (mb_strlen($where) > 20) {
-                throw new SystemException('The value must not exceed 20 characters in length');
-            } elseif (mb_strlen($where) < 3) {
-                throw new SystemException('The value must exceed 3 characters in length');
-            }
-            //HtmlFilter::
-            //$where
-			self::set('path2log', dirname(__FILE__).'/logs/'.$where.'.log');
-            
-        } catch (SystemException $e) {
-    
-            if (self::get('exceptionGlobal')) {
-                Variable::set('error', $e->getMessage().self::getSuffixError());
-            } else {
-                throw $e;
-            }
-            
-        }
-        
-    }
+	}
     
 }

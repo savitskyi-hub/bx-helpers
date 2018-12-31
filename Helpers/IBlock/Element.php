@@ -32,7 +32,6 @@ class Element
 	 * @param string $sortBy_2
 	 * @param string $orderBy_1
 	 * @param string $orderBy_2
-	 *
 	 * @return array
 	 */
 	public static function getPrevNextElement(

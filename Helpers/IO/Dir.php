@@ -11,6 +11,8 @@
 
 namespace SavitskyiHub\BxHelpers\Helpers\IO;
 
+use Bitrix\Main\Application;
+
 /**
  * Class Dir
  * @package SavitskyiHub\BxHelpers\Helpers\IO
@@ -21,7 +23,7 @@ namespace SavitskyiHub\BxHelpers\Helpers\IO;
 class Dir
 {
 	/**
-	 * Метод возвращает путь к директории пакета библиотеки
+	 * Возвращает путь к директории пакета библиотеки
 	 *
 	 * @return string
 	 */
@@ -30,5 +32,23 @@ class Dir
 		$pathPackageDir = dirname($pathNameSpaceDir, 2);
 	
 		return $pathPackageDir;
+	}
+	
+	/**
+	 * Возвращает путь к директории логов
+	 *
+	 * @return string
+	 */
+	public static function getLogsPath(): string {
+		return Application::getDocumentRoot().'/local/logs';
+	}
+	
+	/**
+	 * Возвращает префикс (из названия домена) для указания в названии директории хранения кеша
+	 *
+	 * @return string
+	 */
+	public static function getCacheDirectoryPrefixName(): string {
+		return '/'.explode(".", Application::getInstance()->getContext()->getServer()->get("SERVER_NAME"))[0];
 	}
 }

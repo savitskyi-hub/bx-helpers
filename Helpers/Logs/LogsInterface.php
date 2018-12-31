@@ -18,12 +18,18 @@ namespace SavitskyiHub\BxHelpers\Helpers\Logs;
  */
 interface LogsInterface
 {
-	
+	/**
+	 * Отправка данных в лог файл
+	 *
+	 * @return mixed
+	 */
 	public function push();
 	
-	
-	public function setValue($value);
-	
-	
-	public function setWhereLogging($where);
+	/**
+	 * Установка значения которое попадает в лог
+	 *
+	 * @param string $value
+	 * @return mixed
+	 */
+	public function setValue(string $value);
 }

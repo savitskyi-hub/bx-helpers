@@ -24,7 +24,7 @@ use Bitrix\Main\Config\Option;
 class Base
 {
 	/**
-	 * Метод проверяет включена ли опция подключения минифицированных файлов на сайте
+	 * Проверяет включена ли опция подключения минифицированных файлов на сайте
 	 *
 	 * @return bool
 	 */
@@ -37,7 +37,7 @@ class Base
 	}
 	
 	/**
-	 * Метод проверяет находимся ли мы на главной странице сайта
+	 * Проверяет находимся ли мы на главной странице сайта
 	 *
 	 * @return bool
 	 */
@@ -46,22 +46,12 @@ class Base
 	}
 	
 	/**
-	 * Метод проверяет находимся ли мы в конкретном разделе сайта
+	 * Проверяет находимся ли мы в конкретном разделе сайта
 	 *
 	 * @param string $pathSecton
-	 *
 	 * @return bool
 	 */
 	public static function isSection(string $pathSecton): bool {
 		return preg_match("#^".SITE_DIR.$pathSecton."#ui", Application::getInstance()->getContext()->getRequest()->getRequestedPage());
-	}
-	
-	/**
-	 * Метод возвращает префикс (из названия домена) для указания в названии директории хранения кеша
-	 *
-	 * @return string
-	 */
-	public static function getCacheDirectoryPrefixName(): string {
-		return '/'.explode(".", Application::getInstance()->getContext()->getServer()->get("SERVER_NAME"))[0];
 	}
 }

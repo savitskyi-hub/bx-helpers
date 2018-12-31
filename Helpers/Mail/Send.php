@@ -44,7 +44,7 @@ class Send
 	
 	
 	/**
-	 * Метод реализует отправку письма администрации сайта в случаи возникновения ошибки или предупреждения в функционале проекта
+	 * Реализует отправку письма администрации сайта в случаи возникновения ошибки или предупреждения в функционале проекта
 	 *
 	 * @param string $message
 	 * @param string $typeSendEvent - символьный код почтового события;
@@ -96,6 +96,7 @@ class Send
 //
 //				//				Highload::set(Highload::getTableId('ST2SendMailAdminHistory'), $arParams);
 //				//				return true;
+			
 			}
 			
 		} catch (SystemException $e) {

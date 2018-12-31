@@ -26,7 +26,7 @@ use SavitskyiHub\BxHelpers\Helpers\IO\Dir;
 class Includes
 {
 	/**
-	 * Метод подключает все стили библиотки
+	 * Подключает все стили библиотки
 	 *
 	 * @return void
 	 */
@@ -41,7 +41,7 @@ class Includes
 	}
 	
 	/**
-	 * Метод подключает все скрипты библиотки
+	 * Подключает все скрипты библиотки
 	 *
 	 * @return void
 	 */

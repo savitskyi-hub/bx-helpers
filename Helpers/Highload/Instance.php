@@ -13,6 +13,8 @@ namespace SavitskyiHub\BxHelpers\Helpers\Highload;
 
 use Bitrix\Highloadblock\HighloadBlockTable;
 use Bitrix\Main\Loader;
+use Bitrix\Main\SystemException;
+use SavitskyiHub\BxHelpers\Helpers\Main\Debug;
 
 /**
  * Class Instance
@@ -47,23 +49,32 @@ class Instance
 	 * @param int $highloadBlockID - идентификатор Highload-блока;
 	 */
 	public function __construct(int $highloadBlockID) {
-		Loader::includeModule("highloadblock");
-		
-		$hlBlock = HighloadBlockTable::getById($highloadBlockID)->fetch();
-		$entityDataClass = HighloadBlockTable::compileEntity($hlBlock)->getDataClass();
-		
-		$this->entityDataClass = $entityDataClass;
-		$this->tableName = $hlBlock["TABLE_NAME"];
-		$this->entityName = $hlBlock["NAME"];
+		try {
+			Loader::includeModule("highloadblock");
+			
+			$hlBlock = HighloadBlockTable::getById($highloadBlockID);
+			
+			if ($hlBlock && $hlBlock->getSelectedRowsCount()) {
+				$hlBlock = $hlBlock->fetch();
+				$entityDataClass = HighloadBlockTable::compileEntity($hlBlock)->getDataClass();
+			} else {
+				throw new SystemException('Идентификатор сущности ('.$highloadBlockID.') Highload-блока не действителен');
+			}
+			
+			$this->entityDataClass = $entityDataClass;
+			$this->tableName = $hlBlock["TABLE_NAME"];
+			$this->entityName = $hlBlock["NAME"];
+		} catch (SystemException $e) {
+			Debug::writeToFile($e->getMessage());
+		}
 		
 		return $this;
 	}
 	
 	/**
-	 * Метод возвращает идентификатор Highload-блока производя поиск по названию сущности
+	 * Возвращает идентификатор Highload-блока производя поиск по названию сущности
 	 *
-	 * @param string $entityName - название сущностиж
-	 *
+	 * @param string $entityName - название сущности;
 	 * @return int
 	 */
 	static function getIdByEntityName(string $entityName): int {

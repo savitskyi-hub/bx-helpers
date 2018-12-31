@@ -93,6 +93,11 @@ final class Variable
 				$сache->endDataCache(["bxEnumField" => self::$bxEnumField, "bxEnumProp" => self::$bxIbEnumProp]);
 				
 			} else {
+				
+				$caller = \debug_backtrace()[0];
+				$caller["message"] = $e->getMessage();
+				
+				Debug::dumpToFile($caller);
 				//throw new SystemException("");
 				
 				// Залогировать!!!
@@ -100,7 +105,10 @@ final class Variable
 			}
 			
 		} catch (SystemException $e) {
-			echo $e->getMessage();
+//			$caller = \debug_backtrace()[0];
+//			$caller["message"] = $e->getMessage();
+//
+//			Debug::dumpToFile($caller);
 		}
 		
 	}

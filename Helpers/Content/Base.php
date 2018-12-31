@@ -27,12 +27,11 @@ use SavitskyiHub\BxHelpers\Helpers\IO\File;
 class Base
 {
 	/**
-	 * Для того чтобы не выводить лишний раз большое количество идентификаторов для элементов, которые при наведении будут
-	 * отображаться как включаемая область, выполняем проверку на включение режима редактирования. И если он включен, возвращаем
-	 * идентификатор включаемой области в виде сформированного атрибута со значением
+	 * Чтобы не выводить лишний раз большое количество идентификаторов для элементов, которые при наведении будут отображаться
+	 * как включаемая область, выполняем проверку на включение режима редактирования. И если он включен, возвращаем идентификатор
+	 * включаемой области в виде сформированного атрибута со значением
 	 *
 	 * @param string $ariaID - идентификатор включаемой области;
-	 *
 	 * @return string
 	 */
 	public static function getAriaID(string $ariaID): string {
@@ -44,11 +43,10 @@ class Base
 	}
 	
 	/**
-	 * Метод возвращает HTML тег <time>
+	 * Возвращает HTML тег <time>
 	 *
 	 * @param string $dateTime
 	 * @param string $formate - формат вывода даты;
-	 *
 	 * @return string
 	 */
 	public static function getTimeTag(string $dateTime,  string $formate = 'd.m.Y'): string {
@@ -62,7 +60,7 @@ class Base
 	}
 	
 	/**
-	 * Метод генерирует путь к новой CAPTCHA
+	 * Генерирует путь к новой CAPTCHA
 	 *
 	 * @return string
 	 */
@@ -82,12 +80,11 @@ class Base
 	}
 	
 	/**
-	 * Метод возвращает оповещение
+	 * Возвращает оповещение
 	 *
 	 * @param string $description
 	 * @param string $header
 	 * @param string $otherContent - использовать на свой страх и риск;
-	 *
 	 * @return string
 	 */
 	public static function showNotice(string $description, string $header = '', string $otherContent = ''): string {
@@ -100,12 +97,11 @@ class Base
 	}
 	
 	/**
-	 * Метод возвращает уведомление об ошибке
+	 * Возвращает уведомление об ошибке
 	 *
 	 * @param string $description
 	 * @param string $header
 	 * @param string $otherContent - использовать на свой страх и риск;
-	 *
 	 * @return string
 	 */
 	public static function showError(string $description, string $header = '', string $otherContent = ''): string {

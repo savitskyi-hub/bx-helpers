@@ -9,32 +9,34 @@
  * file that was distributed with this source code.
  */
 
-namespace SavitskyiHub\BxHelpers\Helpers;
+namespace SavitskyiHub\BxHelpers\Helpers\Logs;
 
 /**
- * Class Logs
+ * Class LogsFactory
  * @package SavitskyiHub\BxHelpers\Helpers\Logs
  * @author Andrew Savitskyi <admin@savitskyi.com.ua>
  *
  * Класс инициализирует тип логирования информации
  */
-class Logs
+class LogsFactory
 {
 	/**
-	 *
+	 * Варианты куда будет происходить логирование
 	 * @var array
 	 */
 	private static $typeLog = ["File", "Mysql"];
 	
 	/**
-	 * Logs constructor
-	 * @param string $type - тип логирования;
+	 * @param string $class - тип логирования;
+	 * @return mixed
 	 */
-	public function __construct(string $type) {
-		//if (in_array($type, self::$typeLog)) {
-			//return new ('\\'.__NAMESPACE__.'\\Logs\\'.$type)();
-		//} else {
-		//
-		//}
+	public static function getInstance(string $class) {
+		if (in_array($class, self::$typeLog)) {
+			$nameSpace = '\\'.__NAMESPACE__.'\\'.$class.'\\Logging';
+		}
+		
+		if (isset($nameSpace)) {
+			return new $nameSpace;
+		}
 	}
 }

@@ -25,28 +25,24 @@ class Image
 {
 	/**
 	 * Версия подзагрузки файлов
-	 *
 	 * @var string
 	 */
 	protected static $sxFileVersion = "?fv=00001";
 	
 	/**
 	 * Путь до дефолтного изображения, начиная с шаблонной директории сайта
-	 *
 	 * @var string
 	 */
 	protected static $pathNoImg = '/img/no-image.png';
 	
 	/**
 	 * Дефолтное название атрибута "alt" для тега <img>
-	 *
 	 * @var string
 	 */
 	protected static $defaultImgAlt = 'No Image';
 	
 	/**
 	 * Дефолтное название атрибута "class" для тега <img>
-	 *
 	 * @var string
 	 */
 	protected static $defaultImgClass = '';
@@ -68,7 +64,6 @@ class Image
 	 * @param bool $srcset - при включенном параметре изображение будет формироваться с помощью технологии гибких (responsive) изображений;
 	 * @param bool $async - сохраняет в блочном теге, чтобы не загружать изображения сразу после открытия страницы, а подгрузить через события JS;
 	 * @param array $attrs - перечисленные в строке атрибуты с их значением;
-	 *
 	 * @return string
 	 */
 	public static function show($img, string $alt = '', string $class = '', bool $srcset = false, bool $async = false, array $attrs = []): string {
@@ -119,8 +114,8 @@ class Image
 				 * Технология гибких изображений работает только в том случаи, если правильно сформировать массив данных, пример:
 				 *
 				 * $img = [
-				 *        "767" => $arFileTmpMoB["src"],
-				 *        "default" => $arFileTmpPC["src"]
+				 * 		"767" => $arFileTmpMoB["src"],
+				 * 		"default" => $arFileTmpPC["src"]
 				 * ];
 				 *
 				 * - значение хранит путь к изображению в соответствующем размере экрана, что указан в ключе массива (max-width: KEY)
@@ -208,7 +203,7 @@ class Image
 	}
 	
 	/**
-	 * Метод возвращает путь к дефолтному изображению
+	 * Возвращает путь к дефолтному изображению
 	 *
 	 * @return string
 	 */
@@ -225,10 +220,9 @@ class Image
 	}
 	
 	/**
-	 * Метод возвращает альтернативный текст для изображения методом перебора, находя первое истинное значение
+	 * Возвращает альтернативный текст для изображения методом перебора, находя первое истинное значение
 	 *
 	 * @param array $listNames - в массив должны присваивать значения в уже отсортировано-приоритетном порядке;
-	 *
 	 * @return string
 	 */
 	public static function getFirstNotEmptyAlt(array $listNames): string {
@@ -244,10 +238,9 @@ class Image
 	}
 	
 	/**
-	 * Метод возвращает строку из перечисленных атрибутов HTML тега
+	 * Возвращает строку из перечисленных атрибутов HTML тега
 	 *
 	 * @param array $arAttrs
-	 *
 	 * @return string
 	 */
 	public static function parseAttrs(array $arAttrs): string {
@@ -261,10 +254,9 @@ class Image
 	}
 	
 	/**
-	 * Метод проверяет указаный путь к изображению на наличие GET параметров
+	 * Проверяет указаный путь к изображению на наличие GET параметров
 	 *
 	 * @param string $path
-	 *
 	 * @return bool
 	 */
 	public static function isUseUriParam(string $path): bool {
@@ -276,10 +268,9 @@ class Image
 	}
 	
 	/**
-	 * Метод возвращает GET параметры что были указаны в пути к изображению
+	 * Возвращает GET параметры что были указаны в пути к изображению
 	 *
 	 * @param string $path
-	 *
 	 * @return string
 	 */
 	public static function getUriParam(string $path): string {
@@ -293,10 +284,9 @@ class Image
 	}
 	
 	/**
-	 * Метод возвращает путь к изображению удаляя из него GET параметры
+	 * Возвращает путь к изображению удаляя из него GET параметры
 	 *
 	 * @param string $path
-	 *
 	 * @return string
 	 */
 	public static function cleanUriParam(string $path): string {
