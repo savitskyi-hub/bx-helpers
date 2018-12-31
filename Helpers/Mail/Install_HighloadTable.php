@@ -11,6 +11,7 @@
 
 namespace SavitskyiHub\BxHelpers\Helpers\Mail;
 
+use Bitrix\Main\Loader;
 use SavitskyiHub\BxHelpers\Helpers\ClassTrait;
 
 /**
@@ -18,12 +19,14 @@ use SavitskyiHub\BxHelpers\Helpers\ClassTrait;
  * @package SavitskyiHub\BxHelpers\Helpers\Mail
  * @author Andrew Savitskyi <admin@savitskyi.com.ua>
  *
- * Класс устанавливает Highload-блок на сайте с необходимыми свойствами которые нужны для роботы с текущим пространством имен;
+ * Класс устанавливает Highload-блок на сайте с необходимыми свойствами которые нужны для роботы с текущим пространством имен.
  * ВАЖНО!!! При повторном запуске, перезапись таблицы не будет осуществлятся, нужно удалить Highload-блок, и перезапустить процес инсталяции
  */
 class Install_HighloadTable extends \SavitskyiHub\BxHelpers\Helpers\Highload\Installer
 {
 	use ClassTrait;
+	
+	private static $mailEventType = "SAVITSKYI_BXHELPERS_HELPERS_MAIL";
 	
 	protected static $name = 'HelpersMailSend';
 	protected static $tableName = '2hlblock_helpers_mail_send';
@@ -95,5 +98,65 @@ class Install_HighloadTable extends \SavitskyiHub\BxHelpers\Helpers\Highload\Ins
 		parent::$mapCreatedField = self::$mapCreatedField;
 		
 		parent::__construct($prefixTableName);
+		
+		/**
+		 *
+		 */
+		self::installedMailEventType();
+	}
+	
+	/**
+	 *
+	 */
+	private static function installedMailEventType() {
+		Loader::includeModule("main");
+		
+		$NAME = ["RU" => "55", "EN" => "66"];
+		$DESC = ["RU" => "", "EN" => ""];
+		
+		$DESC["RU"] .= "#TYPE_SEND# - ";
+		$DESC["RU"] .= "#DATETIME_SEND# - ";
+		$DESC["RU"] .= "#TEXT_MESSAGE# - ";
+		
+		$DESC["EN"] .= "#TYPE_SEND# - ";
+		$DESC["EN"] .= "#DATETIME_SEND# - ";
+		$DESC["EN"] .= "#TEXT_MESSAGE# - ";
+		
+		$eventType = new \CEventType();
+		$rsCreatedRu = $eventType->Add(["LID" => "ru", "EVENT_NAME" => self::$mailEventType, "NAME" => $NAME["RU"], "DESCRIPTION" => $DESC["RU"]]);
+		$rsCreatedEn = $eventType->Add(["LID" => "en", "EVENT_NAME" => self::$mailEventType, "NAME" => $NAME["EN"], "DESCRIPTION" => $DESC["EN"]]);
+		
+		if ($eventType->LAST_ERROR) {
+			echo "\r\n".$eventType->LAST_ERROR;
+		}
+		
+		/**
+		 *
+		 */
+		
+		// создает дубликаты !!! проверку сделать
+//		$em = new \CEventMessage;
+//
+//		$arFields = array(
+//			'ACTIVE'     =>  'Y',
+//			'EVENT_NAME' =>  self::$mailEventType,
+//			"LID" => array("ru","en"),
+//			"EMAIL_FROM" => "#DEFAULT_EMAIL_FROM#",
+//			"EMAIL_TO" => "",
+//			"SUBJECT" => "Тема сообщения",
+//			"BODY_TYPE" => "text",
+//			"MESSAGE" => "
+//				Текст сообщения
+//			"
+//		);
+//
+//		$result = $em->Add( $arFields );
+	}
+	
+	/**
+	 *
+	 */
+	private static function uninstalledMailEventType() {
+	
 	}
 }

@@ -15,14 +15,15 @@ use Bitrix\Main\Application;
 use Bitrix\Main\Data\Cache;
 use Bitrix\Main\Loader;
 use Bitrix\Main\SystemException;
+use SavitskyiHub\BxHelpers\Helpers\IO\Dir;
 
 /**
  * Class Variable
  * @package SavitskyiHub\BxHelpers\Helpers\Main
  * @author Andrew Savitskyi <admin@savitskyi.com.ua>
  *
- * Класс предназначен для хранения вспомогательных свойств или методов для обработки, которые будут нужны в реализации или поддержки
- * проекта (чтоб избавиться от дублирования кода при получении свойств)
+ * Класс предназначен для хранения вспомогательных свойств или методов для их обработки, которые будут нужны в реализации или
+ * поддержки проекта (чтоб избавиться от дублирования кода при получении свойств)
  */
 final class Variable
 {
@@ -56,7 +57,6 @@ final class Variable
 	 * Varaible constructor
 	 */
 	public function __construct() {
-		
 		try {
 			
 			self::$bxApplication = Application::getInstance();
@@ -65,11 +65,12 @@ final class Variable
 			self::$bxRequest = self::$bxContext->getRequest();
 			
 			Loader::includeModule("iblock");
+			Loader::includeModule("main");
 			
 			$сache = Cache::createInstance();
 			$cacheId = SITE_ID.''.LANGUAGE_ID;
 			$cacheTime = self::$cacheTime;
-			$cacheDir = Base::getCacheDirectoryPrefixName().self::$cacheDir;
+			$cacheDir = Dir::getCacheDirectoryPrefixName().self::$cacheDir;
 			
 			if ($сache->initCache($cacheTime, $cacheId, $cacheDir)) {
 				$arCacheVars = $сache->getVars();
@@ -78,11 +79,10 @@ final class Variable
 					self::$bxEnumField = $arCacheVars["bxEnumField"];
 				}
 				
-				if ($arCacheVars["bxEnumProp"]) {
-					self::$bxIbEnumProp = $arCacheVars["bxEnumProp"];
+				if ($arCacheVars["bxIbEnumProp"]) {
+					self::$bxIbEnumProp = $arCacheVars["bxIbEnumProp"];
 				}
 			} elseif ($сache->startDataCache()) {
-				
 				self::$bxEnumField = self::getAllEnumFields(true, true, true);
 				self::$bxIbEnumProp = self::getAllIbEnumProp(true, true, true);
 				
@@ -90,36 +90,22 @@ final class Variable
 					$сache->abortDataCache();
 				}
 				
-				$сache->endDataCache(["bxEnumField" => self::$bxEnumField, "bxEnumProp" => self::$bxIbEnumProp]);
-				
+				$сache->endDataCache(["bxEnumField" => self::$bxEnumField, "bxIbEnumProp" => self::$bxIbEnumProp]);
 			} else {
-				
-				$caller = \debug_backtrace()[0];
-				$caller["message"] = $e->getMessage();
-				
-				Debug::dumpToFile($caller);
-				//throw new SystemException("");
-				
-				// Залогировать!!!
-				
+				throw new SystemException("Невозможно инициализировать работу кэширования: Varaible constructor");
 			}
 			
 		} catch (SystemException $e) {
-//			$caller = \debug_backtrace()[0];
-//			$caller["message"] = $e->getMessage();
-//
-//			Debug::dumpToFile($caller);
+			Debug::writeToFile($e->getMessage());
 		}
-		
 	}
 	
 	/**
-	 * Метод возвращает все пользовательские поля типа "список" из разных объектов
+	 * Возвращает все пользовательские поля типа "список" из разных объектов
 	 *
 	 * @param bool $reverseXml2Val - сохраняет отдельным ключом в массиве результат значений, ключами массива будут XML_ID, а значением VALUE;
 	 * @param bool $responseXml2Id - сохраняет отдельным ключом в массиве результат значений, ключами массива будут XML_ID, а значением ID;
 	 * @param bool $reverseId2Xml - сохраняет отдельным ключом в массиве результат значений, ключами массива будут ID, а значением XML_ID;
-	 *
 	 * @return array
 	 */
 	private static function getAllEnumFields(bool $reverseXml2Val = false, bool $responseXml2Id = false, bool $reverseId2Xml = false): array {
@@ -164,7 +150,6 @@ final class Variable
 	 * @param bool $reverseXml2Val - сохраняет отдельным ключом в массиве результат значений, ключами массива будут XML_ID, а значением VALUE;
 	 * @param bool $responseXml2Id - сохраняет отдельным ключом в массиве результат значений, ключами массива будут XML_ID, а значением ID;
 	 * @param bool $reverseId2Xml - сохраняет отдельным ключом в массиве результат значений, ключами массива будут ID, а значением XML_ID;
-	 *
 	 * @return array
 	 */
 	private static function getAllIbEnumProp(bool $reverseXml2Val = false, bool $responseXml2Id = false, bool $reverseId2Xml = false): array {
@@ -220,126 +205,25 @@ final class Variable
 		return $arReturn ?? [];
 	}
 	
-	
 	/**
-	 * Метод возвращает массив индексами которого являются значение $key
-	 * - если $group == true, в качестве значений массива являются массиві с одинаковыми значениями $key
+	 * Возвращает массив индексами которого являются значение $key
+	 *
+	 * @param array $array
+	 * @param string $key - ключ который будет вместо индексного номера в ключе массива;
+	 * @param bool $group - если true, в качестве значений массива являются массивы с одинаковыми значениями $key;
+	 * @return array
 	 */
-	//public static function reverseKeyByID($array, $key = "ID", $group = false): array {
-	//	$arReturn = [];
-	//
-	//	foreach ($array as $index => $val) {
-	//		if (!is_array($val)) {
-	//			$arKey = $val->key;
-	//		} else {
-	//			$arKey = $val[$key];
-	//		}
-	//
-	//		if ($group) {
-	//			$arReturn[$arKey][] = $val;
-	//		} else {
-	//			$arReturn[$arKey] = $val;
-	//		}
-	//	}
-	//
-	//	return $arReturn;
-	//}
-	
-	//	/**
-	//	 * Метод проверяет существует(ют) ли XML значение(я) в пользовательськом поле типа "список".
-	//	 * @param $checkName
-	//	 * @param $typeEnumName
-	//	 * @return bool
-	//	 * @throws SystemException
-	//	 */
-	//	static function isExistXmlKeyInEnumField($checkName, $typeEnumName) {
-	//
-	//		try {
-	//
-	//			$is_success = true;
-	//			$arEnumList = self::$bxEnumFields["XML2ID"];
-	//
-	//			if (!isset($arEnumList[$typeEnumName])) {
-	//				throw new SystemException("Пользовательськое поле с названием &ldquo;".$typeEnumName."&rdquo; не существует");
-	//			} elseif (is_array($checkName)) {
-	//
-	//				$listEnum = $arEnumList[$typeEnumName];
-	//
-	//				foreach ($checkName as $v) {
-	//					if (!array_key_exists($v, $listEnum)) {
-	//						$is_success = false;
-	//						break;
-	//					}
-	//				}
-	//
-	//			} else {
-	//
-	//				if (!array_key_exists($checkName, $arEnumList[$typeEnumName])) {
-	//					$is_success = false;
-	//				}
-	//
-	//			}
-	//
-	//			return $is_success;
-	//
-	//		} catch (SystemException $e) {
-	//
-	//			if (self::get('exceptionGlobal')) {
-	//				Variable::set('error', $e->getMessage().self::getSuffixError());
-	//			} else {
-	//				throw $e;
-	//			}
-	//
-	//		}
-	//
-	//	}
-	//
-	//	/**
-	//	 * Метод проверяет существует(ют) ли ID значение(я) в пользовательськом поле типа "список".
-	//	 * @param $checkName
-	//	 * @param $typeEnumName
-	//	 * @return bool
-	//	 * @throws SystemException
-	//	 */
-	//	static function isExistIdValueInEnumField($checkName, $typeEnumName) {
-	//
-	//		try {
-	//
-	//			$is_success = true;
-	//			$arEnumList = self::$bxEnumFields["XML2ID"];
-	//
-	//			if (!isset($arEnumList[$typeEnumName])) {
-	//				throw new SystemException("Пользовательськое поле с названием &ldquo;".$typeEnumName."&rdquo; не существует");
-	//			} elseif (is_array($checkName)) {
-	//
-	//				$listEnum = $arEnumList[$typeEnumName];
-	//
-	//				foreach ($checkName as $v) {
-	//					if (!in_array($v, $listEnum)) {
-	//						$is_success = false;
-	//						break;
-	//					}
-	//				}
-	//
-	//			} else {
-	//
-	//				if (!in_array($checkName, $arEnumList[$typeEnumName])) {
-	//					$is_success = false;
-	//				}
-	//
-	//			}
-	//
-	//			return $is_success;
-	//
-	//		} catch (SystemException $e) {
-	//
-	//			if (self::get('exceptionGlobal')) {
-	//				Variable::set('error', $e->getMessage().self::getSuffixError());
-	//			} else {
-	//				throw $e;
-	//			}
-	//
-	//		}
-	//
-	//	}
+	public static function reverseKeyByID(array $array, $key = "ID", $group = false): array {
+		$arReturn = [];
+		
+		foreach ($array as $index => $val) {
+			if ($group) {
+				$arReturn[$val[$key]][] = $val;
+			} else {
+				$arReturn[$val[$key]] = $val;
+			}
+		}
+		
+		return $arReturn;
+	}
 }

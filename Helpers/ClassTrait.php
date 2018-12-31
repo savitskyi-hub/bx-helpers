@@ -81,3 +81,95 @@ trait ClassTrait
         return;
     }
 }
+
+
+
+//	/**
+//	 * Проверяет существует(ют) ли XML значение(я) в пользовательськом поле типа "список"
+//	 *
+//	 * @param array $arEnumList
+//	 * @param string $enumCode
+//	 * @param string $searchXml
+//	 * @return bool
+//	 */
+//	public static function isExistXmlInEnumField(array $arEnumList, string $enumCode, string $searchXml): bool {
+//		try {
+//						$arEnumList = $arEnumList["XML2ID"];
+//
+//						if (!isset($arEnumList[$enumCode])) {
+//			//				throw new SystemException("Пользовательськое поле с названием &ldquo;".$typeEnumName."&rdquo; не существует");
+//						} elseif (is_array($checkName)) {
+//			//
+//			//				$listEnum = $arEnumList[$typeEnumName];
+//
+//				foreach ($checkName as $v) {
+//					if (!array_key_exists($v, $listEnum)) {
+//						$is_success = false;
+//						break;
+//			//					}
+//			//				}
+//			//
+//						} else {
+//			//
+//			//				if (!array_key_exists($checkName, $arEnumList[$typeEnumName])) {
+//			//					$is_success = false;
+//			//				}
+//			//
+//						}
+//		} catch (SystemException $e) {
+//			//$e->getMessage()
+//
+//		}
+
+//
+//	}
+//
+//	/**
+//	 * Метод проверяет существует(ют) ли ID значение(я) в пользовательськом поле типа "список"
+
+//	 * @param $checkName
+//	 * @param $typeEnumName
+//	 * @return bool
+//	 * @throws SystemException
+//	 */
+//	static function isExistIdValueInEnumField() {
+//
+//		try {
+//
+//			$is_success = true;
+//			$arEnumList = self::$bxEnumFields["XML2ID"];
+//
+//			if (!isset($arEnumList[$typeEnumName])) {
+//				throw new SystemException("Пользовательськое поле с названием &ldquo;".$typeEnumName."&rdquo; не существует");
+//			} elseif (is_array($checkName)) {
+//
+//				$listEnum = $arEnumList[$typeEnumName];
+//
+//				foreach ($checkName as $v) {
+//					if (!in_array($v, $listEnum)) {
+//						$is_success = false;
+//						break;
+//					}
+//				}
+//
+//			} else {
+//
+//				if (!in_array($checkName, $arEnumList[$typeEnumName])) {
+//					$is_success = false;
+//				}
+//
+//			}
+//
+//			return $is_success;
+//
+//		} catch (SystemException $e) {
+//
+//			if (self::get('exceptionGlobal')) {
+//				Variable::set('error', $e->getMessage().self::getSuffixError());
+//			} else {
+//				throw $e;
+//			}
+//
+//		}
+//
+//	}

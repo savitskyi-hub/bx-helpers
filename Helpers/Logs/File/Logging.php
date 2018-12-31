@@ -50,6 +50,14 @@ class Logging implements LogsInterface
 		}
 	}
 	
+	
+	//            if (self::get('logging')) {
+	//                $logging = Log::Initial('LogFile');
+	//                $logging->setValue($e->getMessage().self::getSuffixError());
+	//                $logging->setWhereLogging('email-error');
+	//                $logging->push();
+	//            }
+	
 	/**
 	 * {@inheritdoc}
 	 */

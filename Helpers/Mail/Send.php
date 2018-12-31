@@ -14,6 +14,7 @@ namespace SavitskyiHub\BxHelpers\Helpers\Mail;
 use Bitrix\Main\Mail\Event;
 use Bitrix\Main\SystemException;
 use SavitskyiHub\BxHelpers\Helpers\Highload\Instance;
+use SavitskyiHub\BxHelpers\Helpers\Main\Debug;
 use SavitskyiHub\BxHelpers\Helpers\Main\Variable;
 
 /**
@@ -50,67 +51,63 @@ class Send
 	 * @param string $typeSendEvent - символьный код почтового события;
 	 * @param string $typeReporting - тип оповещения;
 	 * @param bool $skip - пропустить проверку на повторною отправку;
-	 *
 	 * @return bool
-	 * @throws SystemException
 	 */
 	static function Admin(string $message, string $typeSendEvent, string $typeReporting, bool $skip = false): bool {
-		
 		try {
+			$mailEventType = Install_HighloadTable::get("mailEventType");
 			$entityName = Install_HighloadTable::get("name");
 			$entityID = Instance::getIdByEntityName($entityName);
-			$nameObjEntity = "HLBLOCK_".$entityID."_UF_TYPE_SEND";
-			$typeReporting = Variable::$bxEnumField["XML2ID"][$nameObjEntity][$typeReporting];
 			
-			$timeSend = date("d.m.Y H:i:s");
-			$isSuccess = false;
+			$enumCode = "HLBLOCK_".$entityID."_UF_TYPE_SEND";
+			$typeReporting = Variable::$bxEnumField["XML2ID"][$enumCode][$typeReporting];
 			
 			if (!$typeReporting) {
-				throw new SystemException('Неверный символьный код значения в объекте: '.$nameObjEntity.' - '.$typeReporting);
+				throw new SystemException('Неверный символьный код значения в объекте: '.$enumCode.' - '.$typeReporting);
 			}
 			
 			if (!$skip && !self::checkLimitSendAdmin($typeSendEvent, $typeReporting, $entityID)) {
 				return false;
 			}
 			
+			echo LANGUAGE_ID;
+			exit;
+			
 			$rsSend = Event::send([
-				"EVENT_NAME" => $typeSendEvent,
-				"LID" => SITE_ID,
-				"C_FIELDS" => ["TEXT_MESSAGE" => $message]
+				"EVENT_NAME" => $mailEventType,
+				"LID" => LANGUAGE_ID,
+				"C_FIELDS" => [
+					"TYPE_SEND" => "",
+					"DATETIME_SEND" => "",
+					"TEXT_MESSAGE" => $message
+				]
 			]);
-
+			
 			/**
 			 * Логируем отправку
 			 */
 			if (!$rsSend->isSuccess()) {
-				throw new SystemException("Ошибка отправки письма:\r\ntypeSendEvent: ".$typeSendEvent."\r\ntypeReporting: ".$typeReporting."\r\ntime: ".$timeSend);
+				throw new SystemException($rsSend->getErrors());
 			} else {
 				
 				//new Instance($entityID);
 				
 //				$arParams = [
-//					"UF_TYPE_EMAIL_EVENT" => $typeSendEvent,
+//					"UF_TYPE_EMAIL_EVENT" => $mailEventType,
 //					"UF_TYPE_SEND" => $typeReporting,
 //					"UF_TEXT" => $message
 //				];
 //
 //				//				Highload::set(Highload::getTableId('ST2SendMailAdminHistory'), $arParams);
 //				//				return true;
-			
+				
+				$isSuccess = true;
 			}
-			
 		} catch (SystemException $e) {
-			throw $e;
-			
-			//            if (self::get('logging')) {
-			//                $logging = Log::Initial('LogFile');
-			//                $logging->setValue($e->getMessage().self::getSuffixError());
-			//                $logging->setWhereLogging('email-error');
-			//                $logging->push();
-			//            }
+			Debug::writeToFile($e->getMessage());
 		}
 		
-		return $isSuccess;
+		return $isSuccess ?? false;
 	}
 	
 	/**
@@ -139,6 +136,15 @@ class Send
 		
 		return false;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

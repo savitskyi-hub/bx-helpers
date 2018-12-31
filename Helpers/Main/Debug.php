@@ -30,6 +30,7 @@ class Debug
 
 	/**
 	 * Выполняет логирование цепочки вызовов при исключениях или произвольных вызовах
+	 *
 	 * @param string $message
 	 */
 	static function writeToFile(string $message) {
