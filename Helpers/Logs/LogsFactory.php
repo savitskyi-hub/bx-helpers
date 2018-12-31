@@ -24,7 +24,7 @@ class Logs
 	 *
 	 * @var array
 	 */
-	private static $typeLog = ["File", "Mysql", "Mail"];
+	private static $typeLog = ["File", "Mysql"];
 	
 	/**
 	 * Logs constructor

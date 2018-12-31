@@ -62,6 +62,6 @@ class Base
 	 * @return string
 	 */
 	public static function getCacheDirectoryPrefixName(): string {
-		return explode(".", Application::getInstance()->getContext()->getServer()->get("SERVER_NAME"))[0];
+		return '/'.explode(".", Application::getInstance()->getContext()->getServer()->get("SERVER_NAME"))[0];
 	}
 }

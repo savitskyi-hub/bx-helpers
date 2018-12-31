@@ -20,12 +20,6 @@ use Bitrix\Main\SystemException;
  */
 trait ClassTrait
 {
-    /**
-     * @var bool - тип перехвата исключения.
-     * @info - eсли false, перехват будет возращатся в родительський "catch", иначе в свойство класса Variable::$error (а там уже перехват как ошибку);
-     */
-//    private static $exceptionGlobal = true;
-//
 //    public function __call($name, $arguments) {
 //        //Variable::set('error', 'Method &ldquo;'.$name.'()&rdquo; was not found in'.self::getSuffixError());
 //    }
@@ -57,90 +51,20 @@ trait ClassTrait
 //    public function __wakeup() {
 //        //Variable::set('error', 'Unserializing &ldquo;'.self::getSuffixError().'&rdquo; is not allowed');
 //    }
-//
-//    /**
-//     * Метод возращает название класа из которого делаем вызов.
-//     * @return mixed
-//     */
-//    static function getCalledClassName() {
-//        return get_called_class();
-//    }
-//
-//    /**
-//     * Метод возращает окончание строки ошибки (откуда она возникла).
-//     * @return string
-//     */
-//    static function getSuffixError() {
-//        return ' in method: '.self::getCalledClassName();
-//    }
-//
-//    /**
-//     * @param string $name
-//     * @param mixed $val
-//     * @throws SystemException
-//     */
-//    static function set($name, $val) {
-//
-//        try {
-//
-//            if (!isset(self::${$name})) {
-//                throw new SystemException('Undefined &ldquo;'.$name.'&rdquo; name varaible');
-//            }
-//
-//            self::${$name} = $val;
-//
-//        } catch (SystemException $e) {
-//
-//            if (self::get('exceptionGlobal')) {
-//                Variable::set('error', $e->getMessage().self::getSuffixError());
-//            } else {
-//                throw $e;
-//            }
-//
-//        }
-
-//
-//    }
-//
-//    /**
-//     * @param string $name
-//     * @param boolean $nameKey
-//     * @param mixed $val
-//     * @throws SystemException
-//     */
-//    static function push($name, $val, $nameKey = false) {
-//
-//        try {
-//
-//            if (!isset(self::${$name})) {
-//                throw new SystemException('Undefined &ldquo;'.$name.'&rdquo; name varaible');
-//            } elseif (!is_array(self::${$name})) {
-//                throw new SystemException('This variable &ldquo;'.$name.'&rdquo; is not type array');
-//            }
-//
-//            if ($nameKey) {
-//                self::${$name}[$nameKey] = $val;
-//            } else {
-//                self::${$name} = $val;
-//            }
-//
-//        } catch (SystemException $e) {
-//
-//            if (self::get('exceptionGlobal')) {
-//                Variable::set('error', $e->getMessage().self::getSuffixError());
-//            } else {
-//                throw $e;
-//            }
-//
-//        }
-//
-//    }
 	
+    /**
+     * Метод возвращает название класса из которого реализовано вызов
+	 *
+     * @return mixed
+     */
+    static function getCalledClassName() {
+        return get_called_class();
+    }
 	
 	/**
-	 * Геттер для классов
+	 * Геттер для статических свойств
 	 *
-	 * @param sting $name - название свойства;
+	 * @param string $name - название свойства;
 	 *
 	 * @return mixed
 	 * @throws \Exception
@@ -156,6 +80,6 @@ trait ClassTrait
 			throw $e;
         }
         
-        return '';
+        return;
     }
 }

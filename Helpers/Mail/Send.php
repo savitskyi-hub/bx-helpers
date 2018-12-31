@@ -14,13 +14,14 @@ namespace SavitskyiHub\BxHelpers\Helpers\Mail;
 use Bitrix\Main\Mail\Event;
 use Bitrix\Main\SystemException;
 use SavitskyiHub\BxHelpers\Helpers\Highload\Instance;
+use SavitskyiHub\BxHelpers\Helpers\Main\Variable;
 
 /**
  * Class Send
  * @package SavitskyiHub\BxHelpers\Helpers\Mail
  * @author Andrew Savitskyi <admin@savitskyi.com.ua>
  *
- * Класс
+ * Класс .............................
  */
 class Send
 {
@@ -36,16 +37,11 @@ class Send
 	 */
 	private static $limitTypeSend =  3;
 	
+
 	/**
-	 * Нужно ли логировать отправку сообщения
-	 * @var bool
+	 * Почтовое событие ..........
 	 */
-	////////////////////////////////////////////////////private static $logging = false;
 	
-	/**
-	 * @var string
-	 */
-	////////////////////////////////////////////////////////public static $sendTo = '';
 	
 	/**
 	 * Метод реализует отправку письма администрации сайта в случаи возникновения ошибки или предупреждения в функционале проекта
@@ -59,18 +55,24 @@ class Send
 	 * @throws SystemException
 	 */
 	static function Admin(string $message, string $typeSendEvent, string $typeReporting, bool $skip = false): bool {
+		
 		try {
 			$entityName = Install_HighloadTable::get("name");
 			$entityID = Instance::getIdByEntityName($entityName);
+			$nameObjEntity = "HLBLOCK_".$entityID."_UF_TYPE_SEND";
+			$typeReporting = Variable::$bxEnumField["XML2ID"][$nameObjEntity][$typeReporting];
 			
 			$timeSend = date("d.m.Y H:i:s");
 			$isSuccess = false;
-			//$typeReporting = Variable::$bxEnumFields["XML2ID"]["HLBLOCK_3_UF_TYPE_SEND"][$typeReporting],;
+			
+			if (!$typeReporting) {
+				throw new SystemException('Неверный символьный код значения в объекте: '.$nameObjEntity.' - '.$typeReporting);
+			}
 			
 			if (!$skip && !self::checkLimitSendAdmin($typeSendEvent, $typeReporting, $entityID)) {
 				return false;
 			}
-
+			
 			$rsSend = Event::send([
 				"EVENT_NAME" => $typeSendEvent,
 				"LID" => SITE_ID,
@@ -136,6 +138,11 @@ class Send
 		
 		return false;
 	}
+	
+	
+	
+	
+	
 	
 	/**
 	 * Метод реализует отправку почтового события на определенный E-mail адрес (в случаи ошибки происходить логирования)

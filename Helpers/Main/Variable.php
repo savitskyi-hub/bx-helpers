@@ -12,6 +12,8 @@
 namespace SavitskyiHub\BxHelpers\Helpers\Main;
 
 use Bitrix\Main\Application;
+use Bitrix\Main\Data\Cache;
+use Bitrix\Main\Loader;
 use Bitrix\Main\SystemException;
 
 /**
@@ -19,39 +21,37 @@ use Bitrix\Main\SystemException;
  * @package SavitskyiHub\BxHelpers\Helpers\Main
  * @author Andrew Savitskyi <admin@savitskyi.com.ua>
  *
- * Класс предназначен для хранения вспомогательных свойств, которые будут нужны в реализации или поддержки проекта (чтоб избавиться от дублирования кода при получения необходимых свойств)
+ * Класс предназначен для хранения вспомогательных свойств или методов для обработки, которые будут нужны в реализации или поддержки
+ * проекта (чтоб избавиться от дублирования кода при получении свойств)
  */
 final class Variable
 {
+	/**
+	 * Приватные параметры кеша
+	 */
 	private static $cacheTime = 600;
-	private static $cacheDir = 'helpers_variable';
+	private static $cacheDir = '_helpers_variable';
 	
-	
+	/**
+	 * Глобальные сущности ядра
+	 */
 	static $bxApplication;
 	static $bxContext;
 	static $bxServer;
 	static $bxRequest;
 	
-	
 	/**
-	 * !!!!!!!!!!!!!!! хранит информацию об всех пользовательских полях;
+	 * Список всех пользовательских свойств типа "Список"
 	 * @var array
 	 */
-	private static $bxEnum = [];
+	static $bxEnumField = [];
 	
 	/**
-	 * !!!!!!!!!!!!!
+	 * Список всех свойств информационных блоков типа "Список"
 	 * @var array
 	 */
-	private static $bxProp = [];
+	static $bxIbEnumProp = [];
 	
-	/**
-	 * !!!!!!!!!!!!!
-	 * @var array
-	 */
-	private static $bxOption = [];
-
-
 	/**
 	 * Varaible constructor
 	 */
@@ -64,39 +64,40 @@ final class Variable
 			self::$bxServer = self::$bxContext->getServer();
 			self::$bxRequest = self::$bxContext->getRequest();
 			
+			Loader::includeModule("iblock");
 			
+			$сache = Cache::createInstance();
+			$cacheId = SITE_ID.''.LANGUAGE_ID;
+			$cacheTime = self::$cacheTime;
+			$cacheDir = Base::getCacheDirectoryPrefixName().self::$cacheDir;
 			
-//			$сache = Cache::createInstance();
-//			$cache_id = '';
-//			$cache_time = 36000000;
-//			$cache_dir = '/cccstore_geo_search_ajax';
-			
-//			$cache_id .= $site_id;
-//			$cache_id .= $language_type;
-//			$cache_id .= $search;
-//			$cache_id .= $maxViewItem.'_'.$numPage;
-			
-//			if ($сache->initCache($cache_time, $cache_id, $cache_dir)) {
-//				//$arLocationResult = $сache->getVars();
-//			} elseif ($сache->startDataCache()) {
-//
-//					//$сache->abortDataCache();
-//
-//				//$сache->endDataCache($arLocationResult);
-//			} else {
-//				throw new SystemException("Ошибка в работе компонента");
-//			}
-			
-			// !!!!!! cache
-//			self::$bxEnum = self::getAllEnumFields(true, true, true);
-			
-			//https://dev.1c-bitrix.ru/api_help/iblock/classes/ciblockproperty/getpropertyenum.php
-			//			self::$bxIbEnum =
-			
-			
-//			echo '<pre>';
-//			print_r(self::$bxEnum);
-//			echo '</pre>';
+			if ($сache->initCache($cacheTime, $cacheId, $cacheDir)) {
+				$arCacheVars = $сache->getVars();
+				
+				if ($arCacheVars["bxEnumField"]) {
+					self::$bxEnumField = $arCacheVars["bxEnumField"];
+				}
+				
+				if ($arCacheVars["bxEnumProp"]) {
+					self::$bxIbEnumProp = $arCacheVars["bxEnumProp"];
+				}
+			} elseif ($сache->startDataCache()) {
+				
+				self::$bxEnumField = self::getAllEnumFields(true, true, true);
+				self::$bxIbEnumProp = self::getAllIbEnumProp(true, true, true);
+				
+				if (!self::$bxIbEnumProp && !self::$bxIbEnumProp) {
+					$сache->abortDataCache();
+				}
+				
+				$сache->endDataCache(["bxEnumField" => self::$bxEnumField, "bxEnumProp" => self::$bxIbEnumProp]);
+				
+			} else {
+				//throw new SystemException("");
+				
+				// Залогировать!!!
+				
+			}
 			
 		} catch (SystemException $e) {
 			echo $e->getMessage();
@@ -104,13 +105,16 @@ final class Variable
 		
 	}
 	
-	//	/**
-	//	 * Метод для получения всех пользовательских полей разных объектов.
-	//	 * @param bool $responseXml2Id - сохраняет отдельным ключом в массиве результат значений, но ключами массива будут XML_ID, а значением ID;
-	//	 * @param bool $reverseId2Xml - сохраняет отдельным ключом в массиве результат значений, но ключами массива будут ID, а значением XML_ID;
-	//	 * @return array
-	//	 */
-	private static function getAllFieldsEnum($reverseXml2Val = false, $responseXml2Id = false, $reverseId2Xml = false) {
+	/**
+	 * Метод возвращает все пользовательские поля типа "список" из разных объектов
+	 *
+	 * @param bool $reverseXml2Val - сохраняет отдельным ключом в массиве результат значений, ключами массива будут XML_ID, а значением VALUE;
+	 * @param bool $responseXml2Id - сохраняет отдельным ключом в массиве результат значений, ключами массива будут XML_ID, а значением ID;
+	 * @param bool $reverseId2Xml - сохраняет отдельным ключом в массиве результат значений, ключами массива будут ID, а значением XML_ID;
+	 *
+	 * @return array
+	 */
+	private static function getAllEnumFields(bool $reverseXml2Val = false, bool $responseXml2Id = false, bool $reverseId2Xml = false): array {
 		$rsTypeField = \CUserTypeEntity::GetList([], []);
 		$arTypeField = ($rsTypeField? $rsTypeField->arResult : []);
 		
@@ -122,37 +126,21 @@ final class Variable
 			
 			foreach ($arTypeField as $k => $field) {
 				foreach ($arEnums as $j => $enum) {
+					$objectCode = $field["ENTITY_ID"].'_'.$field["FIELD_NAME"];
+					
 					if ($field["ID"] == $enum["USER_FIELD_ID"]) {
-						$arReturn["LIST"][$field["ENTITY_ID"].'_'.$field["FIELD_NAME"]][$enum["ID"]] = $enum["VALUE"];
-					}
-				}
-			}
-			
-			if ($reverseXml2Val) {
-				foreach ($arTypeField as $k => $field) {
-					foreach ($arEnums as $j => $enum) {
-						if ($field["ID"] == $enum["USER_FIELD_ID"] && $enum["XML_ID"]) {
-							$arReturn["XML2VAL"][$field["ENTITY_ID"].'_'.$field["FIELD_NAME"]][$enum["XML_ID"]] = $enum["VALUE"];
+						$arReturn["LIST"][$objectCode][$enum["ID"]] = $enum["VALUE"];
+						
+						if ($reverseXml2Val && $enum["XML_ID"]) {
+							$arReturn["XML2VAL"][$objectCode][$enum["XML_ID"]] = $enum["VALUE"];
 						}
-					}
-				}
-			}
-			
-			if ($responseXml2Id) {
-				foreach ($arTypeField as $k => $field) {
-					foreach ($arEnums as $j => $enum) {
-						if ($field["ID"] == $enum["USER_FIELD_ID"] && $enum["XML_ID"]) {
-							$arReturn["XML2ID"][$field["ENTITY_ID"].'_'.$field["FIELD_NAME"]][$enum["XML_ID"]] = $enum["ID"];
+						
+						if ($responseXml2Id && $enum["XML_ID"]) {
+							$arReturn["XML2ID"][$objectCode][$enum["XML_ID"]] = $enum["ID"];
 						}
-					}
-				}
-			}
-			
-			if ($reverseId2Xml) {
-				foreach ($arTypeField as $k => $field) {
-					foreach ($arEnums as $j => $enum) {
-						if ($field["ID"] == $enum["USER_FIELD_ID"] && $enum["XML_ID"]) {
-							$arReturn["ID2XML"][$field["ENTITY_ID"].'_'.$field["FIELD_NAME"]][$enum["ID"]] = $enum["XML_ID"];
+						
+						if ($reverseId2Xml) {
+							$arReturn["ID2XML"][$objectCode][$enum["ID"]] = $enum["XML_ID"];
 						}
 					}
 				}
@@ -161,7 +149,94 @@ final class Variable
 		
 		return $arReturn ?? [];
 	}
+	
+	/**
+	 * Метод возвращает все свойства типа "список" из разных информационных блоков
+	 *
+	 * @param bool $reverseXml2Val - сохраняет отдельным ключом в массиве результат значений, ключами массива будут XML_ID, а значением VALUE;
+	 * @param bool $responseXml2Id - сохраняет отдельным ключом в массиве результат значений, ключами массива будут XML_ID, а значением ID;
+	 * @param bool $reverseId2Xml - сохраняет отдельным ключом в массиве результат значений, ключами массива будут ID, а значением XML_ID;
+	 *
+	 * @return array
+	 */
+	private static function getAllIbEnumProp(bool $reverseXml2Val = false, bool $responseXml2Id = false, bool $reverseId2Xml = false): array {
+		$arIbList = [];
+		$rsIbList = \CIBlock::GetList(["SORT" => "ASC"], ["CHECK_PERMISSIONS" => "N"]);
+		
+		while ($arIb = $rsIbList->Fetch()) {
+			$arIbList[] = $arIb["ID"];
+		}
+		
+		$arEnumList = [];
+		$rsEnumList = \CIBlockProperty::GetList([], ["PROPERTY_TYPE" => "L"]);
+		
+		while ($arEnum = $rsEnumList->Fetch()) {
+			$arEnumList[] = $arEnum;
+		}
+		
+		if ($arIbList && $arEnumList) {
+			$arReturn = [];
+			$arEnumFieldList = [];
+			
+			foreach ($arIbList as $ibID) {
+				$rsPropEnums = \CIBlockPropertyEnum::GetList(["SORT" => "ASC"], ["IBLOCK_ID" => $ibID]);
+				
+				while ($arEnumField = $rsPropEnums->GetNext()) {
+					$arEnumFieldList[] = $arEnumField;
+				}
+			}
+			
+			foreach ($arEnumList as $k => $arEnum) {
+				foreach ($arEnumFieldList as $j => $arEnumField) {
+					$ibEnumCode = "IBLOCK_".$arEnum["IBLOCK_ID"].'_'.$arEnum["CODE"];
+					
+					if ($arEnum["ID"] == $arEnumField["PROPERTY_ID"]) {
+						$arReturn["LIST"][$ibEnumCode][$arEnumField["ID"]] = $arEnumField["VALUE"];
+						
+						if ($reverseXml2Val && $arEnumField["XML_ID"]) {
+							$arReturn["XML2VAL"][$ibEnumCode][$arEnumField["XML_ID"]] = $arEnumField["VALUE"];
+						}
+						
+						if ($responseXml2Id && $arEnumField["XML_ID"]) {
+							$arReturn["XML2ID"][$ibEnumCode][$arEnumField["XML_ID"]] = $arEnumField["ID"];
+						}
+						
+						if ($reverseId2Xml) {
+							$arReturn["ID2XML"][$ibEnumCode][$arEnumField["ID"]] = $arEnumField["XML_ID"];
+						}
+					}
+				}
+			}
+		}
+		
+		return $arReturn ?? [];
+	}
+	
+	
+	/**
+	 * Метод возвращает массив индексами которого являются значение $key
+	 * - если $group == true, в качестве значений массива являются массиві с одинаковыми значениями $key
+	 */
+	//public static function reverseKeyByID($array, $key = "ID", $group = false): array {
+	//	$arReturn = [];
 	//
+	//	foreach ($array as $index => $val) {
+	//		if (!is_array($val)) {
+	//			$arKey = $val->key;
+	//		} else {
+	//			$arKey = $val[$key];
+	//		}
+	//
+	//		if ($group) {
+	//			$arReturn[$arKey][] = $val;
+	//		} else {
+	//			$arReturn[$arKey] = $val;
+	//		}
+	//	}
+	//
+	//	return $arReturn;
+	//}
+	
 	//	/**
 	//	 * Метод проверяет существует(ют) ли XML значение(я) в пользовательськом поле типа "список".
 	//	 * @param $checkName
