@@ -34,7 +34,6 @@ class Base
 	 * @param string $ariaID - идентификатор включаемой области;
 	 * @return string
 	 */
-	
 	public static function getAriaID(string $ariaID): string {
 		if ($GLOBALS["APPLICATION"]->GetShowIncludeAreas()) {
 			$return = 'id="'.$ariaID.'"';
