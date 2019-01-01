@@ -20,7 +20,14 @@ use SavitskyiHub\BxHelpers\Helpers\Main\Variable;
  * @package SavitskyiHub\BxHelpers\Helpers\Install
  * @author Andrew Savitskyi <admin@savitskyi.com.ua>
  *
- * Класс устанавливает Highload-блок на сайте с необходимыми свойствами которые нужны для роботы с текущим пространством имен.
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ ** Класс устанавливает Highload-блок на сайте с необходимыми свойствами которые нужны для роботы с текущим пространством имен.
  * ВАЖНО!!! При повторном запуске, перезапись таблицы не будет осуществлятся, нужно удалить Highload-блок, и перезапустить процес инсталяции
  */
 final class Mail_Install_Highload extends Highload_Installer
@@ -90,23 +97,19 @@ final class Mail_Install_Highload extends Highload_Installer
 	
 	/**
 	 * Mail_HighloadTable constructor
-	 *
-	 * @param string $prefixTableName
-	 * @param bool $isUninstall
 	 */
-	public function __construct(string $prefixTableName, bool $isUninstall = false) {
-		if (!$isUninstall) {
-			parent::$name = self::$name;
-			parent::$tableName = self::$tableName;
-			parent::$langNameRU = self::$langNameRU;
-			parent::$langNameEN = self::$langNameEN;
-			parent::$mapCreatedField = self::$mapCreatedField;
-			
-			parent::__construct($prefixTableName);
-			self::installedMailEventType();
-		} else {
-			self::uninstalledMailEventType();
-		}
+	public function __construct(string $prefixTableName) {
+		parent::$name = self::$name;
+		parent::$tableName = self::$tableName;
+		parent::$langNameRU = self::$langNameRU;
+		parent::$langNameEN = self::$langNameEN;
+		parent::$mapCreatedField = self::$mapCreatedField;
+		parent::__construct($prefixTableName);
+		
+		/**
+		 * Почтовые события и шаблоны
+		 */
+		self::installedMailEventType();
 	}
 	
 	/**
@@ -167,7 +170,7 @@ final class Mail_Install_Highload extends Highload_Installer
 	
 	/**
 	 * Чтобы не дублировать создания почтовых шаблонов реализуем проверку на существования одного из них
-	 * - если существует повторно создаваться шаблоны не будут
+	 * - если существует, повторно создаваться шаблоны не будут
 	 *
 	 * @return bool
 	 */
@@ -181,31 +184,5 @@ final class Mail_Install_Highload extends Highload_Installer
 		}
 		
 		return false;
-	}
-	
-	/**
-	 * Запускает процесс удаления почтовых событий и шаблонов (нужен для деинсталляции библиотеки)
-	 */
-	private static function uninstalledMailEventType() {
-		Loader::includeModule("main");
-		
-		global $APPLICATION;
-		
-		$eventType = new \CEventType();
-		$eventType->Delete(self::$mailEventType);
-		
-		if (self::isInstalledEventMessage()) {
-			$rsDeleteMessage = \CEventMessage::GetList($by = "id", $order = "desc", ["EVENT_NAME" => self::$mailEventType]);
-			
-			while($arDeleteMessage = $rsDeleteMessage->Fetch()) {
-				(new \CEventMessage())->Delete($arDeleteMessage["ID"]);
-			}
-			
-			if ($APPLICATION->LAST_ERROR) {
-				echo "\r\n\r\n".$APPLICATION->LAST_ERROR->msg;
-			}
-		}
-		
-		echo "\r\nУдаление почтовых событий и шаблонов прошло успешно!";
 	}
 }

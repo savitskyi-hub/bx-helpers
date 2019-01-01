@@ -93,7 +93,7 @@ final class Variable
 					self::$bxIbEnumProp = $arCacheVars["bxIbEnumProp"];
 				}
 			} elseif ($сache->startDataCache()) {
-				self::$bxSitesInfo = self::getSitesInfo();
+				self::$bxSitesInfo = self::getAllSitesInfo();
 				self::$bxEnumField = self::getAllEnumFields(true, true, true);
 				self::$bxIbEnumProp = self::getAllIbEnumProp(true, true, true);
 				
@@ -109,6 +109,22 @@ final class Variable
 		} catch (SystemException $e) {
 			Debug::writeToFile($e->getMessage());
 		}
+	}
+	
+	/**
+	 * Возвращает массив с информацией о всех сайтах системы
+	 *
+	 * @return array
+	 */
+	public static function getAllSitesInfo(): array {
+		$arReturn = [];
+		$rsSites = \CSite::GetList($by = "sort", $order = "desc", []);
+		
+		while ($arSite = $rsSites->Fetch()) {
+			$arReturn[$arSite["LID"]] = $arSite;
+		}
+		
+		return $arReturn;
 	}
 	
 	/**
@@ -233,22 +249,6 @@ final class Variable
 			} else {
 				$arReturn[$val[$key]] = $val;
 			}
-		}
-		
-		return $arReturn;
-	}
-	
-	/**
-	 * Возвращает массив заполненный с информацией о сайтах системы
-	 *
-	 * @return array
-	 */
-	public static function getSitesInfo(): array {
-		$arReturn = [];
-		$rsSites = \CSite::GetList($by = "sort", $order = "desc", []);
-		
-		while ($arSite = $rsSites->Fetch()) {
-			$arReturn[$arSite["LID"]] = $arSite;
 		}
 		
 		return $arReturn;

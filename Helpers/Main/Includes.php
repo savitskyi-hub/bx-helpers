@@ -13,8 +13,8 @@ namespace SavitskyiHub\BxHelpers\Helpers\Main;
 
 use Bitrix\Main\Application;
 use Bitrix\Main\Page\Asset;
-use SavitskyiHub\BxHelpers\Helpers\IO\File;
 use SavitskyiHub\BxHelpers\Helpers\IO\Dir;
+use SavitskyiHub\BxHelpers\Helpers\IO\File;
 
 /**
  * Class Includes
@@ -32,7 +32,7 @@ class Includes
 	 */
 	public static function libraryCss() {
 		$startPath = Dir::getPackagePath().'/HelpersCss/';
-		$resultCssList = File::getRecursiveFilesInDir($startPath, (Base::isUseMinifiedAssets()? 'min.css' : 'css'));
+		$resultCssList = File::getRecursiveFilesInDir($startPath, (Method::isUseMinifiedAssets()? 'min.css' : 'css'));
 		$resultCssList = ($resultCssList? array_reverse($resultCssList) : []);
 		
 		foreach ($resultCssList as $path2css) {
@@ -47,7 +47,7 @@ class Includes
 	 */
 	public static function libraryJs() {
 		$startPath = Dir::getPackagePath().'/HelpersJs/';
-		$resultJsList = File::getRecursiveFilesInDir($startPath, (Base::isUseMinifiedAssets()? 'min.js' : 'js'));
+		$resultJsList = File::getRecursiveFilesInDir($startPath, (Method::isUseMinifiedAssets()? 'min.js' : 'js'));
 		$resultJsList = ($resultJsList? array_reverse($resultJsList) : []);
 		
 		foreach ($resultJsList as $path2js) {

@@ -19,7 +19,7 @@ use SavitskyiHub\BxHelpers\Helpers\IO\File;
 
 /**
  * Class Base
- * @package SavitskyiHub\BxHelpers\Helpers\Content
+ * @package SavitskyiHub\BxHelpers\Helpers
  * @author Andrew Savitskyi <admin@savitskyi.com.ua>
  *
  * Класс предназначен для вывода участков статического контента который часто используется на сайте (с дополнительными проверками)
