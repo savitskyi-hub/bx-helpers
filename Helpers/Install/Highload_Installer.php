@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SavitskyiHub\BxHelpers\Helpers\Highload;
+namespace SavitskyiHub\BxHelpers\Helpers\Install;
 
 use Bitrix\Highloadblock\HighloadBlockLangTable;
 use Bitrix\Highloadblock\HighloadBlockTable;
@@ -17,13 +17,13 @@ use Bitrix\Main\Loader;
 use Bitrix\Main\SystemException;
 
 /**
- * Class Installer
- * @package SavitskyiHub\BxHelpers\Helpers\Highload
+ * Class Highload_Installer
+ * @package SavitskyiHub\BxHelpers\Helpers\Install
  * @author Andrew Savitskyi <admin@savitskyi.com.ua>
  *
  * Класс родитель (не выполняется самостоятельно) для инсталяции Highload-таблиц (не совсем, но своего рода Factory)
  */
-class Installer
+class Highload_Installer
 {
 	/**
 	 * Название сущности

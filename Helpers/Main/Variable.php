@@ -54,6 +54,12 @@ final class Variable
 	static $bxIbEnumProp = [];
 	
 	/**
+	 * Список всех сайтов с их базовой информацией
+	 * @var array
+	 */
+	static $bxSitesInfo = [];
+	
+	/**
 	 * Varaible constructor
 	 */
 	public function __construct() {
@@ -75,6 +81,10 @@ final class Variable
 			if ($сache->initCache($cacheTime, $cacheId, $cacheDir)) {
 				$arCacheVars = $сache->getVars();
 				
+				if ($arCacheVars["bxSitesInfo"]) {
+					self::$bxSitesInfo = $arCacheVars["bxSitesInfo"];
+				}
+				
 				if ($arCacheVars["bxEnumField"]) {
 					self::$bxEnumField = $arCacheVars["bxEnumField"];
 				}
@@ -83,14 +93,15 @@ final class Variable
 					self::$bxIbEnumProp = $arCacheVars["bxIbEnumProp"];
 				}
 			} elseif ($сache->startDataCache()) {
+				self::$bxSitesInfo = self::getSitesInfo();
 				self::$bxEnumField = self::getAllEnumFields(true, true, true);
 				self::$bxIbEnumProp = self::getAllIbEnumProp(true, true, true);
 				
-				if (!self::$bxIbEnumProp && !self::$bxIbEnumProp) {
-					$сache->abortDataCache();
-				}
-				
-				$сache->endDataCache(["bxEnumField" => self::$bxEnumField, "bxIbEnumProp" => self::$bxIbEnumProp]);
+				$сache->endDataCache([
+					"bxSitesInfo" => self::$bxSitesInfo,
+					"bxEnumField" => self::$bxEnumField,
+					"bxIbEnumProp" => self::$bxIbEnumProp
+				]);
 			} else {
 				throw new SystemException("Невозможно инициализировать работу кэширования: Varaible constructor");
 			}
@@ -222,6 +233,22 @@ final class Variable
 			} else {
 				$arReturn[$val[$key]] = $val;
 			}
+		}
+		
+		return $arReturn;
+	}
+	
+	/**
+	 * Возвращает массив заполненный с информацией о сайтах системы
+	 *
+	 * @return array
+	 */
+	public static function getSitesInfo(): array {
+		$arReturn = [];
+		$rsSites = \CSite::GetList($by = "sort", $order = "desc", []);
+		
+		while ($arSite = $rsSites->Fetch()) {
+			$arReturn[$arSite["LID"]] = $arSite;
 		}
 		
 		return $arReturn;
