@@ -18,6 +18,7 @@ use SavitskyiHub\BxHelpers\Helpers\Main\Variable;
 /**
  * Class Mail_Install_Highload
  * @package SavitskyiHub\BxHelpers\Helpers\Install
+ *
  * @author Andrew Savitskyi <admin@savitskyi.com.ua>
  *
  * Класс устанавливает Highload-блок на сайте с необходимыми свойствами которые нужны для роботы с текущим пространством имен.
