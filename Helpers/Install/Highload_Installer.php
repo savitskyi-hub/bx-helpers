@@ -164,7 +164,7 @@ class Highload_Installer
 	}
 	
 	/**
-	 * Инициализирует Highload-блок в БД с необходимыми свойствами которые нужны для работы функционала этого класса
+	 * Инициализирует Highload-блок в БД с необходимыми свойствами
 	 *
 	 * @param string $prefixTableName
 	 * @return bool

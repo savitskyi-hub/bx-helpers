@@ -20,15 +20,8 @@ use SavitskyiHub\BxHelpers\Helpers\Main\Variable;
  * @package SavitskyiHub\BxHelpers\Helpers\Install
  * @author Andrew Savitskyi <admin@savitskyi.com.ua>
  *
- *
- *
- *
- *
- *
- *
- *
- ** Класс устанавливает Highload-блок на сайте с необходимыми свойствами которые нужны для роботы с текущим пространством имен.
- * ВАЖНО!!! При повторном запуске, перезапись таблицы не будет осуществлятся, нужно удалить Highload-блок, и перезапустить процес инсталяции
+ * Класс устанавливает Highload-блок с необходимыми свойствами которые нужны для роботы с отправкой оповещений администрации сайта.
+ * ВАЖНО!!! При повторном запуске, перезапись таблиц не будет осуществлятся, нужно запустить деинсталляцию, и перезапустить процесс инсталяции
  */
 final class Mail_Install_Highload extends Highload_Installer
 {
@@ -149,7 +142,7 @@ final class Mail_Install_Highload extends Highload_Installer
 			$MESSAGE .= "----------\r\n";
 			$MESSAGE .= "На письмо отвечать не нужно!";
 			
-			foreach (Variable::getSitesInfo() as $lid => $param) {
+			foreach (Variable::getAllSitesInfo() as $lid => $param) {
 				(new \CEventMessage)->Add([
 					'ACTIVE' => 'Y',
 					'EVENT_NAME' => self::$mailEventType,
