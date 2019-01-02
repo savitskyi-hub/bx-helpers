@@ -48,6 +48,7 @@ final class Variable
 	static $bxContext;
 	static $bxServer;
 	static $bxRequest;
+	static $bxResponse;
 	
 	/**
 	 * Список всех пользовательских свойств типа "Список"
@@ -89,6 +90,7 @@ final class Variable
 			self::$bxContext = self::$bxApplication->getContext();
 			self::$bxServer = self::$bxContext->getServer();
 			self::$bxRequest = self::$bxContext->getRequest();
+			self::$bxResponse = self::$bxContext->getResponse();
 			
 			Loader::includeModule("iblock");
 			Loader::includeModule("main");

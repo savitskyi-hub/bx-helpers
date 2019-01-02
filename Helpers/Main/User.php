@@ -15,6 +15,7 @@ use Bitrix\Main\Loader;
 use Bitrix\Main\SystemException;
 use Bitrix\Main\UserTable;
 use Bitrix\Main\Data\Cache;
+use Bitrix\Main\Web\Cookie;
 use SavitskyiHub\BxHelpers\Helpers\ClassTrait;
 use SavitskyiHub\BxHelpers\Helpers\IO\Dir;
 
@@ -40,6 +41,11 @@ final class User
 	 */
 	private static $cacheTime = 600;
 	private static $cacheDir = '_helpers_user';
+	
+	/**
+	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	 */
+	private static $nameCookieCleanCache = 'HELPERS_MAIN_USER_CLEAN_CACHE';
 	
 	/**
 	 * Идентификатор пользователя
@@ -106,13 +112,15 @@ final class User
 			global $USER;
 			
 			$сache = Cache::createInstance();
-			
 			$cacheDirSysG = Dir::getCacheDirectoryPrefixName().self::$cacheDir.'/cacheSystemGroup';
 			$cacheDirUser = Dir::getCacheDirectoryPrefixName().self::$cacheDir;
 			$cacheIdSysG = SITE_ID.'_cacheSystemGroup';
 			$cacheIdUser = SITE_ID.'_user_';
 			
-			if ($this->isClearCache()) {
+			/**
+			 *
+			 */
+			if ($keyUserCache = $this->isClearCache()) {
 				$сache->clean($cacheIdSysG, $cacheDirSysG);
 			}
 			
@@ -133,6 +141,13 @@ final class User
 				$this->isAuth = 1;
 				$this->ID = $USER->GetID();
 				
+				/**
+				 *
+				 */
+				if ($keyUserCache) {
+					$сache->clean($cacheIdUser.$keyUserCache, $cacheDirUser.'/'.$keyUserCache);
+				}
+				
 				$cacheDirUser = $cacheDirUser.'/'.$this->ID;
 				$cacheIdUser = $cacheIdUser.$this->ID;
 				
@@ -141,21 +156,18 @@ final class User
 				 */
 				if ($сache->initCache(self::$cacheTime, $cacheIdUser, $cacheDirUser)) {
 					$arCacheVars = $сache->getVars();
-
+					
 					$this->GROUP = $arCacheVars["GROUP"];
 					$this->PROP = $arCacheVars["PROP"];
 				} elseif ($сache->startDataCache()) {
 					$this->GROUP = \CUser::GetUserGroup($this->ID);
 					$this->PROP = $this->getProps();
-
+					
 					$сache->endDataCache([
 						"GROUP" => $this->GROUP,
 						"PROP" => $this->PROP
 					]);
 				}
-				
-				// Создать автоматом 3 групы !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-				// Registred, delete, ban
 				
 				/**
 				 * Если пользователь заблокирован делаем отметку
@@ -238,16 +250,30 @@ final class User
 	/**
 	 *
 	 *
-	 * @return bool
+	 * @return int|bool
 	 */
 	private function isClearCache(): bool {
-		$nameSession = "SAVITSKYIHUB_BXHELPERS_HELPERS_MAIN_USER_CLEAN_CACHE";
-		
-		if (isset($_SESSION[$nameSession]) && "Y" == $_SESSION[$nameSession]) {
-		
+		if ($key = Variable::$bxRequest->getCookie(self::$nameCookieCleanCache)) {
+			$cookie = new Cookie(self::$nameCookieCleanCache, "", time() - 3600);
+			$cookie->setDomain(Variable::$bxServer->getServerName());
+			
+			Variable::$bxResponse->addCookie($cookie);
+			return (int)$key;
 		}
 		
 		return false;
+	}
+	
+	/**
+	 *
+	 *
+	 * @param array $arFields - ;
+	 */
+	public static function setClearCacheVar(array &$arFields) {
+		$cookie = new Cookie(self::$nameCookieCleanCache, $arFields["ID"]);
+		$cookie->setDomain(Variable::$bxServer->getServerName());
+		
+		Variable::$bxResponse->addCookie($cookie);
 	}
 	
 	/**
