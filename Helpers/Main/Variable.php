@@ -64,7 +64,6 @@ final class Variable
 	 */
 	public function __construct() {
 		try {
-			
 			self::$bxApplication = Application::getInstance();
 			self::$bxContext = self::$bxApplication->getContext();
 			self::$bxServer = self::$bxContext->getServer();

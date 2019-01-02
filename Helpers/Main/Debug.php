@@ -12,6 +12,7 @@
 namespace SavitskyiHub\BxHelpers\Helpers\Main;
 
 use Bitrix\Main\Diag\Debug as BxDebug;
+use SavitskyiHub\BxHelpers\Helpers\Mail\Send;
 
 /**
  * Class Debug
@@ -34,6 +35,11 @@ class Debug
 	 * @param string $message
 	 */
 	static function writeToFile(string $message) {
-		BxDebug::writeToFile([date("d.m.Y H:i:s"), current(\debug_backtrace()), end(\debug_backtrace())], "", self::$filenameLog);
+		$current = current(\debug_backtrace());
+		$end = end(\debug_backtrace());
+		$time = date("d.m.Y H:i:s");
+		
+		BxDebug::writeToFile([$time, $current, $end], "", self::$filenameLog);
+		Send::Admin($message, "ERROR");
 	}
 }

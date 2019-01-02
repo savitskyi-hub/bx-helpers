@@ -12,6 +12,7 @@
 namespace SavitskyiHub\BxHelpers\Helpers;
 
 use SavitskyiHub\BxHelpers\Helpers\Main\Variable;
+use SavitskyiHub\BxHelpers\Helpers\User\Instance as User;
 
 /**
  * Class BeforeProlog
@@ -26,6 +27,6 @@ class BeforeProlog
 	 */
     public static function Init() {
     	new Variable;
-        //new User;
+        new User;
     }
 }
