@@ -174,9 +174,9 @@ class Image
 						
 						if (!$i++) {
 							$createImg .= $prefixData.'src="'.HtmlFilter::encode($img["default"]).$fileVersion.'" '.$prefixData.'srcset="';
-							$createImg .= ($maxSize == "default"? $path.' '.self::$srcsetMaxSize.'w' : $path.' '.$maxSize.'w');
+							$createImg .= ("default" == $maxSize? $path.' '.self::$srcsetMaxSize.'w' : $path.' '.$maxSize.'w');
 						} else {
-							$createImg .= ($maxSize == "default"? ', '.$path.' '.self::$srcsetMaxSize.'w' : ', '.$path.' '.$maxSize.'w');
+							$createImg .= ("default" == $maxSize? ', '.$path.' '.self::$srcsetMaxSize.'w' : ', '.$path.' '.$maxSize.'w');
 						}
 					}
 					
@@ -188,9 +188,9 @@ class Image
 						
 						if (!$j++) {
 							$createImg .= $prefixData.'sizes="';
-							$createImg .= ($maxSize == "default"? self::$srcsetMaxSize.'px' : '(max-width: '.$maxSize.'px) '.$maxSize.'px');
+							$createImg .= ("default" == $maxSize? self::$srcsetMaxSize.'px' : '(max-width: '.$maxSize.'px) '.$maxSize.'px');
 						} else {
-							$createImg .= ($maxSize == "default"? ', '.self::$srcsetMaxSize.'px' : ', (max-width: '.$maxSize.'px) '.$maxSize.'px');
+							$createImg .= ("default" == $maxSize? ', '.self::$srcsetMaxSize.'px' : ', (max-width: '.$maxSize.'px) '.$maxSize.'px');
 						}
 					}
 					
@@ -228,7 +228,7 @@ class Image
 	public static function getFirstNotEmptyAlt(array $listNames): string {
 		if (0 < count($listNames)) {
 			foreach ($listNames as $alt) {
-				if (gettype($alt) == 'string' && 0 < strlen($alt)) {
+				if ('string' == gettype($alt) && 0 < strlen($alt)) {
 					return $alt;
 				}
 			}

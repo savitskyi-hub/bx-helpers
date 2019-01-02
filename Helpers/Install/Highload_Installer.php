@@ -325,7 +325,7 @@ class Highload_Installer
 				if ($fieldId = $oUserTypeEntity->Add($arNewUserField)) {
 					echo "\r\nВ таблицу добавлено пользовательское поле: ".$arNewUserField["FIELD_NAME"];
 					
-					if ($arNewUserField["USER_TYPE_ID"] == "enumeration" && $arNewUserField["ENUM_LIST"]) {
+					if ("enumeration" == $arNewUserField["USER_TYPE_ID"] && $arNewUserField["ENUM_LIST"]) {
 						$obEnum->SetEnumValues($fieldId, $arNewUserField["ENUM_LIST"]);
 					}
 					

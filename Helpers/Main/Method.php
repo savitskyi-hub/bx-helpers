@@ -29,7 +29,7 @@ class Method
 	 * @return bool
 	 */
 	public static function isUseMinifiedAssets(): bool {
-		if (Option::get("main", "use_minified_assets") == "Y") {
+		if ("Y" == Option::get("main", "use_minified_assets")) {
 			return true;
 		}
 		

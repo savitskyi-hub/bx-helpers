@@ -73,7 +73,7 @@ final class Variable
 	 * @return null|Instance
 	 */
 	static function getInstance() {
-		if (self::$instance == null) {
+		if (null == self::$instance) {
 			self::$instance = new Variable();
 		}
 		

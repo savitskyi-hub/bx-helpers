@@ -14,7 +14,9 @@ namespace SavitskyiHub\BxHelpers\Helpers\Main;
 use Bitrix\Main\Loader;
 use Bitrix\Main\SystemException;
 use Bitrix\Main\UserTable;
+use Bitrix\Main\Data\Cache;
 use SavitskyiHub\BxHelpers\Helpers\ClassTrait;
+use SavitskyiHub\BxHelpers\Helpers\IO\Dir;
 
 /**
  * Class User
@@ -32,6 +34,12 @@ final class User
 	 * Singleton Instance
 	 */
 	private static $instance = null;
+	
+	/**
+	 * Приватные параметры кеша
+	 */
+	private static $cacheTime = 600;
+	private static $cacheDir = '_helpers_user';
 	
 	/**
 	 * Идентификатор пользователя
@@ -81,7 +89,7 @@ final class User
 	 * @return null|Instance
 	 */
 	static function getInstance() {
-		if (self::$instance == null) {
+		if (null == self::$instance) {
 			self::$instance = new User();
 		}
 		
@@ -97,17 +105,54 @@ final class User
 			
 			global $USER;
 			
-			//cache 10 минут !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			$this->arSystemGroup = $this->getSystemGroup();
-			//
+			$сache = Cache::createInstance();
+			
+			$cacheDirSysG = Dir::getCacheDirectoryPrefixName().self::$cacheDir.'/cacheSystemGroup';
+			$cacheDirUser = Dir::getCacheDirectoryPrefixName().self::$cacheDir;
+			$cacheIdSysG = SITE_ID.'_cacheSystemGroup';
+			$cacheIdUser = SITE_ID.'_user_';
+			
+			if ($this->isClearCache()) {
+				$сache->clean($cacheIdSysG, $cacheDirSysG);
+			}
+			
+			/**
+			 * Кэшируем выборку системных групп
+			 */
+			if ($сache->initCache(self::$cacheTime, $cacheIdSysG, $cacheDirSysG)) {
+				$this->arSystemGroup = $сache->getVars()["arSystemGroup"];
+			} elseif ($сache->startDataCache()) {
+				$this->arSystemGroup = $this->getSystemGroup();
+				
+				$сache->endDataCache([
+					"arSystemGroup" => $this->arSystemGroup
+				]);
+			}
 			
 			if ($USER->IsAuthorized()) {
 				$this->isAuth = 1;
 				$this->ID = $USER->GetID();
 				
-				//cache 10мин + сделать возможность сбрасывания !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-				$this->GROUP = \CUser::GetUserGroup($this->ID);
-				$this->PROP = $this->getProps();
+				$cacheDirUser = $cacheDirUser.'/'.$this->ID;
+				$cacheIdUser = $cacheIdUser.$this->ID;
+				
+				/**
+				 * Кэшируем выборку данных
+				 */
+				if ($сache->initCache(self::$cacheTime, $cacheIdUser, $cacheDirUser)) {
+					$arCacheVars = $сache->getVars();
+
+					$this->GROUP = $arCacheVars["GROUP"];
+					$this->PROP = $arCacheVars["PROP"];
+				} elseif ($сache->startDataCache()) {
+					$this->GROUP = \CUser::GetUserGroup($this->ID);
+					$this->PROP = $this->getProps();
+
+					$сache->endDataCache([
+						"GROUP" => $this->GROUP,
+						"PROP" => $this->PROP
+					]);
+				}
 				
 				// Создать автоматом 3 групы !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				// Registred, delete, ban
@@ -131,7 +176,6 @@ final class User
 				 */
 				$USER->SetLastActivityDate($this->ID);
 			}
-			
 		} catch (SystemException $e) {
 			Debug::writeToFile($e->getMessage());
 		}
@@ -145,15 +189,14 @@ final class User
 	private function getSystemGroup(): array {
 		$by = "c_sort";
 		$order = "asc";
-		
 		$rsGroups = \CGroup::GetList($by, $order, ["ACTIVE" => "Y"]);
 		
-		if ($rsGroups->result->num_rows) {
+		if ($rsGroups && $rsGroups->result->num_rows) {
 			$arReturn = [];
 			
 			while ($arGroup = $rsGroups->fetch()) {
-				if (!empty($row["STRING_ID"])) {
-					$arReturn[$row["STRING_ID"]] = $arGroup;
+				if (!empty($arGroup["STRING_ID"])) {
+					$arReturn[$arGroup["STRING_ID"]] = $arGroup;
 				}
 			}
 		}
@@ -190,6 +233,21 @@ final class User
 		}
 		
 		return $arProps ?? [];
+	}
+	
+	/**
+	 *
+	 *
+	 * @return bool
+	 */
+	private function isClearCache(): bool {
+		$nameSession = "SAVITSKYIHUB_BXHELPERS_HELPERS_MAIN_USER_CLEAN_CACHE";
+		
+		if (isset($_SESSION[$nameSession]) && "Y" == $_SESSION[$nameSession]) {
+		
+		}
+		
+		return false;
 	}
 	
 	/**
