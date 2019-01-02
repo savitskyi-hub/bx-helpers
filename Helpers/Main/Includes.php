@@ -33,7 +33,7 @@ class Includes
 	public static function libraryCss() {
 		$startPath = Dir::getPackagePath().'/HelpersCss';
 		$resultCssList = File::getRecursiveFilesInDir($startPath, (Method::isUseMinifiedAssets()? 'min.css' : 'css'));
-		$resultCssList = ($resultCssList? array_reverse($resultCssList) : []);
+		$resultCssList = ($resultCssList? $resultCssList : []);
 		
 		foreach ($resultCssList as $path2css) {
 			Asset::getInstance()->addCss(explode(Application::getDocumentRoot(), $path2css)[1]);
@@ -48,7 +48,7 @@ class Includes
 	public static function libraryJs() {
 		$startPath = Dir::getPackagePath().'/HelpersJs';
 		$resultJsList = File::getRecursiveFilesInDir($startPath, (Method::isUseMinifiedAssets()? 'min.js' : 'js'));
-		$resultJsList = ($resultJsList? array_reverse($resultJsList) : []);
+		$resultJsList = ($resultJsList? $resultJsList : []);
 		
 		foreach ($resultJsList as $path2js) {
 			Asset::getInstance()->addJs(explode(Application::getDocumentRoot(), $path2js)[1]);
