@@ -12,7 +12,7 @@
 namespace SavitskyiHub\BxHelpers\Helpers;
 
 use SavitskyiHub\BxHelpers\Helpers\Main\Variable;
-use SavitskyiHub\BxHelpers\Helpers\User\Instance as User;
+use SavitskyiHub\BxHelpers\Helpers\Main\User;
 
 /**
  * Class BeforeProlog
@@ -26,7 +26,7 @@ class BeforeProlog
 	 * - метод автоматически выполняться через обработчик в прологе ядра;
 	 */
     public static function Init() {
-    	new Variable;
-        new User;
+		Variable::getInstance();
+		User::getInstance();
     }
 }

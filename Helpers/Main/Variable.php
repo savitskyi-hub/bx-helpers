@@ -15,6 +15,7 @@ use Bitrix\Main\Application;
 use Bitrix\Main\Data\Cache;
 use Bitrix\Main\Loader;
 use Bitrix\Main\SystemException;
+use SavitskyiHub\BxHelpers\Helpers\ClassTrait;
 use SavitskyiHub\BxHelpers\Helpers\IO\Dir;
 
 /**
@@ -27,6 +28,13 @@ use SavitskyiHub\BxHelpers\Helpers\IO\Dir;
  */
 final class Variable
 {
+	use ClassTrait;
+	
+	/**
+	 * Singleton Instance
+	 */
+	private static $instance = null;
+	
 	/**
 	 * Приватные параметры кеша
 	 */
@@ -60,9 +68,22 @@ final class Variable
 	static $bxSitesInfo = [];
 	
 	/**
+	 * Объект создается внутри самого класса, только если у класса нет экземпляра
+	 *
+	 * @return null|Instance
+	 */
+	static function getInstance() {
+		if (self::$instance == null) {
+			self::$instance = new Variable();
+		}
+		
+		return self::$instance;
+	}
+	
+	/**
 	 * Varaible constructor
 	 */
-	public function __construct() {
+	private function __construct() {
 		try {
 			self::$bxApplication = Application::getInstance();
 			self::$bxContext = self::$bxApplication->getContext();
