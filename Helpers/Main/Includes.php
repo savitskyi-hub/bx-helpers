@@ -31,7 +31,7 @@ class Includes
 	 * @return void
 	 */
 	public static function libraryCss() {
-		$startPath = Dir::getPackagePath().'/HelpersCss/';
+		$startPath = Dir::getPackagePath().'/HelpersCss';
 		$resultCssList = File::getRecursiveFilesInDir($startPath, (Method::isUseMinifiedAssets()? 'min.css' : 'css'));
 		$resultCssList = ($resultCssList? array_reverse($resultCssList) : []);
 		
@@ -46,7 +46,7 @@ class Includes
 	 * @return void
 	 */
 	public static function libraryJs() {
-		$startPath = Dir::getPackagePath().'/HelpersJs/';
+		$startPath = Dir::getPackagePath().'/HelpersJs';
 		$resultJsList = File::getRecursiveFilesInDir($startPath, (Method::isUseMinifiedAssets()? 'min.js' : 'js'));
 		$resultJsList = ($resultJsList? array_reverse($resultJsList) : []);
 		
