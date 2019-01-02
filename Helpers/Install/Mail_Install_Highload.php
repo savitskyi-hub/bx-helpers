@@ -34,15 +34,23 @@ final class Mail_Install_Highload extends Highload_Installer
 	protected static $langNameRU = '✉ Письма - Администрация';
 	protected static $langNameEN = '✉ Letters - Administration';
 	protected static $mapCreatedField = [
-		"UF_TYPE_EMAIL_EVENT" => [
-			'USER_TYPE_ID' => 'string',
+		"UF_TYPE_STATUS" => [
+			'USER_TYPE_ID' => 'enumeration',
 			'MANDATORY' => 'Y',
-			'SHOW_FILTER' => 'S',
-			'EDIT_IN_LIST' => 'N',
-			'EDIT_FORM_LABEL' => ['ru' => 'Тип почтового события', 'en' => 'Mail event type'],
+			'EDIT_FORM_LABEL' => ['ru' => 'Статус обработки', 'en' => 'Processing Status'],
 			'HELP_MESSAGE' => [
-				'ru' => 'Код почтового события в системе',
-				'en' => 'The code of the mail event in the system'
+				'ru' => 'Описание статуса обработки письма',
+				'en' => 'Description of the letter processing status'
+			],
+			'SETTINGS' => [
+				"DISPLAY" => "UI",
+				"LIST_HEIGHT" => "3",
+			],
+			"ENUM_LIST" => [
+				"n0" => ["XML_ID" => "NOT_PROCESSED", "VALUE" => "Не обработан", "SORT" => 100, "DEF" => "Y"],
+				"n1" => ["XML_ID" => "IN_PROCESS", "VALUE" => "В процессе", "SORT" => 200, "DEF" => ""],
+				"n2" => ["XML_ID" => "SUCCESS_FIXED", "VALUE" => "Исправлено", "SORT" => 300, "DEF" => ""],
+				"n3" => ["XML_ID" => "NOTHING_WRONG", "VALUE" => "Ничего страшного", "SORT" => 400, "DEF" => ""]
 			]
 		],
 		"UF_TYPE_SEND" => [
@@ -60,7 +68,7 @@ final class Mail_Install_Highload extends Highload_Installer
 			"ENUM_LIST" => [
 				"n0" => ["XML_ID" => "ERROR", "VALUE" => "Ошибка работы программы", "SORT" => 100, "DEF" => ""],
 				"n1" => ["XML_ID" => "WARNING", "VALUE" => "Предупреждение о предстоящей ошибки", "SORT" => 200, "DEF" => ""],
-				"n2" => ["XML_ID" => "NOTICE", "VALUE" => "Уведомление", "SORT" => 300, "DEF" => "n2"]
+				"n2" => ["XML_ID" => "NOTICE", "VALUE" => "Уведомление", "SORT" => 300, "DEF" => "Y"]
 			]
 		],
 		"UF_TEXT" => [
@@ -80,6 +88,7 @@ final class Mail_Install_Highload extends Highload_Installer
 		],
 		"UF_DATETIME_CREATE" => [
 			'MANDATORY' => 'Y',
+			'EDIT_IN_LIST' => 'N',
 			'USER_TYPE_ID' => 'datetime',
 			'EDIT_FORM_LABEL' => ['ru' => 'Время создания', 'en' => 'Time of creation'],
 			'SETTINGS' => [

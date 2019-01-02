@@ -12,8 +12,10 @@
 namespace SavitskyiHub\BxHelpers\Helpers\Mail;
 
 use Bitrix\Main\Mail\Event;
+use Bitrix\Main\Loader;
 use Bitrix\Main\SystemException;
 use SavitskyiHub\BxHelpers\Helpers\Highload\Instance;
+use SavitskyiHub\BxHelpers\Helpers\Install\Mail_Install_Highload;
 use SavitskyiHub\BxHelpers\Helpers\Main\Debug;
 use SavitskyiHub\BxHelpers\Helpers\Main\Variable;
 
@@ -42,37 +44,40 @@ class Send
 	 * Реализует отправку письма администрации сайта в случаи возникновения ошибки или предупреждения в функционале проекта
 	 *
 	 * @param string $message
-	 * @param string $typeSendEvent - символьный код почтового события;
 	 * @param string $typeReporting - тип оповещения;
 	 * @param bool $skip - пропустить проверку на повторною отправку;
 	 * @return bool
 	 */
-	static function Admin(string $message, string $typeSendEvent, string $typeReporting, bool $skip = false): bool {
+	static function Admin(string $message, string $typeReporting, bool $skip = false): bool {
 		try {
-			$mailEventType = Install_HighloadTable::get("mailEventType");
-			$entityName = Install_HighloadTable::get("name");
+			Loader::includeModule('main');
+			
+			$mailEventType = Mail_Install_Highload::get("mailEventType");
+			$entityName = Mail_Install_Highload::get("name");
 			$entityID = Instance::getIdByEntityName($entityName);
 			
+			$datetimeCreate = date("d.m.Y H:i:s");
 			$enumCode = "HLBLOCK_".$entityID."_UF_TYPE_SEND";
+			$enumCode2 = "HLBLOCK_".$entityID."_UF_TYPE_STATUS";
+			
+			$messReporting = Variable::$bxEnumField["XML2VAL"][$enumCode][$typeReporting];
 			$typeReporting = Variable::$bxEnumField["XML2ID"][$enumCode][$typeReporting];
+			$typeStatus = Variable::$bxEnumField["XML2ID"][$enumCode2]["NOT_PROCESSED"];
 			
 			if (!$typeReporting) {
 				throw new SystemException('Неверный символьный код значения в объекте: '.$enumCode.' - '.$typeReporting);
 			}
 			
-			if (!$skip && !self::checkLimitSendAdmin($typeSendEvent, $typeReporting, $entityID)) {
+			if (!$skip && !self::checkLimitSendAdmin($typeReporting, $entityID)) {
 				return false;
 			}
 			
-			echo LANGUAGE_ID;
-			exit;
-			
 			$rsSend = Event::send([
 				"EVENT_NAME" => $mailEventType,
-				"LID" => LANGUAGE_ID,
+				"LID" => (SITE_ID != "ru"? SITE_ID : key(Variable::$bxSitesInfo)),
 				"C_FIELDS" => [
-					"TYPE_SEND" => "",
-					"DATETIME_SEND" => "",
+					"TYPE_SEND" => $messReporting,
+					"DATETIME_SEND" => $datetimeCreate,
 					"TEXT_MESSAGE" => $message
 				]
 			]);
@@ -83,17 +88,17 @@ class Send
 			if (!$rsSend->isSuccess()) {
 				throw new SystemException($rsSend->getErrors());
 			} else {
+				$rsAdd = new Instance($entityID);
+				$reAdd = $rsAdd->entityDataClass::add([
+					"UF_TYPE_SEND" => $typeReporting,
+					"UF_TYPE_STATUS" => $typeStatus,
+					"UF_TEXT" => $message,
+					"UF_DATETIME_CREATE" => $datetimeCreate
+				]);
 				
-				//new Instance($entityID);
-				
-//				$arParams = [
-//					"UF_TYPE_EMAIL_EVENT" => $mailEventType,
-//					"UF_TYPE_SEND" => $typeReporting,
-//					"UF_TEXT" => $message
-//				];
-//
-//				//				Highload::set(Highload::getTableId('ST2SendMailAdminHistory'), $arParams);
-//				//				return true;
+				if (!$reAdd->isSuccess()) {
+					throw new SystemException('Произошла ошибка при добавлении записи в Highload-блок - '.$entityName);
+				}
 				
 				$isSuccess = true;
 			}
@@ -107,90 +112,55 @@ class Send
 	/**
 	 * Метод проверяет доступно ли отправлять "повторно" администрации письма
 	 *
-	 * @param string $typeEmailEvent - символьный код почтового события;
 	 * @param string $typeReporting - тип оповещения;
 	 * @param int $entityID
 	 *
 	 * @return bool
 	 */
-	private static function checkLimitSendAdmin(string $typeEmailEvent, string $typeReporting, int $entityID): bool {
+	private static function checkLimitSendAdmin(string $typeReporting, int $entityID): bool {
 		$obHd = new Instance($entityID);
 		$rsHistory = $obHd->entityDataClass::getList([
 			'select' => ['ID'],
 			'filter' => [
-				"UF_TYPE_EMAIL_EVENT" => $typeEmailEvent,
 				"UF_TYPE_SEND" => $typeReporting,
 				">=UF_DATETIME_CREATE" => [ConvertTimeStamp(time() - 3600 * self::$periodBlocked, "FULL")]
 			]
 		]);
 		
 		if ($rsHistory && ($rsHistory->getSelectedRowsCount() >= self::$limitTypeSend)) {
-			return true;
+			return false;
 		}
 		
-		return false;
+		return true;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	/**
-	 * Метод реализует отправку почтового события на определенный E-mail адрес (в случаи ошибки происходить логирования)
+	 * Метод реализует отправку почтового события штатным методом и в случаи ошибки происходить логирования
+	 
 	 * @param string $typeEmailEvent - символьный код почтового события;
-	 * @param string $sendTo - на какой адрес отправлять;
-	 * @param string $message
-	 * @param string $title
+	 * @param array $arFields - ;
 	 * @return bool
 	 */
-	static function Mail(string $typeEmailEvent, string $sendTo, string $message = "", string $title = ""): bool {
+	static function Mail(string $typeEmailEvent, array $arFields): bool {
 		try {
+			Loader::includeModule('main');
 			
-			$entityName = Install_HighloadTable::get("name");
-			
-			if (!$typeEmailEvent || !$sendTo) {
-				throw new SystemException('Передано не все данные для отправки уведомления');
+			if (!$typeEmailEvent || !$arFields) {
+				throw new SystemException('Передано не все данные для отправки почтового события');
 			}
 			
-			//	            if ($testSendEmail = self::get('testSendEmail')) {
-			//	                $email2Send = $testSendEmail;
-			//	            }
-			//
-			//	            $r = Event::send([
-			//	                "EVENT_NAME" => $type_email_event,
-			//	                "LID" => SITE_ID,
-			//	                "C_FIELDS" => [
-			//	                    "EMAIL_TO" => $email2Send,
-			//	                    "STR_TITLE" => $titleMessage,
-			//	                    "TEXT_MESSAGE" => $textMessage
-			//	                ]
-			//	            ]);
-			//
-			//	            if (!$r->isSuccess()) {
-			//	                throw new SystemException('Ошибка отправки письма (type_email_event: '.$type_email_event.' | emailToSend: '.$email2Send.')');
-			//	            }
-			//
+			$rsMail = Event::send([
+				"EVENT_NAME" => $typeEmailEvent,
+				"C_FIELDS" => $arFields,
+				"LID" => (SITE_ID != "ru"? SITE_ID : key(Variable::$bxSitesInfo))
+			]);
+
+			if (!$rsMail->isSuccess()) {
+				throw new SystemException('Ошибка отправки письма: '.implode("\r\n", $rsMail->getErrorMessages()));
+			}
+
 		} catch (SystemException $e) {
-			//
-			//	            if (self::get('logging')) {
-			//	                $logging = Log::Initial('LogFile');
-			//	                $logging->setValue($e->getMessage().self::getSuffixError());
-			//	                $logging->setWhereLogging('email-error');
-			//	                $logging->push();
-			//	            }
-			//
+			Debug::writeToFile($e->getMessage());
 		}
-		
-		
 	}
 }

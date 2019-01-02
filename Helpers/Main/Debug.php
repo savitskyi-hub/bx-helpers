@@ -34,6 +34,6 @@ class Debug
 	 * @param string $message
 	 */
 	static function writeToFile(string $message) {
-		BxDebug::writeToFile([current(\debug_backtrace()), end(\debug_backtrace())], "", self::$filenameLog);
+		BxDebug::writeToFile([date("d.m.Y H:i:s"), current(\debug_backtrace()), end(\debug_backtrace())], "", self::$filenameLog);
 	}
 }
