@@ -1,0 +1,41 @@
+.clear-both {
+  clear: both;
+}
+
+.clear-fix::after,
+.bx-context-toolbar-empty-area::after {
+  display: table;
+  clear: both;
+  content: " ";
+}
+
+pre {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  overflow: auto;
+  overflow-y: hidden;
+  border: 1px solid #dedede;
+  background: #f9f9f9;
+  color: #333;
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.notice-massage-header,
+.error-message-header {
+  font-size: 20px;
+}
+
+.notice-massage-header:empty,
+.error-message-header:empty {
+  display: none;
+}
+
+.notice-massage {
+  color: #36353a;
+}
+
+.error-message {
+  color: #f44336;
+}

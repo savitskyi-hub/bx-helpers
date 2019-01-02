@@ -24,7 +24,7 @@ use SavitskyiHub\BxHelpers\Helpers\Main\Variable;
  * @package SavitskyiHub\BxHelpers\Helpers\Mail
  * @author Andrew Savitskyi <admin@savitskyi.com.ua>
  *
- * Класс .............................
+ * Класс предназначен для роботы с отправкой електронных писем штатными методами и логированием ошибки в случаи неудачи
  */
 class Send
 {
@@ -38,7 +38,7 @@ class Send
 	 * Количество доступных отправок определенного типа в допустимый интервал времени
 	 * @var int
 	 */
-	private static $limitTypeSend =  3;
+	private static $limitTypeSend = 3;
 	
 	/**
 	 * Реализует отправку письма администрации сайта в случаи возникновения ошибки или предупреждения в функционале проекта
@@ -136,9 +136,9 @@ class Send
 	
 	/**
 	 * Метод реализует отправку почтового события штатным методом и в случаи ошибки происходить логирования
-	 
+	 *
 	 * @param string $typeEmailEvent - символьный код почтового события;
-	 * @param array $arFields - ;
+	 * @param array $arFields - массив параметров события;
 	 * @return bool
 	 */
 	static function Mail(string $typeEmailEvent, array $arFields): bool {
@@ -154,7 +154,7 @@ class Send
 				"C_FIELDS" => $arFields,
 				"LID" => (SITE_ID != "ru"? SITE_ID : key(Variable::$bxSitesInfo))
 			]);
-
+			
 			if (!$rsMail->isSuccess()) {
 				throw new SystemException('Ошибка отправки письма: '.implode("\r\n", $rsMail->getErrorMessages()));
 			}

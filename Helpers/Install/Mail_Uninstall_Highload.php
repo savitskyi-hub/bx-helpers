@@ -15,7 +15,7 @@ use Bitrix\Main\Loader;
 use SavitskyiHub\BxHelpers\Helpers\ClassTrait;
 
 /**
- * Class
+ * Class Mail_Uninstall_Highload
  * @package SavitskyiHub\BxHelpers\Helpers\Install
  * @author Andrew Savitskyi <admin@savitskyi.com.ua>
  *
