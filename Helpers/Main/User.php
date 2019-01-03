@@ -11,13 +11,15 @@
 
 namespace SavitskyiHub\BxHelpers\Helpers\Main;
 
+use Bitrix\Main\Data\Cache;
 use Bitrix\Main\Loader;
 use Bitrix\Main\SystemException;
 use Bitrix\Main\UserTable;
-use Bitrix\Main\Data\Cache;
 use Bitrix\Main\Web\Cookie;
-use SavitskyiHub\BxHelpers\Helpers\ClassTrait;
 use SavitskyiHub\BxHelpers\Helpers\IO\Dir;
+use SavitskyiHub\BxHelpers\Helpers\Content\Image;
+
+//use SavitskyiHub\BxHelpers\Helpers\ClassTrait;
 
 /**
  * Class User
@@ -29,7 +31,7 @@ use SavitskyiHub\BxHelpers\Helpers\IO\Dir;
  */
 final class User
 {
-	use ClassTrait;
+	//use ClassTrait;
 	
 	/**
 	 * Singleton Instance
@@ -37,70 +39,58 @@ final class User
 	private static $instance = null;
 	
 	/**
-	 * Приватные параметры кеша
-	 */
-	private static $cacheTime = 600;
-	private static $cacheDir = '_helpers_user';
-	
-	/**
-	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	 * Название кэша для отслеживания очистки данных пользователя
+	 * @var string
 	 */
 	private static $nameCookieCleanCache = 'HELPERS_MAIN_USER_CLEAN_CACHE';
+	
+	/**
+	 * Приватные параметры кеша
+	 */
+	private $cacheTime = 600;
+	private $cacheDir = '_helpers_user';
 	
 	/**
 	 * Идентификатор пользователя
 	 * @var int
 	 */
-	protected $ID = 0;
+	private $ID = 0;
 	
 	/**
 	 * Группы в которые входит пользователь
 	 * @var array
 	 */
-	protected $GROUP = [];
+	private $GROUP = [];
 	
 	/**
 	 * Свойства пользователя
 	 * @var array;
 	 */
-	protected $PROP = [];
+	private $PROP = [];
 	
 	/**
 	 * Авторизован ли пользователь
 	 * @var bool
 	 */
-	protected $isAuth = false;
+	private $isAuth = false;
 	
 	/**
 	 * Заблокирован ли пользователь
 	 * @var bool
 	 */
-	protected $isBan = false;
+	private $isBan = false;
 	
 	/**
 	 * Удален ли пользователь
 	 * @var bool
 	 */
-	protected $isDelete = false;
+	private $isDelete = false;
 	
 	/**
 	 * Список системных груп
 	 * @var array
 	 */
-	protected $arSystemGroup = [];
-	
-	/**
-	 * Объект создается внутри самого класса, только если у класса нет экземпляра
-	 *
-	 * @return null|Instance
-	 */
-	static function getInstance() {
-		if (null == self::$instance) {
-			self::$instance = new User();
-		}
-		
-		return self::$instance;
-	}
+	private $arSystemGroup = [];
 	
 	/**
 	 * User constructor
@@ -112,13 +102,13 @@ final class User
 			global $USER;
 			
 			$сache = Cache::createInstance();
-			$cacheDirSysG = Dir::getCacheDirectoryPrefixName().self::$cacheDir.'/cacheSystemGroup';
-			$cacheDirUser = Dir::getCacheDirectoryPrefixName().self::$cacheDir;
+			$cacheDirSysG = Dir::getCacheDirectoryPrefixName().$this->cacheDir.'/cacheSystemGroup';
+			$cacheDirUser = Dir::getCacheDirectoryPrefixName().$this->cacheDir;
 			$cacheIdSysG = SITE_ID.'_cacheSystemGroup';
 			$cacheIdUser = SITE_ID.'_user_';
 			
 			/**
-			 *
+			 * Если были изменены данные скидываем кэш
 			 */
 			if ($keyUserCache = $this->isClearCache()) {
 				$сache->clean($cacheIdSysG, $cacheDirSysG);
@@ -127,7 +117,7 @@ final class User
 			/**
 			 * Кэшируем выборку системных групп
 			 */
-			if ($сache->initCache(self::$cacheTime, $cacheIdSysG, $cacheDirSysG)) {
+			if ($сache->initCache($this->cacheTime, $cacheIdSysG, $cacheDirSysG)) {
 				$this->arSystemGroup = $сache->getVars()["arSystemGroup"];
 			} elseif ($сache->startDataCache()) {
 				$this->arSystemGroup = $this->getSystemGroup();
@@ -142,7 +132,7 @@ final class User
 				$this->ID = $USER->GetID();
 				
 				/**
-				 *
+				 * Если были изменены данные скидываем кэш
 				 */
 				if ($keyUserCache) {
 					$сache->clean($cacheIdUser.$keyUserCache, $cacheDirUser.'/'.$keyUserCache);
@@ -154,7 +144,7 @@ final class User
 				/**
 				 * Кэшируем выборку данных
 				 */
-				if ($сache->initCache(self::$cacheTime, $cacheIdUser, $cacheDirUser)) {
+				if ($сache->initCache($this->cacheTime, $cacheIdUser, $cacheDirUser)) {
 					$arCacheVars = $сache->getVars();
 					
 					$this->GROUP = $arCacheVars["GROUP"];
@@ -162,6 +152,7 @@ final class User
 				} elseif ($сache->startDataCache()) {
 					$this->GROUP = \CUser::GetUserGroup($this->ID);
 					$this->PROP = $this->getProps();
+					$this->PROP["PERSONAL_PHOTO_PATH"] = $this->getAvatar();
 					
 					$сache->endDataCache([
 						"GROUP" => $this->GROUP,
@@ -172,16 +163,16 @@ final class User
 				/**
 				 * Если пользователь заблокирован делаем отметку
 				 */
-				if ($this->isInGroup($this->GROUP, "BAN")) {
-					$this->isBan = true;
-				}
+//				if ($this->isInGroup("BAN")) {
+//					$this->isBan = true;
+//				}
 				
 				/**
 				 * Если пользователь был удален делаем отметку
 				 */
-				if ($this->isInGroup($this->GROUP, "DELETED")) {
-					$this->isDelete = true;
-				}
+//				if ($this->isInGroup("DELETED")) {
+//					$this->isDelete = true;
+//				}
 				
 				/**
 				 * Отмечаем что пользователь сейчас активен
@@ -248,16 +239,18 @@ final class User
 	}
 	
 	/**
-	 *
+	 * Отслеживаем куку что создается после изменения данных пользователя
+	 * - если есть, чистим кэш и удаляем куку
 	 *
 	 * @return int|bool
 	 */
 	private function isClearCache(): bool {
 		if ($key = Variable::$bxRequest->getCookie(self::$nameCookieCleanCache)) {
-			$cookie = new Cookie(self::$nameCookieCleanCache, "", time() - 3600);
+			$cookie = new Cookie($this->nameCookieCleanCache, "", time() - 36000);
 			$cookie->setDomain(Variable::$bxServer->getServerName());
-			
+
 			Variable::$bxResponse->addCookie($cookie);
+
 			return (int)$key;
 		}
 		
@@ -265,11 +258,11 @@ final class User
 	}
 	
 	/**
+	 * После изменения данных пользователя создадим куку для отслеживания очистки кэша
 	 *
-	 *
-	 * @param array $arFields - ;
+	 * @param array $arFields - свойства пользователя;
 	 */
-	public static function setClearCacheVar(array &$arFields) {
+	public function setClearCacheVar(array &$arFields) {
 		$cookie = new Cookie(self::$nameCookieCleanCache, $arFields["ID"]);
 		$cookie->setDomain(Variable::$bxServer->getServerName());
 		
@@ -282,13 +275,13 @@ final class User
 	 * @param string $login
 	 * @return int
 	 */
-	public static function getIdByLogin(string $login): int {
+	public function getIdByLogin(string $login): int {
 		$rsIdByLogin = UserTable::GetList([
 			"select" => ["ID"],
 			"filter" => ["LOGIN" => $login],
 			"limit" => 1
 		]);
-
+		
 		if ($rsIdByLogin && $rsIdByLogin->getSelectedRowsCount()) {
 			return $rsIdByLogin->Fetch()["ID"];
 		}
@@ -296,141 +289,142 @@ final class User
 		return 0;
 	}
 	
-//	/**
-//	 * Метод проверяет находится ли пользователь в определенной системной групе пользователей.
-//	 * @param array $arGroup
-//	 * @parap string
-//	 * @return boolean
-//	 */
-	public static function isInGroup(array $arGroup, string $keyGroupName) {
-//		if (in_array(self::getGroupId($keyGroupName), $arGroup)) {
-//			return true;
-//		} else {
-//			return false;
-//		}
+	/**
+	 * Получение инициалов пользователя
+	 *
+	 * @param bool $getSurname
+	 * @return string
+	 */
+	public function getFullName(bool $getSurname = false): string {
+		$strReturn = '';
+		
+		if (isset($this->PROP["LAST_NAME"]) && $this->PROP["LAST_NAME"]) {
+			$strReturn .= $this->PROP["LAST_NAME"];
+		}
+		
+		if (isset($this->PROP["NAME"]) && $this->PROP["NAME"]) {
+			$strReturn .= ' '.$this->PROP["NAME"];
+		}
+		
+		if ($getSurname && isset($this->PROP["SECOND_NAME"]) && $this->PROP["SECOND_NAME"]) {
+			$strReturn .= ' '.$this->PROP["SECOND_NAME"];
+		}
+		
+		return $strReturn;
 	}
-
-	//    /**
-	//     * Метод возращает идентификатор системной групы.
-	//     * @param string $keyGroupName - название символьного кода системной групы;
-	//     * @param bool $convert2Array - бывает необходимо возвращать результат в виде массива;
-	//     * @return array|integer
-	//     * @throws SystemException
-	//     */
-	//    static function getGroupId($keyGroupName, $convert2Array = false) {
-	//
-	//        try {
-	//
-	//            if (!array_key_exists($keyGroupName, self::$systemGroup)) {
-	//                throw new SystemException('Undefined key &ldquo;'.$keyGroupName.'&rdquo; group name');
-	//            }
-	//
-	//            $groupId = (int) self::$systemGroup[$keyGroupName]["ID"];
-	//
-	//            if ($convert2Array && !is_array($groupId)) {
-	//                $groupId = [$groupId];
-	//            }
-	//
-	//            return $groupId;
-	//
-	//        } catch (SystemException $e) {
-	//
-	//            if (self::get('exceptionGlobal')) {
-	//                Variable::set('error', $e->getMessage().self::getSuffixError());
-	//            } else {
-	//                throw $e;
-	//            }
-	//
-	//        }
-	//
-	//    }
-	//
-	//    /**
-	//     * Метод возвращает путь к аватару пользователя.
-	//     * @param $idFile
-	//     * @return string
-	//     */
-	//    static function getAvatar($html = false) {
-	//
-	//        $idFile = self::$PROP["PERSONAL_PHOTO"];
-	//        $path = self::$PROP["PERSONAL_PHOTO_PATH"];
-	//
-	//        if (!$path) {
-	//
-	//            if ($idFile) {
-	//                $path = \CFile::GetPath($idFile);
-	//            } else {
-	//                $path = SITE_TEMPLATE_PATH.'/img/no-avatar.png';
-	//            }
-	//
-	//            self::push('PROP', $path, 'PERSONAL_PHOTO_PATH');
-	//
-	//        }
-	//
-	//        if ($html) {
-	//            return '<img src="'.$path.'" alt="User Avatar">';
-	//        } else {
-	//            return $path;
-	//        }
-	//
-	//    }
-	//
-	//    /**
-	//     * Метод для удобного получения полного имени пользователя.
-	//     * @return string
-	//     */
-	//    static function getFullName($surname = false) {
-	//
-	//        $name = self::$PROP["NAME"];
-	//        $lastName = self::$PROP["LAST_NAME"];
-	//
-	//        if ($surname) {
-	//            $name .= ' '.self::$PROP["SECOND_NAME"];
-	//        }
-	//
-	//        return $lastName.' '.$name;
-	//
-	//    }
-	//
-	//    /**
-	//     * Метод для удобного получения аббревиатурного имени пользователя.
-	//     * @return string
-	//     */
-	//    static function getNameAbbr() {
-	//
-	//        $name = self::$PROP["NAME"];
-	//        $lastName = self::$PROP["LAST_NAME"];
-	//
-	//        if ($name && $lastName) {
-	//            return $name[0].$lastName[0];
-	//        } else {
-	//            return '--';
-	//        }
-	//
-	//    }
-	//
-	//    /**
-	//     * Метод для получения возраста пользователя.
-	//     * @return int
-	//     */
-	//    static function getAge() {
-	//
-	//        $birthday = self::$PROP["PERSONAL_BIRTHDAY"];
-	//
-	//        if ($birthday && is_object($birthday)) {
-	//
-	//            $birthdayTimestamp = strtotime($birthday->toString());
-	//            $age = date('Y') - date('Y', $birthdayTimestamp);
-	//
-	//            if (date('md', $birthdayTimestamp) > date('md')) {
-	//                $age--;
-	//            }
-	//
-	//            return (int) $age;
-	//
-	//        } else {
-	//            return 0;
-	//        }
-	//
-	//    }
+	
+	/**
+	 * Метод для удобного получения аббревиатурного имени пользователя
+	 *
+	 * @return string
+	 */
+	public function getAbbrName(): string {
+		if (
+			isset($this->PROP["LAST_NAME"], $this->PROP["NAME"])
+			&& ($this->PROP["LAST_NAME"] && $this->PROP["NAME"])
+		) {
+			return substr($this->PROP["LAST_NAME"], 0, 1).substr($this->PROP["NAME"], 0, 1);
+		}
+		
+		return '--';
+	}
+	
+	/**
+	 * Получения возраста пользователя
+	 *
+	 * @return int
+	 */
+	public function getAge(): int {
+		$birthday = $this->PROP["PERSONAL_BIRTHDAY"];
+		
+		if ($birthday && is_object($birthday)) {
+			$birthdayTimestamp = strtotime($birthday->toString());
+			$age = date('Y') - date('Y', $birthdayTimestamp);
+			
+			if (date('md', $birthdayTimestamp) > date('md')) {
+				$age--;
+			}
+			
+			return (int) $age;
+		}
+		
+		return 0;
+	}
+	
+	/**
+	 * Возвращает путь к аватару пользователя
+	 *
+	 * @param bool $getTag
+	 * @return string
+	 */
+	public function getAvatar(bool $getTag = false): string {
+		$fileID = $this->PROP["PERSONAL_PHOTO"];
+		$path2file = $this->PROP["PERSONAL_PHOTO_PATH"];
+		
+		if (!$path2file) {
+			if ($fileID) {
+				$path2file = \CFile::GetPath($fileID);
+			} else {
+				$path2file = Image::getPathNoAvatar();
+			}
+		}
+		
+		if ($getTag) {
+			return Image::show($path2file, "User Avatar");
+		}
+		
+		return $path2file;
+	}
+	
+	/**
+	 * Возращает идентификатор системной группы
+	 *
+	 * @param string $groupCode - символьный код группы;
+	 * @param bool $saveInArray - бывает необходимо возвращать результат в виде массива;
+	 * @return array|int
+	 */
+	public function getGroupIdByCode(string $groupCode, bool $saveInArray = false) {
+		try {
+			if (!array_key_exists($groupCode, $this->arSystemGroup)) {
+				throw new SystemException('Неопределенный код названия группы: '.$groupCode);
+			}
+			
+			$groupId = (int) $this->arSystemGroup[$groupCode]["ID"];
+			
+			if ($saveInArray && !is_array($groupId)) {
+				$groupId = [$groupId];
+			}
+		} catch (SystemException $e) {
+			Debug::writeToFile($e->getMessage());
+		}
+		
+		return $groupId ?? 0;
+	}
+	
+	/**
+	 * Проверяет находится ли пользователь в определенной группе
+	 *
+	 * @parap string $groupCode
+	 * @return bool
+	 */
+	public function isInGroup(string $groupCode): bool {
+		if (in_array($this->getGroupIdByCode($groupCode), $this->GROUP)) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Объект создается внутри самого класса, только если у класса нет экземпляра
+	 *
+	 * @return null|Instance
+	 */
+	static function getInstance() {
+		if (null == self::$instance) {
+			self::$instance = new User();
+		}
+		
+		return self::$instance;
+	}
 }

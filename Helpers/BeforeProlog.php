@@ -33,6 +33,7 @@ class BeforeProlog
 		// Создать автоматом 3 групы !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		// Registred, delete, ban
 		
+		// Передавать данные в JS
 		
 		Variable::getInstance();
 		User::getInstance();

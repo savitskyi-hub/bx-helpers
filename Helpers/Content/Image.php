@@ -34,6 +34,7 @@ class Image
 	 * @var string
 	 */
 	protected static $pathNoImg = '/img/no-image.png';
+	protected static $pathNoAvatar = '/img/no-avatar.png';
 	
 	/**
 	 * Дефолтное название атрибута "alt" для тега <img>
@@ -209,6 +210,23 @@ class Image
 	 */
 	public static function getPathNoImg(): string {
 		$path = SITE_TEMPLATE_PATH.self::$pathNoImg;
+		
+		if (!file_exists(Application::getDocumentRoot().$path)) {
+			$path = "#";
+		} else {
+			$path .= self::$sxFileVersion;
+		}
+		
+		return $path;
+	}
+	
+	/**
+	 * Возвращает путь к дефолтному изображению аватара
+	 *
+	 * @return string
+	 */
+	public static function getPathNoAvatar(): string {
+		$path = SITE_TEMPLATE_PATH.self::$pathNoAvatar;
 		
 		if (!file_exists(Application::getDocumentRoot().$path)) {
 			$path = "#";
