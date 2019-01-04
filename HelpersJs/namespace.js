@@ -18,25 +18,11 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Option');
 	 * 		init: SavitskyiHub.BxHelpers.Helpers.Option.init
 	 * }}
 	 */
-	SavitskyiHub.BxHelpers.Helpers.Option = {
-		/**
-		 *
-		 */
+	BX.SavitskyiHub.BxHelpers.Helpers.Option = {
 		LANGUAGE_ID : "",
 		SITE_DIR: "",
 		SITE_ID: "",
 		SITE_COOKIE_PREFIX : "",
 		SITE_TEMPLATE_PATH: "",
-
-		/**
-		 *
-		 */
-		init : function() {
-			this.LANGUAGE_ID = BX.phpVars.LANGUAGE_ID;
-			this.SITE_DIR = '';
-			this.SITE_ID = '';
-			this.SITE_COOKIE_PREFIX = "";
-			this.SITE_TEMPLATE_PATH = "";
-		}
 	};
 })();

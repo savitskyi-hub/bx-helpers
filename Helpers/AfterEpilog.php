@@ -11,9 +11,7 @@
 
 namespace SavitskyiHub\BxHelpers\Helpers;
 
-use Bitrix\Main\EventManager;
-use SavitskyiHub\BxHelpers\Helpers\Main\Variable;
-use SavitskyiHub\BxHelpers\Helpers\Main\User;
+use SavitskyiHub\BxHelpers\Helpers\IO\Dir;
 
 /**
  * Class AfterEpilog
@@ -22,14 +20,30 @@ use SavitskyiHub\BxHelpers\Helpers\Main\User;
  */
 class AfterEpilog
 {
-//	/**
-//	 * - инициализирует необходимые обработчики событий на сайте;
-//	 * - инициализирует все конструкторы, чтобы весь функционал библиотеки уже был доступен для использования;
-//	 * - метод автоматически выполняться через обработчик в прологе ядра;
-//	 */
+	/**
+	 * - инициализирует передачу данных в JS;
+	 * - метод автоматически выполняться через обработчик в прологе ядра;
+	 */
 	public static function Init() {
 		
-		// Передавать данные в JS
-		
+		/**
+		 * Заполняем глобальные параметры что будут доступны для дальнейшей работы с ними
+		 */
+		echo '
+			<script>
+				BX.ready(function() {
+					"use strict";
+					
+					let Option = BX.SavitskyiHub.BxHelpers.Helpers.Option;
+					
+					if (Option != undefined) {
+						Option.LANGUAGE_ID = "'.LANGUAGE_ID.'";
+						Option.SITE_DIR = "'.\CUtil::JSEscape(SITE_DIR).'";
+						Option.SITE_ID = "'.SITE_ID.'";
+						Option.SITE_COOKIE_PREFIX = "'.mb_strtoupper(substr(Dir::getCacheDirectoryPrefixName(), 1)).'_";
+						Option.SITE_TEMPLATE_PATH = "'.\CUtil::JSEscape(SITE_TEMPLATE_PATH).'";
+					}
+				});
+			</script>';
 	}
 }
