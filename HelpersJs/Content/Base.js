@@ -1,3 +1,12 @@
+/**
+ * This file is part of the savitskyi-hub/bx-helpers package.
+ *
+ * (c) Andrew Savitskyi <admin@savitskyi.com.ua>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Base');
 
 (function() {
@@ -21,12 +30,17 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Base');
 			}
 
 			if (this.params.useReplaceCallto2TellInLink) {
-
+				this.autoReplaceCallto2TellInLink();
 			}
 		},
 
 		/**
-		 *
+		 * При включении режима правки система автоматически набрасывает технические html блоки которые нужны для визуального
+		 * представления или выделения компонентов. Если в верстке идет разметка методом Flex блоков, то при влючении режима правки все собьется,
+		 * а дописывать везде дополнительные свойства лишняя робота и не нужная, для этого:
+		 * - происходить поиск всех блоков за условием "areaCompBlocks";
+		 * - для каждого найденего блока происходит поиск первого родителя, в которого будет скопированы свойства что указаны "editStyleList";
+		 * - скопированные свойства рекурсивным методом для выбранных блоков переопределяются автоматически;
 		 */
 		stylizeSystemBlock : function() {
 			'use strict';
@@ -55,73 +69,85 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Base');
 					}
 				});
 			}
+		},
+
+		/**
+		 * Производит автозамену "callto" на "tel" в требуте "href" в случаи:
+		 * - если пользователь зашел на сайт из телефона;
+		 * - в атрибуте "href" присутствует "callto";
+		 */
+		autoReplaceCallto2TellInLink : function() {
+			if (!BX.browser.IsMobile()) {
+				let links = BX.findChild(BX('bx-html'), {tag : 'A'}, true, true),
+					href;
+
+				if (null != links) {
+					links.forEach(function(node) {
+						href = node.getAttribute('href');
+
+						if (href && "callto" == href.substr(0, 6)) {
+							node.setAttribute('href', 'tel' + href.substr(6));
+						}
+					});
+				}
+			}
+		},
+
+		/**
+		 *
+		 */
+		initCaptchaContain : function() {
+			//	var containsCapcha = $(".capcha_replace"),
+			//		arReplaceCaptcha = {mode : 2, ids : []};
+			//
+			//	if (containsCapcha.length) {
+			//		containsCapcha.each(function() {
+			//			if (!$(this).data("id")) {
+			//				console.error("Идентификатор для Capcha отсутствует");
+			//			} else {
+			//				arReplaceCaptcha.ids.push($(this).data("id"));
+			//			}
+			//		});
+			//
+			//		if (arReplaceCaptcha.ids.length) {
+			//			$.ajax({
+			//				url : SITE_DIR + 'ajax/captcha.php',
+			//				type : "POST",
+			//				data : arReplaceCaptcha,
+			//				success : function(msg) {
+			//					var response = JSON.parse(msg),
+			//						newContainsCapcha = $(".capcha_replace");
+			//
+			//					newContainsCapcha.each(function() {
+			//						if (response.result[$(this).data("id")]) {
+			//							$(this).closest('.input-section').html(response.result[$(this).data("id")]);
+			//						}
+			//					});
+			//				}
+			//			});
+			//		}
+			//	}
+		},
+
+		/**
+		 *
+		 *
+		 * @param nodeCaptchaReplace
+		 */
+		resetCaptcha : function(nodeCaptchaReplace) {
+			//	$.ajax({
+			//		url : SITE_DIR + "ajax/captcha.php",
+			//		type : "POST",
+			//		data : {mode : 1},
+			//		success : function(msg) {
+			//			var response = JSON.parse(msg);
+			//
+			//			if (response.status) {
+			//				containerReplace.html($(response.content).html());
+			//			}
+			//		}
+			//	});
 		}
-
-
-		// Replace callto to tel in tag "a"
-		//if (BX.browser.IsMobile()) {
-		//	var findCallto = $(".main-work-phone a"),
-		//		oldHref;
-		//
-		//	if (findCallto.length) {
-		//		findCallto.each(function() {
-		//			oldHref = $(this).attr("href");
-		//			$(this).attr("href", 'tel' + oldHref.substr(6));
-		//		});
-		//	}
-		//}
-
-
-
-		//function replaceCapchaContain() {
-		//	var containsCapcha = $(".capcha_replace"),
-		//		arReplaceCaptcha = {mode : 2, ids : []};
-		//
-		//	if (containsCapcha.length) {
-		//		containsCapcha.each(function() {
-		//			if (!$(this).data("id")) {
-		//				console.error("Идентификатор для Capcha отсутствует");
-		//			} else {
-		//				arReplaceCaptcha.ids.push($(this).data("id"));
-		//			}
-		//		});
-		//
-		//		if (arReplaceCaptcha.ids.length) {
-		//			$.ajax({
-		//				url : SITE_DIR + 'ajax/captcha.php',
-		//				type : "POST",
-		//				data : arReplaceCaptcha,
-		//				success : function(msg) {
-		//					var response = JSON.parse(msg),
-		//						newContainsCapcha = $(".capcha_replace");
-		//
-		//					newContainsCapcha.each(function() {
-		//						if (response.result[$(this).data("id")]) {
-		//							$(this).closest('.input-section').html(response.result[$(this).data("id")]);
-		//						}
-		//					});
-		//				}
-		//			});
-		//		}
-		//	}
-		//}
-
-
-		//function resetCaptcha(containerReplace) {
-		//	$.ajax({
-		//		url : SITE_DIR + "ajax/captcha.php",
-		//		type : "POST",
-		//		data : {mode : 1},
-		//		success : function(msg) {
-		//			var response = JSON.parse(msg);
-		//
-		//			if (response.status) {
-		//				containerReplace.html($(response.content).html());
-		//			}
-		//		}
-		//	});
-		//}
-
 	};
 
 	/**
