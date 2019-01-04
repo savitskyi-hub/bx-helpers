@@ -47,7 +47,7 @@ final class User_Group_Install
 			"ACTIVE" => "Y",
 			"C_SORT" => 7,
 			"NAME" => "Пользователи что удалены",
-			"DESCRIPTION" => "Пользователи, которые считаются удаленными (авторизоваться не получаеться)",
+			"DESCRIPTION" => "Пользователи, которые считаются удаленными (авторизация недоступна)",
 			"USER_ID" => [],
 			"STRING_ID" => "DELETED_USERS"
 		]
@@ -62,7 +62,7 @@ final class User_Group_Install
 		if (!self::isInstalledUserGroup()) {
 			self::installedUserGroup();
 			
-			echo "\r\n\r\nИнсталляция пользовательских групп прошла успешно";
+			echo "\r\n\r\nИнсталляция пользовательских групп прошла успешно!";
 		}
 	}
 	
@@ -92,7 +92,7 @@ final class User_Group_Install
 		$order = "asc";
 		$rsGroups = \CGroup::GetList($by, $order, ["STRING_ID" => implode(" | ", array_keys(self::$arGroupCreate))]);
 		
-		if ($rsGroups && $rsGroups->result->num_rows == 3) {
+		if ($rsGroups && 3 == $rsGroups->result->num_rows) {
 			return true;
 		}
 		

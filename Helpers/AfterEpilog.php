@@ -11,6 +11,7 @@
 
 namespace SavitskyiHub\BxHelpers\Helpers;
 
+use SavitskyiHub\BxHelpers\Helpers\Main\Variable;
 use SavitskyiHub\BxHelpers\Helpers\IO\Dir;
 
 /**
@@ -27,20 +28,19 @@ class AfterEpilog
 	public static function Init() {
 		
 		/**
-		 * Заполняем глобальные параметры что будут доступны для дальнейшей работы с ними
+		 * - заполняем глобальные параметры что будут доступны для дальнейшей работы с ними;
+		 * - при Ajax запросе убираем вывод, чтобы небыло ошибок при отдачи;
 		 */
-		echo '<script type="text/javascript">console.log(123)</script>';
+		$OPTION = [
+			"LANGUAGE_ID" => LANGUAGE_ID,
+			"SITE_DIR" => \CUtil::JSEscape(SITE_DIR),
+			"SITE_ID" => SITE_ID,
+			"SITE_COOKIE_PREFIX" => mb_strtoupper(substr(Dir::getCacheDirectoryPrefixName(), 1)).'_',
+			"SITE_TEMPLATE_PATH" => \CUtil::JSEscape(SITE_TEMPLATE_PATH)
+		];
+		
+		if (!Variable::$bxRequest->isAjaxRequest()) {
+			echo '<script type="text/javascript">BX.ready(function() {BX.SavitskyiHub.BxHelpers.Helpers.Option = '.\CUtil::PhpToJSObject($OPTION).';});</script>';
+		}
 	}
 }
-
-//BX.ready(function() {
-//	var Option = BX.SavitskyiHub.BxHelpers.Helpers.Option;
-//
-//	if (Option != undefined) {
-//		Option.LANGUAGE_ID = "'.LANGUAGE_ID.'";
-//		Option.SITE_DIR = "'.\CUtil::JSEscape(SITE_DIR).'";
-//		Option.SITE_ID = "'.SITE_ID.'";
-//		Option.SITE_COOKIE_PREFIX = "'.mb_strtoupper(substr(Dir::getCacheDirectoryPrefixName(), 1)).'_";
-//		Option.SITE_TEMPLATE_PATH = "'.\CUtil::JSEscape(SITE_TEMPLATE_PATH).'";
-//	}
-//});

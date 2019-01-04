@@ -12,6 +12,7 @@
 namespace SavitskyiHub\BxHelpers\Helpers\Install;
 
 use Bitrix\Main\Loader;
+use SavitskyiHub\BxHelpers\Helpers\Main\User;
 
 /**
  * Class User_Group_Uninstall
@@ -36,7 +37,7 @@ final class User_Group_Uninstall
 		if (self::isInstalledUserGroup()) {
 			self::uninstalledUserGroup();
 			
-			echo "\r\n\r\nДеинсталляция пользовательских групп прошла успешно";
+			echo "\r\n\r\nДеинсталляция пользовательских групп прошла успешно!";
 		}
 	}
 
@@ -45,31 +46,44 @@ final class User_Group_Uninstall
 	 * - если в группе существует привязка пользователей, група удалена не будет;
 	 */
 	private static function uninstalledUserGroup() {
-//		global $APPLICATION;
-//
-//		foreach (self::$arGroupCreate as $arNewGroupField) {
-//			$group = new \CGroup;
-//			$group->Add($arNewGroupField);
-//		}
-//
-//		if ($APPLICATION->LAST_ERROR) {
-//			echo "\r\n\r\n".$APPLICATION->LAST_ERROR->msg;
-//		}
-	
-	//если есть пользователи не удалять
-	
-	//if(IntVal($del_id)>2)
-	//{
-	//	$del_id = IntVal($del_id);
-	//	$group = new CGroup;
-	//	$DB->StartTransaction();
-	//	if(!$group->Delete($del_id))
-	//	{
-	//		$DB->Rollback();
-	//		$strError.=GetMessage("DELETE_ERROR");
-	//	}
-	//	$DB->Commit();
-	//}
+		global $APPLICATION, $DB;
+		
+		$userMethod = User::getInstance();
+		$arCreatedGroup = User_Group_Install::getStaticProp("arGroupCreate");
+		$arGroupNameCode = array_keys($arCreatedGroup);
+		
+		$CGroup = new \CGroup;
+		$strError = '';
+		
+		foreach ($arGroupNameCode as $nameCode) {
+			$groupID = $userMethod->getGroupIdByCode($nameCode);
+			
+			if ($groupID) {
+				$cntUserInGroup = count(\CGroup::GetGroupUser($groupID));
+				
+				if ("REGISTERED_USERS" == $nameCode && 1 < $cntUserInGroup) {
+					$strError .= "\r\nВ группе ".$nameCode." существует привязка пользователей";
+					continue;
+				} elseif ("REGISTERED_USERS" != $nameCode && 0 < $cntUserInGroup) {
+					$strError .= "\r\nВ группе ".$nameCode." существует привязка пользователей";
+					continue;
+				}
+				
+				$DB->StartTransaction();
+				
+				if(!$CGroup->Delete($groupID)) {
+					$DB->Rollback();
+					$strError .= "\r\nНевозможно удалить группу: ".$nameCode;
+				}
+				
+				$DB->Commit();
+			}
+		}
+
+		if ($APPLICATION->LAST_ERROR ||  $strError) {
+			echo "\r\n\r\n".$APPLICATION->LAST_ERROR->msg;
+			echo "\r\n\r\n".$strError;
+		}
 	}
 
 	/**
