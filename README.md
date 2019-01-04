@@ -25,3 +25,18 @@ new User_Group_Install();
 7) Подключить стили и скрипты
 
 8) картинкы
+
+
+## Удаление
+
+1) Выполнить команды
+
+ use SavitskyiHub\BxHelpers\Helpers\Install\Mail_Uninstall_Highload;
+   new Mail_Uninstall_Highload("savitskyi");
+   
+    use SavitskyiHub\BxHelpers\Helpers\Install\User_Group_Uninstall;
+   new User_Group_Uninstall();
+   
+2)   В init.php удалить код подвключения что указан в установке:
+
+3) Отключить подключения стилей и скриптов у себя в шаблоне
