@@ -29,11 +29,7 @@ class BeforeProlog
 	 */
     public static function Init() {
 		EventManager::getInstance()->addEventHandler('main', 'OnAfterUserUpdate', ['\SavitskyiHub\BxHelpers\Helpers\Main\User', 'setClearCacheVar']);
-	
-		// Создать автоматом 3 групы !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		// Registred, delete, ban
-		
-		// Передавать данные в JS
+		EventManager::getInstance()->addEventHandler('main', 'OnAfterEpilog',  ['\SavitskyiHub\BxHelpers\Helpers\AfterEpilog', 'Init']);
 		
 		Variable::getInstance();
 		User::getInstance();

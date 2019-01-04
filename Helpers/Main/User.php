@@ -18,8 +18,7 @@ use Bitrix\Main\UserTable;
 use Bitrix\Main\Web\Cookie;
 use SavitskyiHub\BxHelpers\Helpers\IO\Dir;
 use SavitskyiHub\BxHelpers\Helpers\Content\Image;
-
-//use SavitskyiHub\BxHelpers\Helpers\ClassTrait;
+use SavitskyiHub\BxHelpers\Helpers\ClassTrait;
 
 /**
  * Class User
@@ -31,7 +30,7 @@ use SavitskyiHub\BxHelpers\Helpers\Content\Image;
  */
 final class User
 {
-	//use ClassTrait;
+	use ClassTrait;
 	
 	/**
 	 * Singleton Instance
@@ -163,21 +162,16 @@ final class User
 				/**
 				 * Если пользователь заблокирован делаем отметку
 				 */
-//				if ($this->isInGroup("BAN")) {
-//					$this->isBan = true;
-//				}
+				if ($this->isInGroup("BANED_USERS")) {
+					$this->isBan = true;
+				}
 				
 				/**
 				 * Если пользователь был удален делаем отметку
 				 */
-//				if ($this->isInGroup("DELETED")) {
-//					$this->isDelete = true;
-//				}
-				
-				/**
-				 * Отмечаем что пользователь сейчас активен
-				 */
-				$USER->SetLastActivityDate($this->ID);
+				if ($this->isInGroup("DELETED_USERS")) {
+					$this->isDelete = true;
+				}
 			}
 		} catch (SystemException $e) {
 			Debug::writeToFile($e->getMessage());

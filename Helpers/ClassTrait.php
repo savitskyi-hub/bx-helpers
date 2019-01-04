@@ -22,55 +22,57 @@ use SavitskyiHub\BxHelpers\Helpers\Main\Debug;
 trait ClassTrait
 {
     public function __call($name, $arguments) {
-		Debug::writeToFile('Method &ldquo;'.$name.'()&rdquo; was not found in - '.self::getCalledClassName());
+		Debug::writeToFile('Method "'.$name.'()" was not found in - '.self::getCalledClassName());
     }
 
     public static function __callStatic($name, $arguments) {
-		Debug::writeToFile('The static method &ldquo;::'.$name.'()&rdquo; was not found in - '.self::getCalledClassName());
-    }
-
-    public function __get($name) {
-		Debug::writeToFile('The property &ldquo;'.$name.'&rdquo; does not exist in - '.self::getCalledClassName());
-    }
-
-    public function __isset($name) {
-		Debug::writeToFile('The property &ldquo;'.$name.'&rdquo; does not exist in - '.self::getCalledClassName());
+		Debug::writeToFile('The static method "::'.$name.'()" was not found in - '.self::getCalledClassName());
     }
 
     public function __unset($name) {
-		Debug::writeToFile('The property &ldquo;'.$name.'&rdquo; cannot be removed in - '.self::getCalledClassName());
+		Debug::writeToFile('The property "'.$name.'" cannot be removed in - '.self::getCalledClassName());
     }
 
     public function __set($name, $value) {
-		Debug::writeToFile('Can not set &ldquo;'.$value.'&rdquo; to property &ldquo;'.$name.'&rdquo; in'.self::getCalledClassName());
+		Debug::writeToFile('Can not set "'.$value.'" to property "'.$name.'" in'.self::getCalledClassName());
     }
 
     public function __clone() {
-		Debug::writeToFile('Cloning &ldquo;'.self::getCalledClassName().'&rdquo; is not allowed');
+		Debug::writeToFile('Cloning "'.self::getCalledClassName().'" is not allowed');
     }
 
     public function __wakeup() {
-		Debug::writeToFile('Unserializing &ldquo;'.self::getCalledClassName().'&rdquo; is not allowed');
+		Debug::writeToFile('Unserializing "'.self::getCalledClassName().'" is not allowed');
     }
 	
-    /**
-     * Метод возвращает название класса из которого реализовано вызов
-	 *
-     * @return mixed
-     */
-    static function getCalledClassName() {
-        return get_called_class();
-    }
+	public function __isset($name) {
+		Debug::writeToFile('The property "'.$name.'" does not exist in - '.self::getCalledClassName());
+	}
+	
+	public function __get($name) {
+		try {
+			if (!property_exists($this, $name)) {
+				throw new SystemException('Неизвестная переменная: '.$name.' - '.self::getCalledClassName());
+			}
+			
+			return $this->$name;
+		} catch (SystemException $e) {
+			Debug::writeToFile($e->getMessage());
+		}
+		
+		return null;
+	}
     
 	/**
 	 * Геттер для статических свойств
 	 *
 	 * @param string $name - название свойства;
+	 * @return null|void
 	 */
-    static function get(string $name) {
+    static function getStaticProp(string $name) {
         try {
             if (!isset(self::${$name})) {
-				throw new SystemException('Неизвестная переменная: '.$name);
+				throw new SystemException('Неизвестная переменная: '.$name.' - '.self::getCalledClassName());
             }
 	
 			return self::${$name};
@@ -78,6 +80,15 @@ trait ClassTrait
 			Debug::writeToFile($e->getMessage());
         }
         
-        return;
+        return null;
     }
+	
+	/**
+	 * Метод возвращает название класса из которого реализовано вызов
+	 *
+	 * @return mixed
+	 */
+	static function getCalledClassName() {
+		return get_called_class();
+	}
 }

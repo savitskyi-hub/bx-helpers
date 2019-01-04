@@ -52,8 +52,8 @@ class Send
 		try {
 			Loader::includeModule('main');
 			
-			$mailEventType = Mail_Install_Highload::get("mailEventType");
-			$entityName = Mail_Install_Highload::get("name");
+			$mailEventType = Mail_Install_Highload::getStaticProp("mailEventType");
+			$entityName = Mail_Install_Highload::getStaticProp("name");
 			$entityID = Instance::getIdByEntityName($entityName);
 			
 			$datetimeCreate = date("d.m.Y H:i:s");
