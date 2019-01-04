@@ -12,6 +12,9 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Main.Variable');
 (function() {
 	'use strict';
 
+	/**
+	 *
+	 */
 	BX.SavitskyiHub.BxHelpers.Helpers.Content.Main.Variable = {
 		/**
 		 *
@@ -19,15 +22,16 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Main.Variable');
 		 * @param arr
 		 */
 		cleanArray : function(arr) {
-			//	var newArray = new Array();
-			//
-			//	for (var i = 0; i < actual.length; i++) {
-			//		if (actual[i]) {
-			//			newArray.push(actual[i]);
-			//		}
-			//	}
-			//
-			//	return newArray;
+			let newArray = new Array(),
+				i = 0;
+
+			for (i; i < arr.length; i++) {
+				if (arr[i]) {
+					newArray.push(arr[i]);
+				}
+			}
+
+			return newArray;
 		}
 	};
 });

@@ -92,62 +92,6 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Base');
 				}
 			}
 		},
-
-		/**
-		 *
-		 */
-		initCaptchaContain : function() {
-			//	var containsCapcha = $(".capcha_replace"),
-			//		arReplaceCaptcha = {mode : 2, ids : []};
-			//
-			//	if (containsCapcha.length) {
-			//		containsCapcha.each(function() {
-			//			if (!$(this).data("id")) {
-			//				console.error("Идентификатор для Capcha отсутствует");
-			//			} else {
-			//				arReplaceCaptcha.ids.push($(this).data("id"));
-			//			}
-			//		});
-			//
-			//		if (arReplaceCaptcha.ids.length) {
-			//			$.ajax({
-			//				url : SITE_DIR + 'ajax/captcha.php',
-			//				type : "POST",
-			//				data : arReplaceCaptcha,
-			//				success : function(msg) {
-			//					var response = JSON.parse(msg),
-			//						newContainsCapcha = $(".capcha_replace");
-			//
-			//					newContainsCapcha.each(function() {
-			//						if (response.result[$(this).data("id")]) {
-			//							$(this).closest('.input-section').html(response.result[$(this).data("id")]);
-			//						}
-			//					});
-			//				}
-			//			});
-			//		}
-			//	}
-		},
-
-		/**
-		 *
-		 *
-		 * @param nodeCaptchaReplace
-		 */
-		resetCaptcha : function(nodeCaptchaReplace) {
-			//	$.ajax({
-			//		url : SITE_DIR + "ajax/captcha.php",
-			//		type : "POST",
-			//		data : {mode : 1},
-			//		success : function(msg) {
-			//			var response = JSON.parse(msg);
-			//
-			//			if (response.status) {
-			//				containerReplace.html($(response.content).html());
-			//			}
-			//		}
-			//	});
-		}
 	};
 
 	/**
