@@ -9,15 +9,6 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Option');
 
 	/**
 	 * Глобальные параметры что будут переданы из PHP
-	 *
-	 * @type {
-	 * 		LANGUAGE_ID: string,
-	 * 		SITE_DIR: string,
-	 * 		SITE_ID: string,
-	 * 		SITE_COOKIE_PREFIX: string,
-	 * 		SITE_TEMPLATE_PATH: string,
-	 * 		init: SavitskyiHub.BxHelpers.Helpers.Option.init
-	 * }
 	 */
 	BX.SavitskyiHub.BxHelpers.Helpers.Option = {
 		LANGUAGE_ID : "",
