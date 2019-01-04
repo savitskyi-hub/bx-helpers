@@ -8,6 +8,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Option');
 	'use strict';
 
 	/**
+	 * Глобальные параметры что будут переданы из PHP
 	 *
 	 * @type {{
 	 * 		LANGUAGE_ID: string,

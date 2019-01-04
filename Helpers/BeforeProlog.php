@@ -25,7 +25,7 @@ class BeforeProlog
 	/**
 	 * - инициализирует необходимые обработчики событий на сайте;
 	 * - инициализирует все конструкторы, чтобы весь функционал библиотеки уже был доступен для использования;
-	 * - метод автоматически выполняться через обработчик в прологе ядра;
+	 * - метод автоматически выполняется через обработчик в прологе ядра;
 	 */
     public static function Init() {
 		EventManager::getInstance()->addEventHandler('main', 'OnAfterUserUpdate', ['\SavitskyiHub\BxHelpers\Helpers\Main\User', 'setClearCacheVar']);
