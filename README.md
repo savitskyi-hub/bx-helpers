@@ -1,7 +1,7 @@
 # bx-helpers
 Вспомогательная библиотека для удобной разработки и поддержки проекта на платформе 1С-Bitrix
 
-## Установка
+## Установка/Настройка
 
 1) Компосер ...
 
@@ -26,6 +26,10 @@ new User_Group_Install();
 
 8) картинкы
 
+9) Проверить отправку письма администрации
+
+//use SavitskyiHub\BxHelpers\Helpers\Mail\Send;
+//Send::Admin('test asdas dasdasdas test test', 'ERROR');
 
 ## Удаление
 
