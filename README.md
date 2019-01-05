@@ -15,7 +15,7 @@ new Mail_Install_Highload("УКАЗАТЬ_ПРЕФИКС");
 new User_Group_Install();
 ```
 
-3) Скинуть полностью кэш в разделе `Настройки -> Настройки продукта -> Автокеширование -> Очистка файлов кеша` выбрать "Все" и нажать "Начать";
+3) Скинуть полностью кэш в разделе `Настройки -> Настройки продукта -> Автокеширование -> Очистка файлов кеша` выбрать "**Все**" и нажать "**Начать**";
 
 4) Для почтовых событий установить получателей:
 
@@ -35,7 +35,7 @@ use Bitrix\Main\EventManager;
 
 // Include Autoload
 if (file_exists(Application::getDocumentRoot().'/local/library/vendor/autoload.php')) {
- require_once(Application::getDocumentRoot().'/local/library/vendor/autoload.php');
+	require_once(Application::getDocumentRoot().'/local/library/vendor/autoload.php');
 	
 	if (class_exists('\SavitskyiHub\BxHelpers\Helpers\BeforeProlog')) {
 		EventManager::getInstance()->addEventHandler('main', 'OnBeforeProlog', ['\SavitskyiHub\BxHelpers\Helpers\BeforeProlog', 'Init']);
@@ -43,11 +43,27 @@ if (file_exists(Application::getDocumentRoot().'/local/library/vendor/autoload.p
 }
 ```
 
+7) Подключить необходимые скрипты и стили:
+
+```php
+use SavitskyiHub\BxHelpers\Helpers\Main\Includes;
+
+// Для стилей
+Includes::libraryCss();
+
+// Для скриптов
+Includes::libraryJs();
+```
+
+> **Примечание:** разместить подключение после плагинов и перед подключением скриптов проекта.
 
 
 
 
-7) Подключить стили и скрипты
+
+
+
+
 
 8) картинкы
 
