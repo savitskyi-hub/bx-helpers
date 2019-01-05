@@ -12,8 +12,8 @@
 namespace SavitskyiHub\BxHelpers\Helpers;
 
 use Bitrix\Main\EventManager;
-use SavitskyiHub\BxHelpers\Helpers\Main\Variable;
 use SavitskyiHub\BxHelpers\Helpers\Main\User;
+use SavitskyiHub\BxHelpers\Helpers\Main\Variable;
 
 /**
  * Class BeforeProlog
@@ -27,11 +27,11 @@ class BeforeProlog
 	 * - инициализирует все конструкторы, чтобы весь функционал библиотеки уже был доступен для использования;
 	 * - метод автоматически выполняется через обработчик в прологе ядра;
 	 */
-    public static function Init() {
+	public static function Init() {
 		EventManager::getInstance()->addEventHandler('main', 'OnAfterUserUpdate', ['\SavitskyiHub\BxHelpers\Helpers\Main\User', 'setClearCacheVar']);
-		EventManager::getInstance()->addEventHandler('main', 'OnAfterEpilog',  ['\SavitskyiHub\BxHelpers\Helpers\AfterEpilog', 'Init']);
+		EventManager::getInstance()->addEventHandler('main', 'OnAfterEpilog', ['\SavitskyiHub\BxHelpers\Helpers\AfterEpilog', 'Init']);
 		
 		Variable::getInstance();
 		User::getInstance();
-    }
+	}
 }

@@ -91,7 +91,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Base');
 					});
 				}
 			}
-		},
+		}
 	};
 
 	/**

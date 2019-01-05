@@ -16,9 +16,9 @@ use Bitrix\Main\Loader;
 use Bitrix\Main\SystemException;
 use Bitrix\Main\UserTable;
 use Bitrix\Main\Web\Cookie;
-use SavitskyiHub\BxHelpers\Helpers\IO\Dir;
-use SavitskyiHub\BxHelpers\Helpers\Content\Image;
 use SavitskyiHub\BxHelpers\Helpers\ClassTrait;
+use SavitskyiHub\BxHelpers\Helpers\Content\Image;
+use SavitskyiHub\BxHelpers\Helpers\IO\Dir;
 
 /**
  * Class User
@@ -245,7 +245,7 @@ final class User
 			
 			Variable::$bxResponse->addCookie($cookie);
 			
-			return (int)$key;
+			return (int) $key;
 		}
 		
 		return false;

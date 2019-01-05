@@ -15,7 +15,6 @@ use Bitrix\Main\Application;
 use Bitrix\Main\Authentication\ApplicationPasswordTable;
 use Bitrix\Main\Config\Option;
 use Bitrix\Main\Text\HtmlFilter;
-use SavitskyiHub\BxHelpers\Helpers\IO\File;
 
 /**
  * Class Base
@@ -49,7 +48,7 @@ class Base
 	 * @param string $formate - формат вывода даты;
 	 * @return string
 	 */
-	public static function getTimeTag(string $dateTime,  string $formate = 'd.m.Y'): string {
+	public static function getTimeTag(string $dateTime, string $formate = 'd.m.Y'): string {
 		$timeStamp = MakeTimeStamp($dateTime);
 		
 		if ($timeStamp) {

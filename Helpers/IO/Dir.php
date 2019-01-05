@@ -30,7 +30,7 @@ class Dir
 	public static function getPackagePath(): string {
 		$pathNameSpaceDir = __DIR__;
 		$pathPackageDir = dirname($pathNameSpaceDir, 2);
-	
+		
 		return $pathPackageDir;
 	}
 	

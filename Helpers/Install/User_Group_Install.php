@@ -73,7 +73,7 @@ final class User_Group_Install
 		global $APPLICATION;
 		
 		foreach (self::$arGroupCreate as $arNewGroupField) {
-			$group = new \CGroup;
+			$group = new \CGroup();
 			$group->Add($arNewGroupField);
 		}
 		

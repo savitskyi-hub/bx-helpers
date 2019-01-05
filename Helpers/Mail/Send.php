@@ -11,8 +11,8 @@
 
 namespace SavitskyiHub\BxHelpers\Helpers\Mail;
 
-use Bitrix\Main\Mail\Event;
 use Bitrix\Main\Loader;
+use Bitrix\Main\Mail\Event;
 use Bitrix\Main\SystemException;
 use SavitskyiHub\BxHelpers\Helpers\Highload\Instance;
 use SavitskyiHub\BxHelpers\Helpers\Install\Mail_Install_Highload;
@@ -28,12 +28,12 @@ use SavitskyiHub\BxHelpers\Helpers\Main\Variable;
  */
 class Send
 {
-    /**
+	/**
 	 * Через какой интервал времени (Hours) доступно отправлять повторно письмо администратору
-     * @var int
-     */
-    private static $periodBlocked = 1;
-    
+	 * @var int
+	 */
+	private static $periodBlocked = 1;
+	
 	/**
 	 * Количество доступных отправок определенного типа в допустимый интервал времени
 	 * @var int
@@ -158,7 +158,7 @@ class Send
 			if (!$rsMail->isSuccess()) {
 				throw new SystemException('Ошибка отправки письма: '.implode("\r\n", $rsMail->getErrorMessages()));
 			}
-
+			
 		} catch (SystemException $e) {
 			Debug::writeToFile($e->getMessage());
 		}

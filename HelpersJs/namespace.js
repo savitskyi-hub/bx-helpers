@@ -12,9 +12,9 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Option');
 	 */
 	BX.SavitskyiHub.BxHelpers.Helpers.Option = {
 		LANGUAGE_ID : "",
-		SITE_DIR: "",
-		SITE_ID: "",
+		SITE_DIR : "",
+		SITE_ID : "",
 		SITE_COOKIE_PREFIX : "",
-		SITE_TEMPLATE_PATH: "",
+		SITE_TEMPLATE_PATH : ""
 	};
 })();

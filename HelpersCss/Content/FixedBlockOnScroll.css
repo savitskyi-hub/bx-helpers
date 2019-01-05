@@ -1,8 +1,8 @@
 .block-scroller-y.fixed-start {
-  position: fixed;
-  top: 0;
+	position: fixed;
+	top: 0;
 }
 
 .block-scroller-y.fixed-stop {
-  position: absolute !important;
+	position: absolute !important;
 }

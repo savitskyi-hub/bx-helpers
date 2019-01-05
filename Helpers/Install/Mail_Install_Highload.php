@@ -27,8 +27,6 @@ final class Mail_Install_Highload extends Highload_Installer
 {
 	use ClassTrait;
 	
-	private static $mailEventType = "SAVITSKYI_BXHELPERS_HELPERS_MAIL";
-	
 	protected static $name = 'HelpersMailSend';
 	protected static $tableName = '2hlblock_helpers_mail_send';
 	protected static $langNameRU = '✉ Письма - Администрация';
@@ -97,6 +95,8 @@ final class Mail_Install_Highload extends Highload_Installer
 		]
 	];
 	
+	private static $mailEventType = "SAVITSKYI_BXHELPERS_HELPERS_MAIL";
+	
 	/**
 	 * Mail_HighloadTable constructor
 	 */
@@ -152,7 +152,7 @@ final class Mail_Install_Highload extends Highload_Installer
 			$MESSAGE .= "На письмо отвечать не нужно!";
 			
 			foreach (Variable::getAllSitesInfo() as $lid => $param) {
-				(new \CEventMessage)->Add([
+				(new \CEventMessage())->Add([
 					'ACTIVE' => 'Y',
 					'EVENT_NAME' => self::$mailEventType,
 					"LID" => $lid,

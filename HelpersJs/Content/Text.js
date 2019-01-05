@@ -63,7 +63,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Text');
 
 			try {
 				successful = document.execCommand('copy');
-				msg = successful ? 'successful' : 'unsuccessful';
+				msg = successful? 'successful' : 'unsuccessful';
 			} catch (err) {
 				console.log('Oops, unable to copy');
 			}

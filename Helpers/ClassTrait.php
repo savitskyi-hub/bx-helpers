@@ -21,29 +21,29 @@ use SavitskyiHub\BxHelpers\Helpers\Main\Debug;
  */
 trait ClassTrait
 {
-    public function __call($name, $arguments) {
+	public function __call($name, $arguments) {
 		Debug::writeToFile('Method "'.$name.'()" was not found in - '.self::getCalledClassName());
-    }
-
-    public static function __callStatic($name, $arguments) {
+	}
+	
+	public static function __callStatic($name, $arguments) {
 		Debug::writeToFile('The static method "::'.$name.'()" was not found in - '.self::getCalledClassName());
-    }
-
-    public function __unset($name) {
+	}
+	
+	public function __unset($name) {
 		Debug::writeToFile('The property "'.$name.'" cannot be removed in - '.self::getCalledClassName());
-    }
-
-    public function __set($name, $value) {
+	}
+	
+	public function __set($name, $value) {
 		Debug::writeToFile('Can not set "'.$value.'" to property "'.$name.'" in'.self::getCalledClassName());
-    }
-
-    public function __clone() {
+	}
+	
+	public function __clone() {
 		Debug::writeToFile('Cloning "'.self::getCalledClassName().'" is not allowed');
-    }
-
-    public function __wakeup() {
+	}
+	
+	public function __wakeup() {
 		Debug::writeToFile('Unserializing "'.self::getCalledClassName().'" is not allowed');
-    }
+	}
 	
 	public function __isset($name) {
 		Debug::writeToFile('The property "'.$name.'" does not exist in - '.self::getCalledClassName());
@@ -62,26 +62,26 @@ trait ClassTrait
 		
 		return null;
 	}
-    
+	
 	/**
 	 * Геттер для статических свойств
 	 *
 	 * @param string $name - название свойства;
 	 * @return null|void
 	 */
-    static function getStaticProp(string $name) {
-        try {
-            if (!isset(self::${$name})) {
+	static function getStaticProp(string $name) {
+		try {
+			if (!isset(self::${$name})) {
 				throw new SystemException('Неизвестная переменная: '.$name.' - '.self::getCalledClassName());
-            }
-	
+			}
+			
 			return self::${$name};
-        } catch (SystemException $e) {
+		} catch (SystemException $e) {
 			Debug::writeToFile($e->getMessage());
-        }
-        
-        return null;
-    }
+		}
+		
+		return null;
+	}
 	
 	/**
 	 * Метод возвращает название класса из которого реализовано вызов

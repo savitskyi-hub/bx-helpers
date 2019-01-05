@@ -28,7 +28,7 @@ class Debug
 	 * @var string
 	 */
 	private static $filenameLog = 'local/logs/helpers-debug.log';
-
+	
 	/**
 	 * Выполняет логирование цепочки вызовов при исключениях или произвольных вызовах
 	 *

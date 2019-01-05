@@ -89,7 +89,7 @@ class Element
 			$arReturn["PREV"] = false;
 			$arReturn["NEXT"] = false;
 		}
-
+		
 		return $arReturn;
 	}
 }

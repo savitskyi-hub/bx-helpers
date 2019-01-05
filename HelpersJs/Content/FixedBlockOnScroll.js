@@ -213,12 +213,12 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.FixedBlockOnScroll');
 				} else if (marginTop < 0) {
 					return marginTop;
 				} else {
-					return 0
+					return 0;
 				}
 
 			} else {
 				return 0;
 			}
 		}
-	}
+	};
 })();

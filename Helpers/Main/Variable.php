@@ -31,17 +31,6 @@ final class Variable
 	use ClassTrait;
 	
 	/**
-	 * Singleton Instance
-	 */
-	private static $instance = null;
-	
-	/**
-	 * Приватные параметры кеша
-	 */
-	private static $cacheTime = 600;
-	private static $cacheDir = '_helpers_variable';
-	
-	/**
 	 * Глобальные сущности ядра
 	 */
 	static $bxApplication;
@@ -69,17 +58,15 @@ final class Variable
 	static $bxSitesInfo = [];
 	
 	/**
-	 * Объект создается внутри самого класса, только если у класса нет экземпляра
-	 *
-	 * @return null|Instance
+	 * Singleton Instance
 	 */
-	static function getInstance() {
-		if (null == self::$instance) {
-			self::$instance = new Variable();
-		}
-		
-		return self::$instance;
-	}
+	private static $instance = null;
+	
+	/**
+	 * Приватные параметры кеша
+	 */
+	private static $cacheTime = 600;
+	private static $cacheDir = '_helpers_variable';
 	
 	/**
 	 * Varaible constructor
@@ -131,6 +118,19 @@ final class Variable
 		} catch (SystemException $e) {
 			Debug::writeToFile($e->getMessage());
 		}
+	}
+	
+	/**
+	 * Объект создается внутри самого класса, только если у класса нет экземпляра
+	 *
+	 * @return null|Instance
+	 */
+	static function getInstance() {
+		if (null == self::$instance) {
+			self::$instance = new Variable();
+		}
+		
+		return self::$instance;
 	}
 	
 	/**

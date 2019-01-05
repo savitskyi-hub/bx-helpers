@@ -25,10 +25,10 @@ final class Mail_Uninstall_Highload extends Highload_Uninstaller
 {
 	use ClassTrait;
 	
-	private static $mailEventType = "SAVITSKYI_BXHELPERS_HELPERS_MAIL";
-	
 	protected static $name = 'HelpersMailSend';
 	protected static $tableName = '2hlblock_helpers_mail_send';
+	
+	private static $mailEventType = "SAVITSKYI_BXHELPERS_HELPERS_MAIL";
 	
 	/**
 	 * Mail_HighloadTable constructor
@@ -58,7 +58,7 @@ final class Mail_Uninstall_Highload extends Highload_Uninstaller
 		if (self::isInstalledEventMessage()) {
 			$rsDeleteMessage = \CEventMessage::GetList($by = "id", $order = "desc", ["EVENT_NAME" => self::$mailEventType]);
 			
-			while($arDeleteMessage = $rsDeleteMessage->Fetch()) {
+			while ($arDeleteMessage = $rsDeleteMessage->Fetch()) {
 				(new \CEventMessage())->Delete($arDeleteMessage["ID"]);
 			}
 			
