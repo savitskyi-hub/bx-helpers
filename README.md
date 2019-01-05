@@ -15,18 +15,37 @@ new Mail_Install_Highload("УКАЗАТЬ_ПРЕФИКС");
 new User_Group_Install();
 ```
 
-3) Скинуть полностью кэш:
-
-- в разделе `Настройки -> Настройки продукта -> Автокеширование -> Очистка файлов кеша` выбрать "Все" и нажать "Начать";
+3) Скинуть полностью кэш в разделе `Настройки -> Настройки продукта -> Автокеширование -> Очистка файлов кеша` выбрать "Все" и нажать "Начать";
 
 4) Для почтовых событий установить получателей:
 
 - перейти в раздел `Настройки -> Настройки продукта -> Почтовые события -> Почтовые шаблоны`;
 - 
 
-5) Проверить оправку писем и логов
+5) Проверить отправку писем и логов:
 
-6) В init.php подключить скедующий код:
+-
+-
+
+6) В файле `init.php` подключить следующий код:
+
+```php
+use Bitrix\Main\Application;
+use Bitrix\Main\EventManager;
+
+// Include Autoload
+if (file_exists(Application::getDocumentRoot().'/local/library/vendor/autoload.php')) {
+ require_once(Application::getDocumentRoot().'/local/library/vendor/autoload.php');
+	
+	if (class_exists('\SavitskyiHub\BxHelpers\Helpers\BeforeProlog')) {
+		EventManager::getInstance()->addEventHandler('main', 'OnBeforeProlog', ['\SavitskyiHub\BxHelpers\Helpers\BeforeProlog', 'Init']);
+	}
+}
+```
+
+
+
+
 
 7) Подключить стили и скрипты
 
@@ -36,6 +55,11 @@ new User_Group_Install();
 
 //use SavitskyiHub\BxHelpers\Helpers\Mail\Send;
 //Send::Admin('test asdas dasdasdas test test', 'ERROR');
+
+
+
+
+
 
 ## Удаление
 
