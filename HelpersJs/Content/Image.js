@@ -13,90 +13,66 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Image');
 	'use strict';
 
 	/**
-	 *
-	 *
-	 * (для асинхронной загрузки двойные кавычки будут заменены на
-	 *  одинарные, нужно это учесть при возвращении в нормальное состояния);
+	 * Объект для работы с изображениями
 	 */
 	BX.SavitskyiHub.BxHelpers.Helpers.Content.Image = {
 
 		/**
+		 * Метод для асинхронной подгрузки изображения, что работает на базе функционала - SavitskyiHub\BxHelpers\Helpers\Content\Image
+		 * - замена блоков на изображение происходить в ручном режиме;
+		 * - поиск заменяемых блоков осуществляется от переданного родительского елемента, производя поиск всех его потомков для замены;
 		 *
-		 * @param event
+		 * @param nodeParent
 		 */
-		asyncUploadImage : function(event) {
-			////	if (event == undefined) {
-			////
-			////		// Menu catalog
-			////		$("header nav > div, header nav > div .dropdown-menu").hover(function() {
-			////			var uploadImages = $(this).find('div[data-upload-image="Y"]');
-			////
-			////			if (uploadImages.length) {
-			////				uploadImages.each(function() {
-			////					$(this).replaceWith(creataAsyncImage($(this)));
-			////				});
-			////			}
-			////		});
-			////
-			////	} else {
-			////
-			////		switch (event) {
-			////			case "basket_item-image-popup":
-			////				var uploadImages = $(".basket_item.i_overlay").find('div[data-upload-image="Y"]');
-			////
-			////				if (uploadImages.length) {
-			////					uploadImages.each(function() {
-			////						$(this).replaceWith(creataAsyncImage($(this)));
-			////					});
-			////				}
-			////				break;
-			////
-			////			case "offers-pallet-image":
-			////				var palletActiveList = $(".card-product").find(".offers-pallet-image.active"),
-			////					activeID = 0,
-			////					uploadImages;
-			////
-			////				palletActiveList.each(function() {
-			////					activeID = $(this).data('id');
-			////					uploadImages = $('div[data-upload-image="Y"][data-class="card-product-offer-image id-' + activeID + '"]');
-			////
-			////					if (uploadImages.length) {
-			////						uploadImages.replaceWith(creataAsyncImage(uploadImages));
-			////					}
-			////				});
-			////				break;
-			////		}
-			////
-			////	}
-		},
+		asyncUploadImage : function(nodeParent) {
+			if (nodeParent == undefined) {
+				return false;
+			}
 
-		/**
-		 *
-		 * @param el
-		 */
-		createAsyncImage : function(el) {
-			////	let attrs = {};
-			////
-			////	if (el.data('alt') != undefined) {
-			////		attrs["alt"] = el.data('alt');
-			////	}
-			////
-			////	if (el.data('srcset') != undefined) {
-			////		attrs["srcset"] = el.data('srcset');
-			////	}
-			////
-			////	if (el.data('sizes') != undefined) {
-			////		attrs["sizes"] = el.data('sizes');
-			////	}
-			////
-			////	if (el.data('class') != undefined) {
-			////		attrs["class"] = el.data('class');
-			////	}
-			////
-			////	return BX.create('IMG', {
-			////		props : {src : el.data('src')},
-			////		attrs : attrs
-			////	});
+			let asyncUploadImages = BX.findChildren(nodeParent, {attribute : {"data-upload-image" : "Y"}}, true, true),
+				attrs, src, alt, className, sizes, srcset, dataAttrs, arAttr;
+
+			if (asyncUploadImages.length) {
+				asyncUploadImages.forEach(function(nodeDivImage) {
+					attrs = {};
+
+					if (undefined != (src = nodeDivImage.dataset["src"])) {
+						attrs["src"] = src;
+					}
+
+					if (undefined != (alt = nodeDivImage.dataset["alt"])) {
+						attrs["alt"] = alt;
+					}
+
+					if (undefined != (className = nodeDivImage.dataset["class"])) {
+						attrs["class"] = className;
+					}
+
+					if (undefined != (sizes = nodeDivImage.dataset["sizes"])) {
+						attrs["sizes"] = sizes;
+					}
+
+					if (undefined != (srcset = nodeDivImage.dataset["srcset"])) {
+						attrs["srcset"] = srcset;
+					}
+
+					if (undefined != (dataAttrs = nodeDivImage.dataset["attrs"])) {
+						dataAttrs.split(" ").forEach(function(strAttr) {
+							arAttr = strAttr.split("=");
+
+							if (undefined != arAttr[0]) {
+								attrs[arAttr[0]] = '';
+							}
+
+							if (undefined != arAttr[1] && 2 < arAttr[1].length) {
+								attrs[arAttr[0]] = arAttr[1].substr(1, (arAttr[1].length - 2));
+							}
+						});
+					}
+
+					nodeDivImage.replaceWith(BX.create('IMG', {attrs : attrs}));
+				});
+			}
 		}
 	};
-});
+})();

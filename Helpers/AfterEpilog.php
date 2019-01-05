@@ -40,7 +40,15 @@ class AfterEpilog
 		];
 		
 		if (!Variable::$bxRequest->isAjaxRequest()) {
-			echo '<script type="text/javascript">BX.ready(function() {BX.SavitskyiHub.BxHelpers.Helpers.Option = '.\CUtil::PhpToJSObject($OPTION).';});</script>';
+			echo '
+				<script type="text/javascript">
+					BX.ready(function() {
+						if (undefined != BX.SavitskyiHub) {
+							BX.SavitskyiHub.BxHelpers.Helpers.Option = '.\CUtil::PhpToJSObject($OPTION).';
+						}
+					});
+				</script>';
+			
 		}
 	}
 }

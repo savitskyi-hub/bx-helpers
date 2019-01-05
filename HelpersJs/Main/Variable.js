@@ -13,15 +13,15 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Main.Variable');
 	'use strict';
 
 	/**
-	 *
+	 * Объект для удобной работы с свойствами или их обработки, которые нужны при реализации или поддержки проекта
 	 */
-	BX.SavitskyiHub.BxHelpers.Helpers.Content.Main.Variable = {
+	BX.SavitskyiHub.BxHelpers.Helpers.Main.Variable = {
 		/**
-		 *
+		 * Очищает массив от всех ложных (что == false) значений
 		 *
 		 * @param arr
 		 */
-		cleanArray : function(arr) {
+		cleanFalseInArray : function(arr) {
 			let newArray = new Array(),
 				i = 0;
 
@@ -34,4 +34,4 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Main.Variable');
 			return newArray;
 		}
 	};
-});
+})();

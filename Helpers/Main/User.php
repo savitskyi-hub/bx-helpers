@@ -240,11 +240,11 @@ final class User
 	 */
 	private function isClearCache(): bool {
 		if ($key = Variable::$bxRequest->getCookie(self::$nameCookieCleanCache)) {
-			$cookie = new Cookie($this->nameCookieCleanCache, "", time() - 36000);
+			$cookie = new Cookie(self::$nameCookieCleanCache, "", time() - 60);
 			$cookie->setDomain(Variable::$bxServer->getServerName());
-
+			
 			Variable::$bxResponse->addCookie($cookie);
-
+			
 			return (int)$key;
 		}
 		
@@ -257,7 +257,7 @@ final class User
 	 * @param array $arFields - свойства пользователя;
 	 */
 	public function setClearCacheVar(array &$arFields) {
-		$cookie = new Cookie(self::$nameCookieCleanCache, $arFields["ID"]);
+		$cookie = new Cookie(self::$nameCookieCleanCache, $arFields["ID"], time() + 60);
 		$cookie->setDomain(Variable::$bxServer->getServerName());
 		
 		Variable::$bxResponse->addCookie($cookie);
