@@ -3,9 +3,10 @@
 
 ## Установка/Настройка
 
-1) Компосер ...
+1) Через **Composer** установить пакет (по рекомендациях **1С-Bitrix** в директории `/local/library/`);
 
 2) Перейти на страницу командной строки в административной панели и запустить процесс инсталяции необходимых зависимостей:
+
 ```php
 use SavitskyiHub\BxHelpers\Helpers\Install\Mail_Install_Highload;
 use SavitskyiHub\BxHelpers\Helpers\Install\User_Group_Install;
@@ -13,34 +14,78 @@ use SavitskyiHub\BxHelpers\Helpers\Install\User_Group_Install;
 new Mail_Install_Highload("УКАЗАТЬ_ПРЕФИКС");
 new User_Group_Install();
 ```
-3) Скинуть полностю кеш:
-- в разделе `Languages->PHP` выбрать "Все" и нажать ""
 
-4) Для почтовых событий установить получателей и т.д.
+3) Скинуть полностью кэш в разделе `Настройки -> Настройки продукта -> Автокеширование -> Очистка файлов кеша` выбрать "**Все**" и нажать "**Начать**";
 
-5) Проверить оправку писем и логов
+4) Для почтовых событий установить получателей:
 
-6) В init.php подключить скедующий код:
+- перейти в раздел `Настройки -> Настройки продукта -> Почтовые события -> Почтовые шаблоны`;
+- в фильтре по "**Тип почтового события**" заполнить "**SAVITSKYI_BXHELPERS_HELPERS_MAIL**" и перейти на страницу настроек почтового шаблона;
+- в поле "**Кому**" заполнить необходимые адреса получателей  (для администрации в случае ошибок будет приходить оповещение);
 
-7) Подключить стили и скрипты
+5) В файле `init.php` подключить следующий код:
 
-8) картинкы
+```php
+use Bitrix\Main\Application;
+use Bitrix\Main\EventManager;
 
-9) Проверить отправку письма администрации
+// Include Autoload
+if (file_exists(Application::getDocumentRoot().'/local/library/vendor/autoload.php')) {
+	require_once(Application::getDocumentRoot().'/local/library/vendor/autoload.php');
+	
+	if (class_exists('\SavitskyiHub\BxHelpers\Helpers\BeforeProlog')) {
+		EventManager::getInstance()->addEventHandler('main', 'OnBeforeProlog', ['\SavitskyiHub\BxHelpers\Helpers\BeforeProlog', 'Init']);
+	}
+}
+```
 
-//use SavitskyiHub\BxHelpers\Helpers\Mail\Send;
-//Send::Admin('test asdas dasdasdas test test', 'ERROR');
+6) Подключить необходимые скрипты и стили в шаблоне:
+
+```php
+use SavitskyiHub\BxHelpers\Helpers\Main\Includes;
+
+// Для стилей
+Includes::libraryCss();
+
+// Для скриптов
+Includes::libraryJs();
+```
+
+> **Примечание:** разместить подключение после плагинов и перед подключением скриптов проекта.
+
+7) В директорию `ПУТЬ_К_ДИРЕКТОРИИ_ШаБЛОНА/img/` загрузить необходимые изображения (**главное чтобы они были**):
+
+- no-avatar.png;
+- no-image.png;
+
+## Проверка работы
+
+Проверить отправку писем и логов (рассчитано что на сервере настроено почту), для этого необходимо произвести ошибку:
+
+- в командной строке запустить выполнение следующего кода:
+
+```php
+use SavitskyiHub\BxHelpers\Helpers\Main\User;
+
+$testDebug = User::getInstance();
+$testDebug->$ID;
+```
+
+- в результате на почту должно прийти оповещение об ошибке;
+- в файле `/local/logs/helpers-debug.log` посмотреть чтобы была перехвачена ошибка;
 
 ## Удаление
 
-1) Выполнить команды
+1) Перейти на страницу командной строки в административной панели и запустить процесс деинсталяции зависимостей:
 
- use SavitskyiHub\BxHelpers\Helpers\Install\Mail_Uninstall_Highload;
-   new Mail_Uninstall_Highload("savitskyi");
-   
-    use SavitskyiHub\BxHelpers\Helpers\Install\User_Group_Uninstall;
-   new User_Group_Uninstall();
-   
-2)   В init.php удалить код подвключения что указан в установке:
+```php
+use SavitskyiHub\BxHelpers\Helpers\Install\Mail_Uninstall_Highload;
+use SavitskyiHub\BxHelpers\Helpers\Install\User_Group_Uninstall;
 
-3) Отключить подключения стилей и скриптов у себя в шаблоне
+new Mail_Uninstall_Highload("УКАЗАТЬ_ПРЕФИКС");
+new User_Group_Uninstall();
+```
+
+2) В файле `init.php` удалить код подключения что указан в установке;
+
+3) Отключить подключения стилей и скриптов что указаны в установке;
