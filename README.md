@@ -28,13 +28,14 @@ new User_Group_Install();
 - в командной строке запустить выполнение следующего кода:
 
 ```php
-use SavitskyiHub\BxHelpers\Helpers\Install\Mail_Install_Highload;
+use SavitskyiHub\BxHelpers\Helpers\Main\User;
 
-Mail_Install_Highload::$test;
+$testDebug = User::getInstance();
+$testDebug->$ID;
 ```
 
 - в результате на почту должно прийти оповещение об ошибке;
-- в файле `**/local/logs/**` посмотреть чтобы была перехвачена ошибка;
+- в файле `**/local/logs/helpers-debug.log**` посмотреть чтобы была перехвачена ошибка;
 
 6) В файле `init.php` подключить следующий код:
 
