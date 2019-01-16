@@ -39,7 +39,7 @@ class AfterEpilog
 			"SITE_TEMPLATE_PATH" => \CUtil::JSEscape(SITE_TEMPLATE_PATH)
 		];
 		
-		if (!Variable::$bxRequest->isAjaxRequest() && !Variable::$bxRequest->isAdminSection()) {
+		if (Variable::$bxRequest->isEmpty() && !Variable::$bxRequest->isAjaxRequest() && !Variable::$bxRequest->isAdminSection()) {
 			echo '
 				<script type="text/javascript">
 					BX.ready(function() {
