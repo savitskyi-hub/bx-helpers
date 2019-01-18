@@ -33,14 +33,18 @@ class Debug
 	 * Выполняет логирование цепочки вызовов при исключениях или произвольных вызовах
 	 *
 	 * @param string $message
+	 * @param bool $sendAdmin
 	 */
-	static function writeToFile(string $message) {
+	static function writeToFile(string $message, bool $sendAdmin = true) {
 		$backtrace = \debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 20);
 		$current = current($backtrace);
 		$end = end($backtrace);
 		$time = date("d.m.Y H:i:s");
 		
 		BxDebug::writeToFile([$time, $current, $end], "", self::$filenameLog);
-		Send::Admin($message, "ERROR");
+		
+		if ($sendAdmin) {
+			Send::Admin($message, "ERROR");
+		}
 	}
 }

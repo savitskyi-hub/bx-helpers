@@ -103,7 +103,7 @@ class Send
 				$isSuccess = true;
 			}
 		} catch (SystemException $e) {
-			Debug::writeToFile($e->getMessage());
+			Debug::writeToFile($e->getMessage(), false);
 		}
 		
 		return $isSuccess ?? false;
@@ -160,7 +160,7 @@ class Send
 			}
 			
 		} catch (SystemException $e) {
-			Debug::writeToFile($e->getMessage());
+			Debug::writeToFile($e->getMessage(), false);
 		}
 	}
 }
