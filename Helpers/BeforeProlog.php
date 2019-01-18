@@ -29,7 +29,7 @@ class BeforeProlog
 	 */
 	public static function Init() {
 		EventManager::getInstance()->addEventHandler('main', 'OnAfterUserUpdate', ['\SavitskyiHub\BxHelpers\Helpers\Main\User', 'setClearCacheVar']);
-		EventManager::getInstance()->addEventHandler('main', 'OnAfterEpilog', ['\SavitskyiHub\BxHelpers\Helpers\AfterEpilog', 'Init']);
+		EventManager::getInstance()->addEventHandler('main', 'OnEndBufferContent', ['\SavitskyiHub\BxHelpers\Helpers\BeforeViewContent', 'Init']);
 		
 		Variable::getInstance();
 		User::getInstance();
