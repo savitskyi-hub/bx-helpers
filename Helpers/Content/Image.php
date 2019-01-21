@@ -149,7 +149,7 @@ class Image
 						$createImg .= 'src="'.HtmlFilter::encode($img["default"]).$fileVersion.'"';
 					}
 				} else {
-					$createImg = '<div data-upload-image="Y" data-'.$alt.' data-'.$class.' data-attrs="'.str_replace('"', '\'', $attrs).'"';
+					$createImg = '<div data-upload-image="Y" data-'.$alt.' data-'.$class.' data-attrs="'.str_replace('"', '\'', $attrs).'" ';
 					$prefixData = 'data-';
 					
 					if (1 == count($img)) {

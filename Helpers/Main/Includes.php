@@ -50,6 +50,10 @@ class Includes
 		$resultJsList = File::getRecursiveFilesInDir($startPath, (Method::isUseMinifiedAssets()? 'min.js' : 'js'));
 		$resultJsList = ($resultJsList? $resultJsList : []);
 		
+		if ($resultJsList) {
+			rsort($resultJsList);
+		}
+		
 		foreach ($resultJsList as $path2js) {
 			Asset::getInstance()->addJs(explode(Application::getDocumentRoot(), $path2js)[1]);
 		}
