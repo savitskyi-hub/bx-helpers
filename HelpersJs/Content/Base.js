@@ -47,17 +47,20 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Base');
 
 			let areaCompBlocks = document.querySelectorAll('[id^="bx_incl_area_"], [id^="comp_"]'),
 				editStyleList = ["display", "flex-grow", "flex-wrap", "align-items", "justify-content", "width", "max-width"],
-				firstParentNotAreaComp, obParentStyle, areaCompStyle, transformName;
+				firstParentNotAreaComp, obParentStyle, areaCompStyle, transformName, i, j, node, styleName;
 
 			if (areaCompBlocks.length) {
-				areaCompBlocks.forEach(function(node) {
+				for (i = 0; i < areaCompBlocks.length; ++i) {
+					node = areaCompBlocks[i];
 					firstParentNotAreaComp = node.closest((0 > node.id.indexOf('comp_')? ':not([id^="bx_incl_area_"])' : ':not([id^="comp_"])'));
 
 					if (firstParentNotAreaComp != null) {
 						obParentStyle = getComputedStyle(firstParentNotAreaComp);
 						areaCompStyle = getComputedStyle(node);
 
-						editStyleList.forEach(function(styleName) {
+						for (j = 0; j < editStyleList.length; ++j) {
+							styleName = editStyleList[j];
+
 							if (areaCompStyle[styleName] != obParentStyle[styleName]) {
 								transformName = styleName.replace(/(-\w)/, function(match, p1, offset, string) {
 									return p1.substr(1).toUpperCase();
@@ -65,9 +68,9 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Base');
 
 								node.style[transformName] = obParentStyle[styleName];
 							}
-						});
+						}
 					}
-				});
+				}
 			}
 		},
 

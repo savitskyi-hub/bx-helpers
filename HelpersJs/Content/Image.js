@@ -30,10 +30,11 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Image');
 			}
 
 			let asyncUploadImages = BX.findChildren(nodeParent, {attribute : {"data-upload-image" : "Y"}}, true, true),
-				attrs, src, alt, className, sizes, srcset, dataAttrs, arAttr;
+				attrs, src, alt, className, sizes, srcset, dataAttrs, arAttr, i, nodeDivImage;
 
 			if (asyncUploadImages.length) {
-				asyncUploadImages.forEach(function(nodeDivImage) {
+				for (i = 0; i < asyncUploadImages.length; ++i) {
+					nodeDivImage = asyncUploadImages[i];
 					attrs = {};
 
 					if (undefined != (src = nodeDivImage.dataset["src"])) {
@@ -71,7 +72,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Image');
 					}
 
 					nodeDivImage.replaceWith(BX.create('IMG', {attrs : attrs}));
-				});
+				}
 			}
 		}
 	};
