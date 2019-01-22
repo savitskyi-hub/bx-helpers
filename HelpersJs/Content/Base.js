@@ -45,7 +45,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Base');
 		stylizeSystemBlock : function() {
 			'use strict';
 
-			let areaCompBlocks = document.querySelectorAll('[id^="bx_incl_area_"], [id^="comp_"]'),
+			var areaCompBlocks = document.querySelectorAll('[id^="bx_incl_area_"], [id^="comp_"]'),
 				editStyleList = ["display", "flex-grow", "flex-wrap", "align-items", "justify-content", "width", "max-width"],
 				firstParentNotAreaComp, obParentStyle, areaCompStyle, transformName, i, j, node, styleName;
 
@@ -81,7 +81,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Base');
 		 */
 		autoReplaceCallto2TellInLink : function() {
 			if (!BX.browser.IsMobile()) {
-				let links = BX.findChild(BX('bx-html'), {tag : 'A'}, true, true),
+				var links = BX.findChild(BX('bx-html'), {tag : 'A'}, true, true),
 					href;
 
 				if (null != links) {

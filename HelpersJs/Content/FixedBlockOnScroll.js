@@ -44,7 +44,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.FixedBlockOnScroll');
 		init : function(obInitItem) {
 			'use strict';
 
-			let obList = {},
+			var obList = {},
 				obFixedListBlock = {},
 				arFunction = [],
 				arFuncProp = {},
@@ -104,13 +104,13 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.FixedBlockOnScroll');
 					arFunction[p] = function(key) {
 						arFuncProp = obList[key];
 
-						let scrollBlockNode = document.querySelector(arFuncProp.scrollBlock),
+						var scrollBlockNode = document.querySelector(arFuncProp.scrollBlock),
 							containerNode = document.querySelector(arFuncProp.container),
 							parentStaticBlockNode = document.querySelector(arFuncProp.parentStaticBlock),
 							whoNode = document.querySelector(arFuncProp.who),
 							who2toNode = document.querySelector(arFuncProp.who2to);
 
-						let namespace = BX.SavitskyiHub.BxHelpers.Helpers.Content.FixedBlockOnScroll,
+						var namespace = BX.SavitskyiHub.BxHelpers.Helpers.Content.FixedBlockOnScroll,
 							scrollTop, scrollBlockCompensateMargin, scrollBlockHight, scrollBlockOffetTop, scrollBlockOffetBottom,
 							containerCompensateMargin, containerHeight, containerOffsetTop, containerOffsetBottom,
 							parentStaticBlockWidth, parentStaticOffsetTop,
@@ -204,7 +204,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.FixedBlockOnScroll');
 		 * @param elNode
 		 */
 		getMarginCompensate : function(elNode) {
-			let marginTop = parseInt(getComputedStyle(elNode)['margin-top']);
+			var marginTop = parseInt(getComputedStyle(elNode)['margin-top']);
 
 			if (marginTop) {
 

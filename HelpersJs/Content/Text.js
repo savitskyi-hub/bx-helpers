@@ -25,7 +25,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Text');
 		getFullTextInNode : function(el) {
 			'use strict';
 
-			let n, a = '', walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+			var n, a = '', walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
 
 			while (n = walk.nextNode()) {
 				a += n.textContent;
@@ -42,7 +42,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Text');
 		copyTextToClipboard : function(text) {
 			'use strict';
 
-			let textArea = document.createElement("textarea"), successful, msg;
+			var textArea = document.createElement("textarea"), successful, msg;
 
 			textArea.style.position = 'fixed';
 			textArea.style.top = 0;

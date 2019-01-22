@@ -29,7 +29,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Image');
 				return false;
 			}
 
-			let asyncUploadImages = BX.findChildren(nodeParent, {attribute : {"data-upload-image" : "Y"}}, true, true),
+			var asyncUploadImages = BX.findChildren(nodeParent, {attribute : {"data-upload-image" : "Y"}}, true, true),
 				attrs, src, alt, className, sizes, srcset, dataAttrs, arAttr, i, nodeDivImage;
 
 			if (asyncUploadImages.length) {

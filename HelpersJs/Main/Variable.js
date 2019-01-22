@@ -22,7 +22,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Main.Variable');
 		 * @param arr
 		 */
 		cleanFalseInArray : function(arr) {
-			let newArray = new Array(),
+			var newArray = new Array(),
 				i = 0;
 
 			for (i; i < arr.length; i++) {
