@@ -44,11 +44,15 @@ class Dir
 	}
 	
 	/**
-	 * Возвращает префикс (из названия домена) для указания в названии директории хранения кеша
+	 * - возвращает префикс (из названия домена) для указания названия директории хранения кеша;
+	 * - если скрипт был запущен из под "cron" берем название корневой директории сайта (она совпадает с доменом)
 	 *
 	 * @return string
 	 */
 	public static function getCacheDirectoryPrefixName(): string {
-		return '/'.explode(".", Application::getInstance()->getContext()->getServer()->get("SERVER_NAME"))[0];
+		$serverName = Application::getInstance()->getContext()->getServer()->get("SERVER_NAME");
+		$serverName = ($serverName? $serverName : (new Directory(Application::getDocumentRoot()))->getName());
+		
+		return '/'.explode(".", $serverName)[0];
 	}
 }
