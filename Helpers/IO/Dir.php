@@ -12,6 +12,8 @@
 namespace SavitskyiHub\BxHelpers\Helpers\IO;
 
 use Bitrix\Main\Application;
+use Bitrix\Main\IO\Directory;
+use Bitrix\Main\Text\BinaryString;
 
 /**
  * Class Dir
