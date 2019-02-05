@@ -58,8 +58,13 @@ class BeforeViewContent
 				});
 			</script>';
 			
-			if (preg_match("#</body>#", $content)) {
-				$content = preg_replace("#</body>#", $helpersOptionJS."</body>", $content);
+			/**
+			 * Реализуем вставку перед подключением пользовательских скриптов
+			 */
+			$pattern = '<script.+?src="/bitrix/cache/js/.+?template_.+?template_';
+			
+			if (preg_match('#'.$pattern.'#', $content)) {
+				$content = preg_replace('#('.$pattern.')#', $helpersOptionJS." $1", $content, 1);
 			}
 		}
 		
