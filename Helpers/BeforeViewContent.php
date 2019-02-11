@@ -28,18 +28,6 @@ class BeforeViewContent
 	 */
 	public static function Init(&$content) {
 		
-		/**
-		 * - заполняем глобальные параметры что будут доступны для дальнейшей работы с ними;
-		 * - при Ajax, внутреннего редиректа, для админ части, убираем вывод, чтобы небыло конфликтов;
-		 */
-		$OPTION = [
-			"LANGUAGE_ID" => LANGUAGE_ID,
-			"SITE_DIR" => \CUtil::JSEscape(SITE_DIR),
-			"SITE_ID" => SITE_ID,
-			"SITE_COOKIE_PREFIX" => mb_strtoupper(BinaryString::getSubstring(Dir::getCacheDirectoryPrefixName(), 1)).'_',
-			"SITE_TEMPLATE_PATH" => \CUtil::JSEscape(SITE_TEMPLATE_PATH)
-		];
-		
 		$isBxRand = 0;
 		$isAjax = Variable::$bxRequest->isAjaxRequest();
 		$isAdminSection = Variable::$bxRequest->isAdminSection();
@@ -48,7 +36,19 @@ class BeforeViewContent
 			$isBxRand = BinaryString::getLength(BinaryString::getPosition($bxRand, "bxrand"));
 		}
 		
+		/**
+		 * - заполняем глобальные параметры что будут доступны для дальнейшей работы с ними;
+		 * - при Ajax, внутреннего редиректа, для админ части, убираем вывод чтобы небыло конфликтов;
+		 */
 		if (!$isBxRand && !$isAjax && !$isAdminSection) {
+			$OPTION = [
+				"LANGUAGE_ID" => LANGUAGE_ID,
+				"SITE_DIR" => \CUtil::JSEscape(SITE_DIR),
+				"SITE_ID" => SITE_ID,
+				"SITE_COOKIE_PREFIX" => mb_strtoupper(BinaryString::getSubstring(Dir::getCacheDirectoryPrefixName(), 1)).'_',
+				"SITE_TEMPLATE_PATH" => \CUtil::JSEscape(SITE_TEMPLATE_PATH)
+			];
+			
 			$helpersOptionJS = '
 			<script type="text/javascript">
 				BX.ready(function() {
