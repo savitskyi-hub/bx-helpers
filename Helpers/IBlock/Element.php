@@ -50,9 +50,9 @@ class Element
 		$rsNavPrev = \CIBlockElement::GetList(
 			[$sortBy_1 => $orderBy_1, $sortBy_2 => $orderBy_2],
 			($sectionID?
-				["IBLOCK_ID" => $iBlockID, "ACTIVE" => "Y", "IBLOCK_SECTION_ID" => $sectionID]
+				["=IBLOCK_ID" => $iBlockID, "=ACTIVE" => "Y", "=IBLOCK_SECTION_ID" => $sectionID]
 				:
-				["IBLOCK_ID" => $iBlockID, "ACTIVE" => "Y"]
+				["=IBLOCK_ID" => $iBlockID, "=ACTIVE" => "Y"]
 			),
 			false,
 			["nPageSize" => 1, "nElementID" => $elementID]

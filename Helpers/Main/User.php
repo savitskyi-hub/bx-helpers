@@ -157,20 +157,24 @@ final class User
 						"GROUP" => $this->GROUP,
 						"PROP" => $this->PROP
 					]);
+				} else {
+					$isBad = true;
 				}
 				
-				/**
-				 * Если пользователь заблокирован делаем отметку
-				 */
-				if ($this->isInGroup("BANED_USERS")) {
-					$this->isBan = true;
-				}
-				
-				/**
-				 * Если пользователь был удален делаем отметку
-				 */
-				if ($this->isInGroup("DELETED_USERS")) {
-					$this->isDelete = true;
+				if (!isset($isBad)) {
+					/**
+					 * Если пользователь заблокирован делаем отметку
+					 */
+					if ($this->isInGroup("BANED_USERS")) {
+						$this->isBan = true;
+					}
+					
+					/**
+					 * Если пользователь был удален делаем отметку
+					 */
+					if ($this->isInGroup("DELETED_USERS")) {
+						$this->isDelete = true;
+					}
 				}
 			}
 		} catch (SystemException $e) {

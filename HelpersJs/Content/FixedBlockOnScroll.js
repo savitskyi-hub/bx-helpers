@@ -139,7 +139,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.FixedBlockOnScroll');
 
 						// Static position
 						parentStaticBlockWidth = parentStaticBlockNode.offsetWidth;
-						parentStaticOffsetTop = Math.floor(containerNode.getBoundingClientRect().top + containerCompensateMargin);
+						parentStaticOffsetTop = Math.floor(parentStaticBlockNode.getBoundingClientRect().top + containerCompensateMargin);
 
 						// Interactive
 						isGoodStructure = (containerHeight > scrollBlockHight && whoNode.offsetHeight < who2toNode.offsetHeight);

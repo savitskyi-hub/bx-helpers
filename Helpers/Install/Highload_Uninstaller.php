@@ -92,7 +92,7 @@ class Highload_Uninstaller
 	 */
 	private static function isInstallHighloadTable(string $tableName): bool {
 		$rsIsInstall = HighloadBlockTable::getList([
-			"filter" => ["TABLE_NAME" => $tableName],
+			"filter" => ["=TABLE_NAME" => $tableName],
 			"select" => ["ID"],
 			"limit" => 1
 		]);

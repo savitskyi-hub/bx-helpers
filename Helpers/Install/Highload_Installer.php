@@ -198,7 +198,7 @@ class Highload_Installer
 	 */
 	private static function isInstallHighloadTable(string $tableName): bool {
 		$rsIsInstall = HighloadBlockTable::getList([
-			"filter" => ["TABLE_NAME" => $tableName],
+			"filter" => ["=TABLE_NAME" => $tableName],
 			"select" => ["ID"],
 			"limit" => 1
 		]);
@@ -239,7 +239,7 @@ class Highload_Installer
 	 */
 	private static function isInstalledHighloadTableLangName(): bool {
 		$rsIsLangName = HighloadBlockLangTable::getList([
-			"filter" => ['ID' => self::$tableID],
+			"filter" => ['=ID' => self::$tableID],
 			"select" => ["ID"],
 			"limit" => 1
 		]);

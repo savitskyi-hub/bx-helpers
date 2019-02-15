@@ -79,11 +79,11 @@ final class Variable
 			self::$bxRequest = self::$bxContext->getRequest();
 			self::$bxResponse = self::$bxContext->getResponse();
 			
-			Loader::includeModule("iblock");
 			Loader::includeModule("main");
+			Loader::includeModule("iblock");
 			
 			$сache = Cache::createInstance();
-			$cacheId = SITE_ID.''.LANGUAGE_ID;
+			$cacheId = SITE_ID.'_'.LANGUAGE_ID;
 			$cacheTime = self::$cacheTime;
 			$cacheDir = Dir::getCacheDirectoryPrefixName().self::$cacheDir;
 			
@@ -112,7 +112,7 @@ final class Variable
 					"bxIbEnumProp" => self::$bxIbEnumProp
 				]);
 			} else {
-				throw new SystemException("Невозможно инициализировать работу кэширования: Varaible constructor");
+				throw new SystemException("Невозможно инициализировать работу кэширования: Varaible __construct");
 			}
 			
 		} catch (SystemException $e) {

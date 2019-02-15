@@ -60,6 +60,8 @@ class Send
 			$enumCode = "HLBLOCK_".$entityID."_UF_TYPE_SEND";
 			$enumCode2 = "HLBLOCK_".$entityID."_UF_TYPE_STATUS";
 			
+			Variable::getInstance();
+			
 			$messReporting = Variable::$bxEnumField["XML2VAL"][$enumCode][$typeReporting];
 			$typeReporting = Variable::$bxEnumField["XML2ID"][$enumCode][$typeReporting];
 			$typeStatus = Variable::$bxEnumField["XML2ID"][$enumCode2]["NOT_PROCESSED"];
@@ -120,9 +122,9 @@ class Send
 	private static function checkLimitSendAdmin(string $typeReporting, int $entityID): bool {
 		$obHd = new Instance($entityID);
 		$rsHistory = $obHd->entityDataClass::getList([
-			'select' => ['ID'],
-			'filter' => [
-				"UF_TYPE_SEND" => $typeReporting,
+			"select" => ['ID'],
+			"filter" => [
+				"=UF_TYPE_SEND" => $typeReporting,
 				">=UF_DATETIME_CREATE" => [ConvertTimeStamp(time() - 3600 * self::$periodBlocked, "FULL")]
 			]
 		]);

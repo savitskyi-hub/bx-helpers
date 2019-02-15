@@ -81,7 +81,7 @@ class Instance
 		Loader::includeModule("highloadblock");
 		
 		$rs = HighloadBlockTable::getList([
-			"filter" => ["NAME" => $entityName],
+			"filter" => ["=NAME" => $entityName],
 			"select" => ["ID"],
 			"limit" => 1
 		]);

@@ -52,7 +52,7 @@ class Base
 		$timeStamp = MakeTimeStamp($dateTime);
 		
 		if ($timeStamp) {
-			$return = '<time datetime="'.FormatDate("Y-m-d", $timeStamp).'">'.FormatDate($formate, $timeStamp).'</time>';
+			$return = '<time datetime="'.FormatDate("Y-m-d H:i", $timeStamp).'">'.FormatDate($formate, $timeStamp).'</time>';
 		}
 		
 		return $return ?? '';
