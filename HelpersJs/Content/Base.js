@@ -11,7 +11,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Base');
 
 (function() {
 	'use strict';
-
+	
 	/**
 	 * Объект для работы с базовыми методами что нужны для удобной и качественной роботы проекта
 	 */
@@ -80,6 +80,8 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Base');
 		 * - в атрибуте "href" присутствует "callto";
 		 */
 		autoReplaceCallto2TellInLink : function() {
+			'use strict';
+
 			if (!BX.browser.IsMobile()) {
 				var links = BX.findChild(BX('bx-html'), {tag : 'A'}, true, true),
 					href;
@@ -94,7 +96,67 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Base');
 					});
 				}
 			}
-		}
+		},
+
+		/**
+		 *
+		 *
+		 */
+		replaceCaptchaSections : function() {
+			'use strict';
+
+			var arCaptchaSections = BX.findChildren(BX('bx-html'), {tag : 'DIV', className : 'helpers-form-captcha'}, true),
+				arCaptchaReplaces = [], i, arData;
+
+			if (!arCaptchaSections.length) {
+				return false;
+			}
+
+			for (i = 0; i < arCaptchaSections.length; ++i) {
+				arData = arCaptchaSections[i].dataset;
+
+				if (undefined != arData.id) {
+					console.error("Отсутствует идентификатор секции Captcha");
+				} else {
+					arCaptchaReplaces.push(arData.id);
+				}
+			}
+
+			if (!arCaptchaReplaces.length) {
+				return false;
+			}
+
+//			$.ajax({
+//				url : SITE_DIR + 'ajax/captcha.php',
+//				type : "POST",
+//				data : arReplaceCaptcha,
+//				success : function(msg) {
+//					var response = JSON.parse(msg),
+//						newContainsCapcha = $(".capcha_replace");
+//
+//					newContainsCapcha.each(function() {
+//						if (response.result[$(this).data("id")]) {
+//							$(this).closest('.input-section').html(response.result[$(this).data("id")]);
+//						}
+//					});
+//				}
+//			});
+		},
+
+//		refreshCaptcha : function(containerReplace) {
+//			$.ajax({
+//				url : SITE_DIR + "ajax/captcha.php",
+//				type : "POST",
+//				data : {mode : 1},
+//				success : function(msg) {
+//					var response = JSON.parse(msg);
+//
+//					if (response.status) {
+//						containerReplace.html($(response.content).html());
+//					}
+//				}
+//			});
+//		}
 	};
 
 	/**

@@ -203,14 +203,14 @@ final class Variable
 	 */
 	private static function getAllIbEnumProp(bool $reverseXml2Val = false, bool $responseXml2Id = false, bool $reverseId2Xml = false): array {
 		$arIbList = [];
-		$rsIbList = \CIBlock::GetList(["SORT" => "ASC"], ["CHECK_PERMISSIONS" => "N"]);
+		$rsIbList = \CIBlock::GetList(["SORT" => "ASC"], ["=CHECK_PERMISSIONS" => "N"]);
 		
 		while ($arIb = $rsIbList->Fetch()) {
 			$arIbList[] = $arIb["ID"];
 		}
 		
 		$arEnumList = [];
-		$rsEnumList = \CIBlockProperty::GetList([], ["PROPERTY_TYPE" => "L"]);
+		$rsEnumList = \CIBlockProperty::GetList([], ["=PROPERTY_TYPE" => "L"]);
 		
 		while ($arEnum = $rsEnumList->Fetch()) {
 			$arEnumList[] = $arEnum;
@@ -221,7 +221,7 @@ final class Variable
 			$arEnumFieldList = [];
 			
 			foreach ($arIbList as $ibID) {
-				$rsPropEnums = \CIBlockPropertyEnum::GetList(["SORT" => "ASC"], ["IBLOCK_ID" => $ibID]);
+				$rsPropEnums = \CIBlockPropertyEnum::GetList(["SORT" => "ASC"], ["=IBLOCK_ID" => $ibID]);
 				
 				while ($arEnumField = $rsPropEnums->GetNext()) {
 					$arEnumFieldList[] = $arEnumField;

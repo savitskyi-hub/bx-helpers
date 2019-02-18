@@ -28,7 +28,6 @@ class BeforeViewContent
 	 * - метод автоматически выполняется через обработчик в прологе ядра;
 	 */
 	public static function Init() {
-		
 		$isBxRand = 0;
 		$isAjax = Variable::$bxRequest->isAjaxRequest();
 		$isAdminSection = Variable::$bxRequest->isAdminSection();

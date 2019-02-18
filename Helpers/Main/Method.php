@@ -13,6 +13,8 @@ namespace SavitskyiHub\BxHelpers\Helpers\Main;
 
 use Bitrix\Main\Application;
 use Bitrix\Main\Config\Option;
+use Bitrix\Main\Text\HtmlFilter;
+use Bitrix\Main\Authentication\ApplicationPasswordTable;
 
 /**
  * Class Base
@@ -53,5 +55,29 @@ class Method
 	 */
 	public static function isSection(string $pathSecton): bool {
 		return preg_match("#^".SITE_DIR.$pathSecton."#ui", Application::getInstance()->getContext()->getRequest()->getRequestedPage());
+	}
+	
+	/**
+	 * Генерация новых параметров для новой CAPTCHA
+	 *
+	 * @return array
+	 */
+	public static function getNewParamsCaptcha(): array {
+		require_once(Application::getDocumentRoot()."/bitrix/modules/main/classes/general/captcha.php");
+		
+		$captcha = new \CCaptcha();
+		$password = Option::get("main", "captcha_password", "");
+		
+		if (0 >= strlen($password)) {
+			Option::set("main", "captcha_password", ($password = ApplicationPasswordTable::generatePassword()));
+		}
+		
+		$captcha->SetCodeCrypt($password);
+		$captchaCode = HtmlFilter::encode($captcha->GetCodeCrypt());
+		
+		return [
+			'code' => $captchaCode,
+			'path' => '/bitrix/tools/captcha.php?captcha_code='.$captchaCode
+		];
 	}
 }

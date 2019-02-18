@@ -190,7 +190,7 @@ final class User
 	private function getSystemGroup(): array {
 		$by = "c_sort";
 		$order = "asc";
-		$rsGroups = \CGroup::GetList($by, $order, ["ACTIVE" => "Y"]);
+		$rsGroups = \CGroup::GetList($by, $order, ["=ACTIVE" => "Y"]);
 		
 		if ($rsGroups && $rsGroups->result->num_rows) {
 			$arReturn = [];
@@ -217,7 +217,7 @@ final class User
 			}
 			
 			$rsUserProps = UserTable::GetList([
-				"filter" => ["ID" => $this->ID],
+				"filter" => ["=ID" => $this->ID],
 				"limit" => 1,
 				"select" => ["*", "UF_*"]
 			]);
@@ -276,7 +276,7 @@ final class User
 	public function getIdByLogin(string $login): int {
 		$rsIdByLogin = UserTable::GetList([
 			"select" => ["ID"],
-			"filter" => ["LOGIN" => $login],
+			"filter" => ["=LOGIN" => $login],
 			"limit" => 1
 		]);
 		

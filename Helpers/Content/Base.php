@@ -11,9 +11,6 @@
 
 namespace SavitskyiHub\BxHelpers\Helpers\Content;
 
-use Bitrix\Main\Application;
-use Bitrix\Main\Authentication\ApplicationPasswordTable;
-use Bitrix\Main\Config\Option;
 use Bitrix\Main\Text\HtmlFilter;
 
 /**
@@ -52,30 +49,35 @@ class Base
 		$timeStamp = MakeTimeStamp($dateTime);
 		
 		if ($timeStamp) {
-			$return = '<time datetime="'.FormatDate("Y-m-d H:i", $timeStamp).'">'.FormatDate($formate, $timeStamp).'</time>';
+			$return = '<time datetime="'.FormatDate("Y-m-d", $timeStamp).'">'.FormatDate($formate, $timeStamp).'</time>';
 		}
 		
 		return $return ?? '';
 	}
 	
 	/**
-	 * Генерирует путь к новой CAPTCHA
+	 * Возвращает сформированный HTML контент в котором присутствует Captcha
 	 *
-	 * @return string
+	 * @param array $IDs - для множественной генерации;
+	 * @param string $textError - сообщение при ошибке;
+	 * @return array
 	 */
-	public static function getNewPath2Captcha(): string {
-		require_once(Application::getDocumentRoot()."/bitrix/modules/main/classes/general/captcha.php");
+	public static function getCaptcha(array $IDs = [0], string $textError = 'Введите слово на картинке'): array {
+		$arReturn = [];
+		$textError = HtmlFilter::encode($textError);
 		
-		$captcha = new \CCaptcha();
-		$password = Option::get("main", "captcha_password", "");
-		
-		if (strlen($password) <= 0) {
-			Option::set("main", "captcha_password", ($password = ApplicationPasswordTable::generatePassword()));
+		foreach ($IDs as $id) {
+			$arNewCaptcha = \SavitskyiHub\BxHelpers\Helpers\Main\Method::getNewParamsCaptcha();
+			$arReturn[$id] = '
+				<div class="helpers-form-captcha">
+					<img src="'.$arNewCaptcha["path"].'" alt="CAPTCHA">
+					<input name="captcha_code" type="hidden" value="'.$arNewCaptcha["code"].'">
+					<input name="captcha_word" type="text" value="" placeholder="'.$textError.'" required autocomplete="off">
+					<span class="helpers-form-captcha-error">'.$textError.'</span>
+				</div>';
 		}
 		
-		$captcha->SetCodeCrypt($password);
-		
-		return '/bitrix/tools/captcha.php?captcha_code='.HtmlFilter::encode($captcha->GetCodeCrypt());
+		return $arReturn;
 	}
 	
 	/**
