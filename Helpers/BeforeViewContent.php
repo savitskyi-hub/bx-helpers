@@ -11,6 +11,7 @@
 
 namespace SavitskyiHub\BxHelpers\Helpers;
 
+use Bitrix\Main\Page\Asset;
 use Bitrix\Main\Text\BinaryString;
 use SavitskyiHub\BxHelpers\Helpers\IO\Dir;
 use SavitskyiHub\BxHelpers\Helpers\Main\Variable;
@@ -26,7 +27,7 @@ class BeforeViewContent
 	 * - инициализирует передачу данных в JS;
 	 * - метод автоматически выполняется через обработчик в прологе ядра;
 	 */
-	public static function Init(&$content) {
+	public static function Init() {
 		
 		$isBxRand = 0;
 		$isAjax = Variable::$bxRequest->isAjaxRequest();
@@ -41,19 +42,17 @@ class BeforeViewContent
 		 * - при Ajax, внутреннего редиректа, для админ части, убираем вывод чтобы небыло конфликтов;
 		 */
 		if (!$isBxRand && !$isAjax && !$isAdminSection) {
-			$OPTION = [
-				"LANGUAGE_ID" => LANGUAGE_ID,
-				"SITE_DIR" => \CUtil::JSEscape(SITE_DIR),
-				"SITE_ID" => SITE_ID,
-				"SITE_COOKIE_PREFIX" => mb_strtoupper(BinaryString::getSubstring(Dir::getCacheDirectoryPrefixName(), 1)).'_',
-				"SITE_TEMPLATE_PATH" => \CUtil::JSEscape(SITE_TEMPLATE_PATH)
-			];
-			
 			$helpersOptionJS = '
 			<script type="text/javascript">
 				BX.ready(function() {
 					if (undefined != BX.SavitskyiHub) {
-						BX.SavitskyiHub.BxHelpers.Helpers.Option = '.\CUtil::PhpToJSObject($OPTION).';
+						BX.SavitskyiHub.BxHelpers.Helpers.Option = '.\CUtil::PhpToJSObject([
+							"LANGUAGE_ID" => LANGUAGE_ID,
+							"SITE_DIR" => \CUtil::JSEscape(SITE_DIR),
+							"SITE_ID" => SITE_ID,
+							"SITE_COOKIE_PREFIX" => mb_strtoupper(BinaryString::getSubstring(Dir::getCacheDirectoryPrefixName(), 1)).'_',
+							"SITE_TEMPLATE_PATH" => \CUtil::JSEscape(SITE_TEMPLATE_PATH)
+						]).';
 					}
 				});
 			</script>';
@@ -61,12 +60,7 @@ class BeforeViewContent
 			/**
 			 * Реализуем вставку перед подключением пользовательских скриптов
 			 */
-			$pattern = '<script.+?src="/bitrix/cache/js/.+?template_.+?template_';
-			
-			if (preg_match('#'.$pattern.'#', $content)) {
-				$content = preg_replace('#('.$pattern.')#', $helpersOptionJS." $1", $content, 1);
-			}
+			Asset::getInstance()->addString($helpersOptionJS, true);
 		}
-		
 	}
 }
