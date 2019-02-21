@@ -11,6 +11,7 @@
 
 namespace SavitskyiHub\BxHelpers\Helpers;
 
+use Bitrix\Main\Application;
 use Bitrix\Main\Page\Asset;
 use Bitrix\Main\Text\BinaryString;
 use SavitskyiHub\BxHelpers\Helpers\IO\Dir;
@@ -50,7 +51,8 @@ class BeforeViewContent
 							"SITE_DIR" => \CUtil::JSEscape(SITE_DIR),
 							"SITE_ID" => SITE_ID,
 							"SITE_COOKIE_PREFIX" => mb_strtoupper(BinaryString::getSubstring(Dir::getCacheDirectoryPrefixName(), 1)).'_',
-							"SITE_TEMPLATE_PATH" => \CUtil::JSEscape(SITE_TEMPLATE_PATH)
+							"SITE_TEMPLATE_PATH" => \CUtil::JSEscape(SITE_TEMPLATE_PATH),
+							"HELPERS_LIBRARY_PATH" => Dir::getPackagePath(false)
 						]).';
 					}
 				});

@@ -11,18 +11,27 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Base');
 
 (function() {
 	'use strict';
-	
+
 	/**
 	 * Объект для работы с базовыми методами что нужны для удобной и качественной роботы проекта
 	 */
 	BX.SavitskyiHub.BxHelpers.Helpers.Content.Base = {
+		/**
+		 * Параметры объекта
+		 */
 		params : {
 			useFlexContainerEditMode : true,
-			useReplaceCallto2TellInLink : true
+			useReplaceCallto2TellInLink : true,
+			useReplaceCaptchaSections : true
 		},
 
 		/**
-		 * Для автоматической работы некоторых методов производим автозапуск
+		 * Для отладки собираем информацию
+		 */
+		debugMessage : [],
+
+		/**
+		 * Для автоматической работы некоторых методов производим автозапуск;
 		 */
 		init : function() {
 			if (this.params.useFlexContainerEditMode) {
@@ -32,12 +41,17 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Base');
 			if (this.params.useReplaceCallto2TellInLink) {
 				this.autoReplaceCallto2TellInLink();
 			}
+
+			if (this.params.useReplaceCaptchaSections) {
+				this.autoReplaceCaptchaSections();
+			}
 		},
 
 		/**
 		 * При включении режима правки система автоматически набрасывает технические html блоки которые нужны для визуального
 		 * представления или выделения компонентов. Если в верстке идет разметка методом Flex блоков, то при влючении режима правки все собьется,
 		 * а дописывать везде дополнительные свойства лишняя робота и не нужная, для этого:
+		 *
 		 * - происходить поиск всех блоков за условием "areaCompBlocks";
 		 * - для каждого найденего блока происходит поиск первого родителя, в которого будет скопированы свойства что указаны "editStyleList";
 		 * - скопированные свойства рекурсивным методом для выбранных блоков переопределяются автоматически;
@@ -76,6 +90,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Base');
 
 		/**
 		 * Производит автозамену "callto" на "tel" в требуте "href" в случаи:
+		 *
 		 * - если пользователь зашел на сайт из телефона;
 		 * - в атрибуте "href" присутствует "callto";
 		 */
@@ -99,64 +114,91 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Base');
 		},
 
 		/**
+		 * Производит автозамену DOM элемента на полноценный контент нового поля для ввода Captcha, для этого:
 		 *
-		 *
+		 * - на странице должен быть определен елемент следующего вида: <div class="helpers-form-captcha-replace" data-id="ID_CAPTCHA"></div>;
+		 * - необходимо обязательно определить идентификатор "ID_CAPTCHA";
 		 */
-		replaceCaptchaSections : function() {
+		autoReplaceCaptchaSections : function() {
 			'use strict';
 
-			var arCaptchaSections = BX.findChildren(BX('bx-html'), {tag : 'DIV', className : 'helpers-form-captcha'}, true),
-				arCaptchaReplaces = [], i, arData;
+			var arCaptchaSections = BX.findChildren(BX('bx-html'), {tag : 'DIV', className : 'helpers-form-captcha-replace'}, true),
+				ajaxPath = BX.SavitskyiHub.BxHelpers.Helpers.Option['HELPERS_LIBRARY_PATH'] + '/HelpersAjax/Content/Captcha.php',
+				arCaptchaReplaces = [], i, arData, captcha;
 
-			if (!arCaptchaSections.length) {
-				return false;
-			}
+			if (arCaptchaSections.length) {
+				for (i = 0; i < arCaptchaSections.length; ++i) {
+					arData = arCaptchaSections[i].dataset;
 
-			for (i = 0; i < arCaptchaSections.length; ++i) {
-				arData = arCaptchaSections[i].dataset;
+					if (undefined == arData.id) {
+						this.debugMessage.push('Missing Captcha dataset ID');
+					} else {
+						arCaptchaReplaces.push(arData.id);
+					}
+				}
 
-				if (undefined != arData.id) {
-					console.error("Отсутствует идентификатор секции Captcha");
-				} else {
-					arCaptchaReplaces.push(arData.id);
+				if (arCaptchaReplaces.length) {
+					$.ajax({
+						url : ajaxPath,
+						type : "POST",
+						data : {
+							'mode' : "GET_LIST",
+							'IDs' : arCaptchaReplaces
+						},
+						success : BX.delegate(function(response) {
+							var response = JSON.parse(response);
+
+							if ('success' == response.status) {
+
+								for (i = 0; i < arCaptchaSections.length; ++i) {
+									arData = arCaptchaSections[i].dataset;
+									captcha = response.result[arData.id];
+
+									if (undefined != captcha) {
+										arCaptchaSections[i].parentNode.innerHTML = captcha;
+									}
+								}
+
+							} else {
+								this.debugMessage.push(response.message);
+							}
+						}, this)
+					});
 				}
 			}
-
-			if (!arCaptchaReplaces.length) {
-				return false;
-			}
-
-//			$.ajax({
-//				url : SITE_DIR + 'ajax/captcha.php',
-//				type : "POST",
-//				data : arReplaceCaptcha,
-//				success : function(msg) {
-//					var response = JSON.parse(msg),
-//						newContainsCapcha = $(".capcha_replace");
-//
-//					newContainsCapcha.each(function() {
-//						if (response.result[$(this).data("id")]) {
-//							$(this).closest('.input-section').html(response.result[$(this).data("id")]);
-//						}
-//					});
-//				}
-//			});
 		},
 
-//		refreshCaptcha : function(containerReplace) {
-//			$.ajax({
-//				url : SITE_DIR + "ajax/captcha.php",
-//				type : "POST",
-//				data : {mode : 1},
-//				success : function(msg) {
-//					var response = JSON.parse(msg);
-//
-//					if (response.status) {
-//						containerReplace.html($(response.content).html());
-//					}
-//				}
-//			});
-//		}
+		/**
+		 * Производит обновление предыдущей Captcha
+		 *
+		 * @param node
+		 */
+		refreshCaptcha : function(node) {
+			'use strict';
+
+			var ajaxPath = BX.SavitskyiHub.BxHelpers.Helpers.Option['HELPERS_LIBRARY_PATH'] + '/HelpersAjax/Content/Captcha.php',
+				oldCaptcha = node, newCaptcha;
+
+			$.ajax({
+				url : ajaxPath,
+				type : "POST",
+				data : {'mode' : "GET"},
+				success : BX.delegate(function(response) {
+					var response = JSON.parse(response);
+
+					if ('success' == response.status) {
+						newCaptcha = response.result;
+
+						if (undefined != newCaptcha) {
+							oldCaptcha.parentNode.innerHTML = newCaptcha;
+						}
+
+					} else {
+						this.debugMessage.push(response.message);
+					}
+				}, this)
+			});
+		}
 	};
 
 	/**

@@ -27,13 +27,18 @@ class Dir
 	/**
 	 * Возвращает путь к директории пакета библиотеки
 	 *
+	 * @param bool $returnRoot
 	 * @return string
 	 */
-	public static function getPackagePath(): string {
+	public static function getPackagePath(bool $returnRoot = true): string {
 		$pathNameSpaceDir = __DIR__;
 		$pathPackageDir = dirname($pathNameSpaceDir, 2);
 		
-		return $pathPackageDir;
+		if ($returnRoot) {
+			return $pathPackageDir;
+		} else {
+			return BinaryString::getSubstring($pathPackageDir, BinaryString::getLength(Application::getDocumentRoot()));
+		}
 	}
 	
 	/**

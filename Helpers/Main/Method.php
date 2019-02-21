@@ -14,7 +14,6 @@ namespace SavitskyiHub\BxHelpers\Helpers\Main;
 use Bitrix\Main\Application;
 use Bitrix\Main\Config\Option;
 use Bitrix\Main\Text\HtmlFilter;
-use Bitrix\Main\Authentication\ApplicationPasswordTable;
 
 /**
  * Class Base
