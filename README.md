@@ -68,11 +68,13 @@ Includes::libraryJs();
 use SavitskyiHub\BxHelpers\Helpers\Main\User;
 
 $testDebug = User::getInstance();
-$testDebug->$ID;
+$testDebug->TEST_DEBUG;
 ```
 
 - в результате на почту должно прийти оповещение об ошибке;
 - в файле `/local/logs/helpers-debug.log` посмотреть чтобы была перехвачена ошибка;
+
+8) Создать директорию `/upload/helpers/handbook_sprite/` иначе создание спрайта для справочников не будет возможным
 
 ## Удаление
 

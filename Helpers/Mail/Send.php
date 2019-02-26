@@ -38,17 +38,18 @@ class Send
 	 * Количество доступных отправок определенного типа в допустимый интервал времени
 	 * @var int
 	 */
-	private static $limitTypeSend = 3;
+	private static $limitTypeSend = 2;
 	
 	/**
 	 * Реализует отправку письма администрации сайта в случаи возникновения ошибки или предупреждения в функционале проекта
 	 *
 	 * @param string $message
 	 * @param string $typeReporting - тип оповещения;
+	 * @param string $code
 	 * @param bool $skip - пропустить проверку на повторною отправку;
 	 * @return bool
 	 */
-	static function Admin(string $message, string $typeReporting, bool $skip = false): bool {
+	static function Admin(string $message, string $typeReporting, string $code, bool $skip = false): bool {
 		try {
 			Loader::includeModule('main');
 			
@@ -70,7 +71,7 @@ class Send
 				throw new SystemException('Неверный символьный код значения в объекте: '.$enumCode.' - '.$typeReporting);
 			}
 			
-			if (!$skip && !self::checkLimitSendAdmin($typeReporting, $entityID)) {
+			if (!$skip && !self::checkLimitSendAdmin($typeReporting, $code, $entityID)) {
 				return false;
 			}
 			
@@ -94,6 +95,7 @@ class Send
 				$reAdd = $rsAdd->entityDataClass::add([
 					"UF_TYPE_SEND" => $typeReporting,
 					"UF_TYPE_STATUS" => $typeStatus,
+					"UF_CODE" => $code,
 					"UF_TEXT" => $message,
 					"UF_DATETIME_CREATE" => $datetimeCreate
 				]);
@@ -115,16 +117,18 @@ class Send
 	 * Метод проверяет доступно ли отправлять "повторно" администрации письма
 	 *
 	 * @param string $typeReporting - тип оповещения;
+	 * @param string $code
 	 * @param int $entityID
 	 *
 	 * @return bool
 	 */
-	private static function checkLimitSendAdmin(string $typeReporting, int $entityID): bool {
+	private static function checkLimitSendAdmin(string $typeReporting, string $code, int $entityID): bool {
 		$obHd = new Instance($entityID);
 		$rsHistory = $obHd->entityDataClass::getList([
 			"select" => ['ID'],
 			"filter" => [
 				"=UF_TYPE_SEND" => $typeReporting,
+				"=UF_CODE" => $code,
 				">=UF_DATETIME_CREATE" => [ConvertTimeStamp(time() - 3600 * self::$periodBlocked, "FULL")]
 			]
 		]);
@@ -145,6 +149,7 @@ class Send
 	 */
 	static function Mail(string $typeEmailEvent, array $arFields): bool {
 		try {
+			
 			Loader::includeModule('main');
 			
 			if (!$typeEmailEvent || !$arFields) {

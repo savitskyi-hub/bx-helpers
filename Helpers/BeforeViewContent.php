@@ -11,7 +11,6 @@
 
 namespace SavitskyiHub\BxHelpers\Helpers;
 
-use Bitrix\Main\Application;
 use Bitrix\Main\Page\Asset;
 use Bitrix\Main\Text\BinaryString;
 use SavitskyiHub\BxHelpers\Helpers\IO\Dir;
@@ -29,19 +28,14 @@ class BeforeViewContent
 	 * - метод автоматически выполняется через обработчик в прологе ядра;
 	 */
 	public static function Init() {
-		$isBxRand = 0;
 		$isAjax = Variable::$bxRequest->isAjaxRequest();
 		$isAdminSection = Variable::$bxRequest->isAdminSection();
-		
-		if ($bxRand = Variable::$bxServer->get("REDIRECT_QUERY_STRING")) {
-			$isBxRand = BinaryString::getLength(BinaryString::getPosition($bxRand, "bxrand"));
-		}
 		
 		/**
 		 * - заполняем глобальные параметры что будут доступны для дальнейшей работы с ними;
 		 * - при Ajax, внутреннего редиректа, для админ части, убираем вывод чтобы небыло конфликтов;
 		 */
-		if (!$isBxRand && !$isAjax && !$isAdminSection) {
+		if (!$isAjax && !$isAdminSection) {
 			$helpersOptionJS = '
 			<script type="text/javascript">
 				BX.ready(function() {

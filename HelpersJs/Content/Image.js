@@ -24,15 +24,17 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Image');
 		 *
 		 * @param nodeParent
 		 */
-		asyncUploadImage : function(nodeParent) {
-			if (nodeParent == undefined) {
+		asyncUploadImage : function(node, classID, func) {
+			if (node == undefined) {
 				return false;
 			}
 
-			var asyncUploadImages = BX.findChildren(nodeParent, {attribute : {"data-upload-image" : "Y"}}, true, true),
-				attrs, src, alt, className, sizes, srcset, dataAttrs, arAttr, i, nodeDivImage;
+			var attrs, src, alt, className, sizes, srcset, dataAttrs, arAttr, i, nodeDivImage,
+				asyncUploadImages = BX.findChildren(node, {
+					attrs : (undefined != classID? {"data-class" : classID} : {"data-upload-image" : "Y"})
+				}, true);
 
-			if (asyncUploadImages.length) {
+			if (null != asyncUploadImages) {
 				for (i = 0; i < asyncUploadImages.length; ++i) {
 					nodeDivImage = asyncUploadImages[i];
 					attrs = {};

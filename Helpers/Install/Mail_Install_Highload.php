@@ -69,6 +69,17 @@ final class Mail_Install_Highload extends Highload_Installer
 				"n2" => ["XML_ID" => "NOTICE", "VALUE" => "Уведомление", "SORT" => 300, "DEF" => "Y"]
 			]
 		],
+		"UF_CODE" => [
+			'USER_TYPE_ID' => 'string',
+			'MANDATORY' => 'Y',
+			'SHOW_FILTER' => 'S',
+			'EDIT_IN_LIST' => 'N',
+			'EDIT_FORM_LABEL' => ['ru' => 'Символьный код', 'en' => 'Symbolic code'],
+			'HELP_MESSAGE' => [
+				'ru' => 'Код ошибки/предупреждения/уведомления (перед отправкой лимит будет считатся по суме записей с одинаковым кодом)',
+				'en' => 'Error/warning/notification code (before sending the limit will be counted by the sum of entries with the same code)'
+			],
+		],
 		"UF_TEXT" => [
 			'USER_TYPE_ID' => 'string',
 			'MANDATORY' => 'Y',

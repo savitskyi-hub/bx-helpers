@@ -34,8 +34,9 @@ class Debug
 	 *
 	 * @param string $message
 	 * @param bool $sendAdmin
+	 * @param string $codeMail2SendAdmin
 	 */
-	static function writeToFile(string $message, bool $sendAdmin = true) {
+	static function writeToFile(string $message, bool $sendAdmin = true, string $codeMail2SendAdmin = 'MAIN') {
 		$backtrace = \debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 20);
 		$current = current($backtrace);
 		$end = end($backtrace);
@@ -44,7 +45,7 @@ class Debug
 		BxDebug::writeToFile([$time, $current, $end], "", self::$filenameLog);
 		
 		if ($sendAdmin) {
-			Send::Admin($message, "ERROR");
+			Send::Admin($message, "ERROR", $codeMail2SendAdmin);
 		}
 	}
 }
