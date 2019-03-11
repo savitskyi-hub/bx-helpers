@@ -204,5 +204,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Base');
 	/**
 	 * Запускаем инициализацию объекта
 	 */
-	BX.SavitskyiHub.BxHelpers.Helpers.Content.Base.init();
+	BX.ready(function() {
+		BX.SavitskyiHub.BxHelpers.Helpers.Content.Base.init();
+	});
 })();
