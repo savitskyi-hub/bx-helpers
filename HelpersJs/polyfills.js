@@ -11,7 +11,7 @@
 	'use strict';
 
 	/**
-	 * matches
+	 * Element.matches
 	 */
 	if (!Element.prototype.matches) {
 		Element.prototype.matches = Element.prototype.matchesSelector ||
@@ -21,7 +21,7 @@
 	}
 
 	/**
-	 * closest
+	 * Element.closest
 	 */
 	if (!Element.prototype.closest) {
 		Element.prototype.closest = function(css) {
@@ -36,6 +36,35 @@
 			}
 
 			return null;
+		};
+	}
+
+	/**
+	 * Object.assign
+	 */
+	if ('function' != typeof(Object.assign)) {
+		Object.assign = function(target, varArgs) {
+			var to, index, nextKey, nextSource;
+
+			if (target == null) {
+				throw new TypeError('Cannot convert undefined or null to object');
+			}
+
+			to = Object(target);
+
+			for (index = 1; index < arguments.length; index++) {
+				nextSource = arguments[index];
+
+				if (nextSource != null) {
+					for (nextKey in nextSource) {
+						if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+							to[nextKey] = nextSource[nextKey];
+						}
+					}
+				}
+			}
+
+			return to;
 		};
 	}
 })();

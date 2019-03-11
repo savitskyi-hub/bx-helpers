@@ -16,7 +16,6 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 	 * Объект для работы с Web формами
 	 */
 	BX.SavitskyiHub.BxHelpers.Helpers.Content.Form = {
-
 		/**
 		 * Получение всех значений из полей Web формы
 		 *
@@ -47,6 +46,8 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 
 			return obResultFields;
 		},
+
+
 
 		/**
 		 *
@@ -140,35 +141,20 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 //			});
 		}
 
+
+
+
+
+
+
+
+
 //		/**
 //		 * - инициализирует работу вывода модальных окон при нажатии на соответствующий элемент;
 //		 * - автоматизирует процесс получения модальных окон;
 //		 * - после вывода возможно выполнить работу своего метода (передать в атрибут строку на вызов функции);
 //		 */
 //		init : function() {
-//		},
-
-
-//		/**
-//		 * Вывод сообщения об ошибке
-//		 */
-//		showError : function(message) {
-//			var errorNode = BX.findChild(BX(this.namespace), {className : 'cccstore-form-error'}, true);
-//
-//			if (null != errorNode) {
-//				errorNode.textContent = message;
-//			}
-//		},
-//
-//		/**
-//		 * Очистка сообщения об ошибке
-//		 */
-//		cleanError : function() {
-//			var errorNode = BX.findChild(BX(this.namespace), {className : 'cccstore-form-error'}, true);
-//
-//			if (null != errorNode) {
-//				errorNode.textContent = '';
-//			}
 //		},
 	};
 })();

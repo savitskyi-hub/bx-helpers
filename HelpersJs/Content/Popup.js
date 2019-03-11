@@ -35,9 +35,9 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
 					setTimeout(BX.delegate(function(response) {
 						this.get(obData);
 						this.finishLoader();
-					}, this), 75);
+					}, this), 100);
 				} else {
-					this.show(popup, obData.fanfyAfterShow, obData.fancyBeforeShow);
+					this.show(popup, obData.fancyHelpersAfterShow, obData.fancyHelpersBeforeShow);
 				}
 			}, this));
 		},
@@ -77,7 +77,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
 							/**
 							 * Выводим попап
 							 */
-							this.show(popup, prop.fanfyAfterShow, prop.fancyBeforeShow);
+							this.show(popup, prop.fancyHelpersAfterShow, prop.fancyHelpersBeforeShow);
 						}
 					} else {
 						console.error(response.errors);
@@ -164,6 +164,98 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
 				step : function(state) {loader.style.opacity = state.opacity / 100;},
 				complete : function() {loader.style.display = "none";}
 			}).animate();
+		},
+
+		/**
+		 * Вспомогательный объект для наследования в дочерние экземпляры попапов, самостоятельно не используется
+		 */
+		obHelpers : {
+
+			/**
+			 * Изменение заголовка попапа
+			 */
+			setTitle : function(message) {
+				var thisTitle = BX.findChild(BX(this.namespace), {className : 'helpers-fancy-title'}, true);
+
+				if (null != thisTitle) {
+					if (undefined == thisTitle.dataset.helpersStopReplaceTitle) {
+						thisTitle.textContent = message;
+					}
+				}
+			},
+
+			/**
+			 * Устанавливает "лайк" стиль заголовка
+			 */
+			setTitleLikeStyle : function() {
+				var thisTitle = BX.findChild(BX(this.namespace), {className : 'helpers-fancy-title'}, true);
+
+				if (null != thisTitle) {
+					BX.addClass(thisTitle, 'like');
+				}
+			},
+
+			/**
+			 * Установка нового контента
+			 */
+			setContent : function(content) {
+				var thisContent = BX.findChild(BX(this.namespace), {className : 'helpers-fancy-content'}, true);
+
+				if (null != thisContent) {
+					thisContent.innerHTML = content;
+				}
+			},
+
+			/**
+			 * Вывод сообщения об ошибке
+			 */
+			showError : function(message) {
+				var errorNode = BX.findChild(BX(this.namespace), {className : 'helpers-form-error'}, true);
+
+				if (null != errorNode) {
+					errorNode.textContent = message;
+				}
+			},
+
+			/**
+			 * Очистка сообщения об ошибке
+			 */
+			cleanError : function() {
+				var errorNode = BX.findChild(BX(this.namespace), {className : 'helpers-form-error'}, true);
+
+				if (null != errorNode) {
+					errorNode.textContent = '';
+				}
+			},
+
+			/**
+			 * Обновление Captcha
+			 */
+			refreshCaptcha : function() {
+				var oldCaptcha = BX.findChild(BX(this.namespace), {className : 'helpers-form-captcha'}, true);
+
+				if (null != oldCaptcha) {
+					BX.SavitskyiHub.BxHelpers.Helpers.Content.Base.refreshCaptcha(oldCaptcha);
+				}
+			},
+
+
+
+
+
+
+			/**
+			 * Обновление глобальных событий
+			 */
+			updateGlobalEvents : function() {
+//				checkInput();
+//				checkWebForm();
+//
+//				setTimeout(function() {
+//					helpersAfterShowPopup();
+//				}, 250);
+			}
+
 		}
 	};
 })();

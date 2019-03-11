@@ -24,7 +24,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Image');
 		 *
 		 * @param nodeParent
 		 */
-		asyncUploadImage : function(node, classID, func) {
+		asyncUploadImage : function(node, classID) {
 			if (node == undefined) {
 				return false;
 			}
