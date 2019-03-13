@@ -1,0 +1,65 @@
+/**
+ * This file is part of the savitskyi-hub/bx-helpers package.
+ *
+ * (c) Andrew Savitskyi <admin@savitskyi.com.ua>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+/**
+ * Подготовленные стили с примером структуры HTML кода для использования открывающегося контенту с обратным закрытием
+ *
+ * <div class="helpers-dropdown">
+ *     <input class="helpers-dropdown-checkbox" type="checkbox" name="#УНИКАЛЬНЫЙ_ID#" id="#УНИКАЛЬНЫЙ_ID#">
+ *
+ *	   <div class="helpers-dropdown-title">
+ *	       <label for="#УНИКАЛЬНЫЙ_ID#" class="helpers-dropdown-title-open">Подробнее <i></i></label>
+ *		   <label for="#УНИКАЛЬНЫЙ_ID#" class="helpers-dropdown-title-close">Скрыть <i></i></label>
+ *     </div>
+ *
+ *     <div class="helpers-dropdown-content"></div>
+ * </div>
+ */
+.helpers-dropdown {
+	&-checkbox {
+		display: none;
+		visibility: hidden;
+
+		&:checked + .helpers-dropdown-title .helpers-dropdown-title-close {
+			display: block;
+		}
+
+		&:checked + .helpers-dropdown-title .helpers-dropdown-title-open {
+			display: none;
+		}
+
+		&:checked ~ .helpers-dropdown-content {
+			max-height: 2750px;
+			opacity: 1;
+			transition: all 0.5s ease-in;
+		}
+	}
+
+	&-title {
+		display: flex;
+		justify-content: center;
+		flex-direction: column;
+		align-items: center;
+
+		label {
+			cursor: pointer;
+		}
+
+		&-close {
+			display: none;
+		}
+	}
+
+	&-content {
+		max-height: 0;
+		opacity: 0;
+		transition: all 0.5s ease-out;
+		overflow: hidden;
+	}
+}

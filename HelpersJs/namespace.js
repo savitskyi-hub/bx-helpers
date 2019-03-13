@@ -1,4 +1,13 @@
 /**
+ * This file is part of the savitskyi-hub/bx-helpers package.
+ *
+ * (c) Andrew Savitskyi <admin@savitskyi.com.ua>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+/**
  * Создадим свою область видимости библиотеки в объекте "BX"
  */
 BX.namespace("SavitskyiHub.BxHelpers.Helpers");

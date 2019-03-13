@@ -90,9 +90,9 @@ class Base
 	 */
 	public static function showNotice(string $description, string $header = '', string $otherContent = ''): string {
 		return '
-			<div class="notice-massage">
-				<div class="notice-massage-header">'.HtmlFilter::encode($header).'</div>
-				<div class="notice-massage-text">'.HtmlFilter::encode($description).'</div>
+			<div class="helpers-notice">
+				<div class="helpers-notice-header">'.HtmlFilter::encode($header).'</div>
+				<div class="helpers-notice-text">'.HtmlFilter::encode($description).'</div>
 				'.$otherContent.'
 			</div>';
 	}
@@ -107,9 +107,9 @@ class Base
 	 */
 	public static function showError(string $description, string $header = '', string $otherContent = ''): string {
 		return '
-			<div class="error-message">
-				<div class="error-message-header">'.HtmlFilter::encode($header).'</div>
-				<div class="error-message-text">'.HtmlFilter::encode($description).'</div>
+			<div class="helpers-error">
+				<div class="helpers-error-header">'.HtmlFilter::encode($header).'</div>
+				<div class="helpers-error-text">'.HtmlFilter::encode($description).'</div>
 				'.$otherContent.'
 			</div>';
 	}

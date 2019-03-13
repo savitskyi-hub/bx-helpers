@@ -1,9 +1,16 @@
+/**
+ * This file is part of the savitskyi-hub/bx-helpers package.
+ *
+ * (c) Andrew Savitskyi <admin@savitskyi.com.ua>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 .clear-both {
 	clear: both;
 }
 
-.clear-fix::after,
-.bx-context-toolbar-empty-area::after {
+.clear-fix::after, .bx-context-toolbar-empty-area::after {
 	display: table;
 	clear: both;
 	content: " ";
@@ -22,21 +29,18 @@ pre {
 	line-height: 20px;
 }
 
-.notice-massage,
-.error-message {
-	&-header {
-		font-size: 20px;
+.helpers {
+	&-notice {color: #36353a;}
+	&-error {color: #f44336;}
 
-		&:empty {
-			display: none;
+	&-notice,
+	&-error {
+		&-header {
+			font-size: 20px;
+
+			&:empty {
+				display: none;
+			}
 		}
 	}
-}
-
-.notice-massage {
-	color: #36353a;
-}
-
-.error-message {
-	color: #f44336;
 }

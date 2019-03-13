@@ -23,7 +23,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
 		 * - после вывода возможно выполнить работу своего метода (передать в атрибут строку на вызов функции);
 		 */
 		init : function() {
-			BX.bindDelegate(HTML, 'click', {attribute : 'data-fancy-helpers'}, BX.delegate(function(e) {
+			BX.bindDelegate(BX('bx-html'), 'click', {attribute : 'data-fancy-helpers'}, BX.delegate(function(e) {
 				var obData = e.toElement.dataset, popup;
 
 				/**
@@ -67,7 +67,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
 
 							doc = new DOMParser().parseFromString(response.data.content, "text/html");
 							popup = BX.findChild(doc, {attribute : {"id" : prop.fancyHelpers}}, true);
-							popupsBlock = BX.findChild(HTML, {attribute : {"data-content" : "POPUPS"}}, true);
+							popupsBlock = BX.findChild(BX('bx-html'), {attribute : {"data-content" : "POPUPS"}}, true);
 
 							/**
 							 * Добавляем в DOM чтобы следующий раз не делать запрос
