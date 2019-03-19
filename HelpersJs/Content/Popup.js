@@ -170,7 +170,6 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
 		 * Вспомогательный объект для наследования в дочерние экземпляры попапов, самостоятельно не используется
 		 */
 		obHelpers : {
-
 			/**
 			 * Изменение заголовка попапа
 			 */
@@ -239,23 +238,17 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
 				}
 			},
 
-
-
-
-
-
 			/**
-			 * Обновление глобальных событий
+			 * Обновление глобальных событий (для нового контента)
 			 */
 			updateGlobalEvents : function() {
-//				checkInput();
-//				checkWebForm();
-//
-//				setTimeout(function() {
-//					helpersAfterShowPopup();
-//				}, 250);
-			}
+				BX.SavitskyiHub.BxHelpers.Helpers.Content.Form.checkFields();
+				BX.SavitskyiHub.BxHelpers.Helpers.Content.Form.checkWebForm();
 
+				if ('function' === typeof(helpersAfterShowPopup)) {
+					setTimeout(function() { helpersAfterShowPopup(); }, 250);
+				}
+			}
 		}
 	};
 })();

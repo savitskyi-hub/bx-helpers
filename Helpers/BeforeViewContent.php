@@ -37,7 +37,7 @@ class BeforeViewContent
 		 */
 		if (!$isAjax && !$isAdminSection) {
 			$helpersOptionJS = '
-			<script type="text/javascript">
+			<script>
 				BX.ready(function() {
 					if (undefined != BX.SavitskyiHub) {
 						BX.SavitskyiHub.BxHelpers.Helpers.Option = '.\CUtil::PhpToJSObject([
