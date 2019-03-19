@@ -27,19 +27,22 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 		//		 * - после вывода возможно выполнить работу своего метода (передать в атрибут строку на вызов функции);
 		//		 */
 		init : function() {
-			this.checkFields();
-			this.checkWebForm();
-			this.submitAjaxControl();
+			//			this.checkFields();
+			//			this.checkWebForm();
+			//			this.submitAjaxControl();
 
-			//			BX.addCustomEvent('onajaxsuccessfinish', function() {
+			/**
+			 *
+			 */
+			//			BX.addCustomEvent('onajaxsuccessfinish', BX.delegate(function() {
 
 			// После композита JS события на елементы будут утрачены, нужно их перезапустить самостоятельно
-			//				setTimeout(function() {
+			//				setTimeout(BX.delegate(function() {
 			//					this.checkFields();
 			//                  this.checkWebForm();
-			//				}, 250);
+			//				}, this) 250);
 
-			//			});
+			//			}, this));
 		},
 
 		/**
@@ -53,96 +56,103 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 		},
 
 		/**
-		 *
+		 * Проверка полей Web формы на актуальность данных
 		 */
 		checkFields : function() {
-			//			var typeFields = ["text", "number", "email", "password", "url"],
-			//				selectors = "textarea:required, textarea[pattern], ";
-			//
-			//			for (var i = 0; i <= type_sybmit.length; ++i) {
-			//				selectors += 'input[type="' + type_sybmit[i] + '"]:required, ';
-			//				selectors += 'input[type="' + type_sybmit[i] + '"][pattern], ';
-			//			}
-			//
-			//			selectors = selectors.substring(0, selectors.length - 2);
-			//
-			//			if ($(selectors).length) {
-			//				$(selectors).off();
-			//			}
-			//
-			//			$(selectors).each(function(i, el) {
-			//
-			//				// Remove html5 message
-			//				$(el).on("invalid", function(event) { return false; });
-			//
-			//				$(el).keyup(function() {
-			//					if (!$(this).hasClass("validation") && $(this).val()) {
-			//						$(this).addClass("validation");
-			//					} else {
-			//
-			//						if (!$(this).val()) {
-			//							$(this).removeClass("validation");
-			//						}
-			//
-			//					}
-			//				});
-			//			});
-		},
-
-		/**
-		 *
-		 */
-		checkWebForm : function () {
-			var formsNode = BX.findChildren(BX('bx-html'), {className : 'helpers-form'}, true),
-				tagName;
+			var arFields = [], tagName, formsNode = BX.findChildren(BX('bx-html'), {className : 'helpers-form'}, true);
 
 			if (null != formsNode) {
-				formsNode.forEach(function(parentFormNode) {
-					BX.findChildren(parentFormNode, function(e) {
+				formsNode.forEach(BX.delegate(function(parentFormNode) {
+					BX.findChildren(parentFormNode, BX.delegate(function(e) {
 						tagName = e.tagName;
 
-						if (tagName && "INPUT" == tagName && "submit" == e.type) {
-							//BX.bind(e, 'click', BX.delegate(function(e) { this.enableValidation(e); }, this));
-							//BX.bind(e, 'touch', BX.delegate(function(e) { this.enableValidation(e); }, this));
+						if (undefined != tagName) {
+							if ("INPUT" == tagName || "TEXTAREA" == tagName) {
+								if (0 > ["text", "number", "password", "hidden"].indexOf(e.type)) {
+									return false;
+								}
 
-							console.log(this);
-
-							return true;
+								if (e.required || e.pattern.length) {
+									arFields.push(e);
+								}
+							}
 						}
 
-						if (tagName && ("INPUT" == tagName || "TEXTAREA" == tagName)) {
-//							if (e.value.length) {
-//								BX.addClass(e, 'hellpers-filled');
-//							} else {
-//								BX.removeClass(e, 'hellpers-filled');
-//							}
-							console.log(e.value);
-							e.value.length? BX.addClass(e, 'hellpers-filled') : BX.removeClass(e, 'hellpers-filled');
+					}, this), true);
+				}, this));
 
-							BX.bind(e, 'keyup', BX.delegate(function(e2) {
-								e2.value.length? BX.addClass(e2, 'hellpers-filled') : BX.removeClass(e2, 'hellpers-filled');
+				arFields.forEach(function(e) {
+					/**
+					 * Удаляем все обработчики
+					 */
+					$(e).off();
 
-//								if (e.value.length) {
-//									BX.addClass(e2, 'hellpers-filled');
-//								} else {
-//									BX.removeClass(e2, 'hellpers-filled');
-//								}
-							}, this));
+					/**
+					 * Избавляемся от браузерных HTML5 подсказок
+					 */
+					BX.bind(e, 'invalid', BX.delegate(function(ev) {
+						return ev.preventDefault();
+					}, this));
+
+					/**
+					 * Отмечаем валидацию
+					 */
+					BX.bind(e, 'keyup', BX.delegate(function() {
+						if (!BX.hasClass(e, 'hellpers-filled') && e.value.length) {
+							BX.addClass(e, 'hellpers-filled');
+						} else if (!e.value.length) {
+							BX.removeClass(e, 'hellpers-filled');
 						}
-
-						return false;
-					}, true);
+					}, this));
 				});
 			}
 		},
 
 		/**
-		 *
+		 * Проверка полной Web формы
+		 */
+		checkWebForm : function () {
+			var tagName, formsNode = BX.findChildren(BX('bx-html'), {className : 'helpers-form'}, true);
+
+			if (null != formsNode) {
+				formsNode.forEach(BX.delegate(function(parentFormNode) {
+					BX.findChildren(parentFormNode, BX.delegate(function(e) {
+						tagName = e.tagName;
+
+						/**
+						 * При отправке осуществляем валидацию всех полей
+						 */
+						if (undefined != tagName && "INPUT" == tagName && "submit" == e.type) {
+							BX.bind(e, 'click', BX.delegate(function() { this.enableValidation(e); }, this));
+							BX.bind(e, 'touch', BX.delegate(function() { this.enableValidation(e); }, this));
+						}
+
+						/**
+						 * Производим добавление отметки что поле было проверено
+						 */
+						if (undefined != tagName && ("INPUT" == tagName || "TEXTAREA" == tagName)) {
+							e.value.length? BX.addClass(e, 'hellpers-filled') : BX.removeClass(e, 'hellpers-filled');
+
+							BX.bind(e, 'keyup', BX.delegate(function() {
+								e.value.length? BX.addClass(e, 'hellpers-filled') : BX.removeClass(e, 'hellpers-filled');
+							}, this));
+						}
+
+						return false;
+					}, this), true);
+				}, this));
+			}
+		},
+
+		/**
+		 * Активирует валидацию всех полей Web формы
 		 */
 		enableValidation : function(submitNode) {
-			//			$(document).on("click", '.helpers-form input[type="submit"]', function() {
-			//				$(this).closest("form").addClass("helpers-validation");
-			//			});
+			var formNode = BX.findParent(submitNode, {tag : 'FORM'}, true);
+
+			if (null != formNode) {
+				BX.addClass(formNode, 'helpers-validation');
+			}
 		},
 
 		/**
@@ -220,23 +230,23 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 			 * Вывод сообщения об ошибке
 			 */
 			showError : function(message) {
-//				var errorNode = BX.findChild(BX('bx-html'), {className : 'helpers-form-error'}, true);
-//
-//				if (null != errorNode) {
-//					errorNode.textContent = message;
-//				}
+				//				var errorNode = BX.findChild(BX('bx-html'), {className : 'helpers-form-error'}, true);
+				//
+				//				if (null != errorNode) {
+				//					errorNode.textContent = message;
+				//				}
 			},
 
-			//			/**
-			//			 * Очистка сообщения об ошибке
-			//			 */
-			//			cleanError : function() {
-			//				var errorNode = BX.findChild(BX(this.namespace), {className : 'helpers-form-error'}, true);
-			//
-			//				if (null != errorNode) {
-			//					errorNode.textContent = '';
-			//				}
-			//			},
+			/**
+			 * Очистка сообщения об ошибке
+			 */
+			cleanError : function() {
+				//				var errorNode = BX.findChild(BX(this.namespace), {className : 'helpers-form-error'}, true);
+				//
+				//				if (null != errorNode) {
+				//					errorNode.textContent = '';
+				//				}
+			},
 
 			//			/**
 			//			 * Обновление Captcha
