@@ -111,19 +111,23 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 						}
 
 						if (tagName && ("INPUT" == tagName || "TEXTAREA" == tagName)) {
-							//				if (this.value.length) {
-							//					$(this).addClass('hellpers-filled');
-							//				} else {
-							//					$(this).removeClass('hellpers-filled');
-							//				}
+//							if (e.value.length) {
+//								BX.addClass(e, 'hellpers-filled');
+//							} else {
+//								BX.removeClass(e, 'hellpers-filled');
+//							}
+							console.log(e.value);
+							e.value.length? BX.addClass(e, 'hellpers-filled') : BX.removeClass(e, 'hellpers-filled');
 
-			//						.on('keyup', function() {
-			//								//				if (this.value.length) {
-			//								//					$(this).addClass('helpers-filled');
-			//								//				} else {
-			//								//					$(this).removeClass('helpers-filled');
-			//								//				}
-			//								//			});
+							BX.bind(e, 'keyup', BX.delegate(function(e2) {
+								e2.value.length? BX.addClass(e2, 'hellpers-filled') : BX.removeClass(e2, 'hellpers-filled');
+
+//								if (e.value.length) {
+//									BX.addClass(e2, 'hellpers-filled');
+//								} else {
+//									BX.removeClass(e2, 'hellpers-filled');
+//								}
+							}, this));
 						}
 
 						return false;
