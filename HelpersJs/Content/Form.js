@@ -27,10 +27,9 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 		//		 * - после вывода возможно выполнить работу своего метода (передать в атрибут строку на вызов функции);
 		//		 */
 		init : function() {
-
-			//this.checkFields();
-			//this.checkWebForm();
-			//this.submitAjaxControl();
+			this.checkFields();
+			this.checkWebForm();
+			this.submitAjaxControl();
 
 			//			BX.addCustomEvent('onajaxsuccessfinish', function() {
 
@@ -94,33 +93,57 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 		 *
 		 */
 		checkWebForm : function () {
+			var formsNode = BX.findChildren(BX('bx-html'), {className : 'helpers-form'}, true),
+				tagName;
+
+			if (null != formsNode) {
+				formsNode.forEach(function(parentFormNode) {
+					BX.findChildren(parentFormNode, function(e) {
+						tagName = e.tagName;
+
+						if (tagName && "INPUT" == tagName && "submit" == e.type) {
+							//BX.bind(e, 'click', BX.delegate(function(e) { this.enableValidation(e); }, this));
+							//BX.bind(e, 'touch', BX.delegate(function(e) { this.enableValidation(e); }, this));
+
+							console.log(this);
+
+							return true;
+						}
+
+						if (tagName && ("INPUT" == tagName || "TEXTAREA" == tagName)) {
+							//				if (this.value.length) {
+							//					$(this).addClass('hellpers-filled');
+							//				} else {
+							//					$(this).removeClass('hellpers-filled');
+							//				}
+
+			//						.on('keyup', function() {
+			//								//				if (this.value.length) {
+			//								//					$(this).addClass('helpers-filled');
+			//								//				} else {
+			//								//					$(this).removeClass('helpers-filled');
+			//								//				}
+			//								//			});
+						}
+
+						return false;
+					}, true);
+				});
+			}
+		},
+
+		/**
+		 *
+		 */
+		enableValidation : function(submitNode) {
 			//			$(document).on("click", '.helpers-form input[type="submit"]', function() {
 			//				$(this).closest("form").addClass("helpers-validation");
-			//			});
-			//
-			//			$(document).on("click", '.helpers-form input[type="submit"]', function() {
-			//				$(this).closest("form").addClass("helpers-validation");
-			//			});
-			//
-			//			$(document).find(".helpers-form input, .helpers-form textarea").on('keyup', function() {
-			//				if (this.value.length) {
-			//					$(this).addClass('helpers-filled');
-			//				} else {
-			//					$(this).removeClass('helpers-filled');
-			//				}
-			//			});
-			//
-			//			$(document).find(".helpers-form input, .helpers-form textarea").each(function() {
-			//				if (this.value.length) {
-			//					$(this).addClass('hellpers-filled');
-			//				} else {
-			//					$(this).removeClass('hellpers-filled');
-			//				}
 			//			});
 		},
 
 		/**
-		 * !!!!!!!!!!!!!При выполнении Ajax запроса блокируем все кнопки в web формах до получения результата, чтобы при медленном ответе не дублировать отправку нагружая на канал повторными запросами, ну и чтобы повторною отправку запретить
+		 * Инициализирует обработчики при выполнении Ajax запроса, для блокировок и разблокировок кнопок отправки Web форм
+		 * (чтобы, при медленном ответе не дублировать отправку нагружая на канал повторными запросами)
 		 */
 		submitAjaxControl : function () {
 			$(document).ajaxSend(BX.delegate(function() {
@@ -133,7 +156,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 		},
 
 		/**
-		 * !!!!!!!!!!!!!Блокирование
+		 * Блокирование всех кнопок отправки данных из Web формы до получения результата (чтобы не отправлять дубли)
 		 */
 		submitDisabled : function() {
 			var formsNode = BX.findChildren(BX('bx-html'), {className : 'helpers-form'}, true),
@@ -153,7 +176,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 		},
 
 		/**
-		 * !!!!!!!!!!!Разблокирование
+		 * Выполняет разблокировку ранее заблокированных кнопок для отправки данных Web формы
 		 */
 		submitEnabled : function() {
 			var formsNode = BX.findChildren(BX('bx-html'), {className : 'helpers-form'}, true),
