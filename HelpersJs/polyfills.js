@@ -40,6 +40,83 @@
 	}
 
 	/**
+	 * Element.replaceWith
+	 */
+	function ReplaceWithPolyfill() {
+		'use-strict';
+
+		var parent = this.parentNode,
+			i = arguments.length,
+			currentNode;
+
+		if (!parent) {
+			return;
+		}
+
+		if (!i) {
+			parent.removeChild(this);
+		}
+
+		while (i--) {
+			currentNode = arguments[i];
+
+			if (typeof currentNode !== 'object') {
+				currentNode = this.ownerDocument.createTextNode(currentNode);
+			} else if (currentNode.parentNode) {
+				currentNode.parentNode.removeChild(currentNode);
+			}
+
+			if (!i) {
+				parent.replaceChild(currentNode, this);
+			} else {
+				parent.insertBefore(this.previousSibling, currentNode);
+			}
+		}
+	}
+
+	if (!Element.prototype.replaceWith) {
+		Element.prototype.replaceWith = ReplaceWithPolyfill;
+	}
+
+	if (!CharacterData.prototype.replaceWith) {
+		CharacterData.prototype.replaceWith = ReplaceWithPolyfill;
+	}
+
+	if (!DocumentType.prototype.replaceWith) {
+		DocumentType.prototype.replaceWith = ReplaceWithPolyfill;
+	}
+
+	/**
+	 * Element.remove
+	 */
+	(function() {
+		var arr = [window.Element, window.CharacterData, window.DocumentType], args = [];
+
+		arr.forEach(function (item) {
+			if (item) {
+				args.push(item.prototype);
+			}
+		});
+
+		(function (arr) {
+			arr.forEach(function (item) {
+				if (item.hasOwnProperty('remove')) {
+					return;
+				}
+
+				Object.defineProperty(item, 'remove', {
+					configurable: true,
+					enumerable: true,
+					writable: true,
+					value: function remove() {
+						this.parentNode.removeChild(this);
+					}
+				});
+			});
+		})(args);
+	})();
+
+	/**
 	 * Object.assign
 	 */
 	if ('function' != typeof(Object.assign)) {
@@ -67,4 +144,5 @@
 			return to;
 		};
 	}
+
 })();

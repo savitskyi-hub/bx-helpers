@@ -1,0 +1,64 @@
+/**
+ * This file is part of the savitskyi-hub/bx-helpers package.
+ *
+ * (c) Andrew Savitskyi <admin@savitskyi.com.ua>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+.helpers-form {
+	&-error, &-group, &-input, &-select, &-captcha, &-textarea {
+		position: relative;
+	}
+
+	&-error, &-field-error, &-field-title {
+		font-size: 12px;
+	}
+
+	&-error, &-field-error {
+		display: none;
+		color: #ec102d;
+	}
+
+	&-error:not(:empty) {
+		display: block;
+	}
+
+	&-field-error {
+		position: absolute;
+		white-space: nowrap;
+	}
+
+	&-textarea textarea {
+		resize: none;
+	}
+
+	&-select select {
+		position: absolute;
+		height: 0;
+		border: 0;
+		outline: 0;
+		opacity: 0;
+	}
+
+	form.helpers-validation input,
+	form.helpers-validation textarea,
+	form.helpers-validation select {
+		&:invalid,
+		&:invalid ~ .helpers-form-select-visual .helpers-form-select-visual-linear {
+			border-color: #ec102d;
+		}
+
+		&:invalid ~ .helpers-form-field-error {
+			display: block;
+		}
+	}
+
+	input[type="submit"] {
+		user-select: none;
+
+		&:disabled, &:disabled:hover {
+			cursor: not-allowed;
+		}
+	}
+}

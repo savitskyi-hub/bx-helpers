@@ -22,22 +22,22 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
 		 * - автоматизирует процесс получения модальных окон;
 		 * - после вывода возможно выполнить работу своего метода (передать в атрибут строку на вызов функции);
 		 */
-		init : function() {
+		PopupInit : function() {
 			BX.bindDelegate(BX('bx-html'), 'click', {attribute : 'data-fancy-helpers'}, BX.delegate(function(e) {
-				var obData = e.toElement.dataset, popup;
+				var obData = e.srcElement.dataset, popup;
 
 				/**
 				 * Если попап отсутствует на странице
 				 */
 				if (undefined != obData.fancyHelpers && null == (popup = BX(obData.fancyHelpers))) {
-					this.startLoader();
+					this.PopupStartLoader();
 
 					setTimeout(BX.delegate(function(response) {
-						this.get(obData);
-						this.finishLoader();
+						this.PopupGet(obData);
+						this.PopupFinishLoader();
 					}, this), 100);
 				} else {
-					this.show(popup, obData.fancyHelpersAfterShow, obData.fancyHelpersBeforeShow);
+					this.PopupShow(popup, obData.fancyHelpersAfterShow, obData.fancyHelpersBeforeShow);
 				}
 			}, this));
 		},
@@ -45,7 +45,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
 		/**
 		 * Получение контента из шаблонов компонента (внимание, необходим специальный компонент!!!)
 		 */
-		get : function(prop) {
+		PopupGet : function(prop) {
 			BX.ajax({
 				url : '/bitrix/services/main/ajax.php?mode=class&c=savitskyi.helpers:content.ajax&action=controller',
 				data : {
@@ -77,7 +77,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
 							/**
 							 * Выводим попап
 							 */
-							this.show(popup, prop.fancyHelpersAfterShow, prop.fancyHelpersBeforeShow);
+							this.PopupShow(popup, prop.fancyHelpersAfterShow, prop.fancyHelpersBeforeShow);
 						}
 					} else {
 						console.error(response.errors);
@@ -89,7 +89,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
 		/**
 		 * Показ контента в модальном окне
 		 */
-		show : function(content, afterShowInit, beforeShowInit) {
+		PopupShow : function(content, afterShowInit, beforeShowInit) {
 			$.fancybox.open(content, {
 				animationEffect : "fade",
 				autoFocus : false,
@@ -102,7 +102,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
 				'</div>',
 				btnTpl : {
 					smallBtn : '' +
-					'<button class="fancybox-close" data-fancybox-close>' +
+					'<button class="helpers-fancy-close" data-fancybox-close>' +
 						'<div class="icon g-close-fancy"></div>' +
 					'</button>'
 				},
@@ -130,15 +130,15 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
 		/**
 		 * Возвращает ссылку на крутилку
 		 */
-		getLoader : function() {
+		PopupGetLoader : function() {
 			return BX.findChild(BX('bx-html'), {className : 'helpers-fancy-loader-screen'}, true);
 		},
 
 		/**
 		 * Запускает крутилку
 		 */
-		startLoader : function() {
-			var loader = this.getLoader();
+		PopupStartLoader : function() {
+			var loader = this.PopupGetLoader();
 
 			new BX.easing({
 				duration : 150,
@@ -154,8 +154,8 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
 		/**
 		 * Останавливает крутилку
 		 */
-		finishLoader : function() {
-			var loader = this.getLoader();
+		PopupFinishLoader : function() {
+			var loader = this.PopupGetLoader();
 
 			new BX.easing({
 				duration : 450,
@@ -167,87 +167,46 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
 		},
 
 		/**
-		 * Вспомогательный объект для наследования в дочерние экземпляры попапов, самостоятельно не используется
+		 * Изменение заголовка попапа
 		 */
-		obHelpers : {
-			/**
-			 * Изменение заголовка попапа
-			 */
-			setTitle : function(message) {
-				var thisTitle = BX.findChild(BX(this.namespace), {className : 'helpers-fancy-title'}, true);
+		PopupSetTitle : function(message) {
+			var thisTitle = BX.findChild(BX(this.namespace), {className : 'helpers-fancy-title'}, true);
 
-				if (null != thisTitle) {
-					if (undefined == thisTitle.dataset.helpersStopReplaceTitle) {
-						thisTitle.textContent = message;
-					}
+			if (null != thisTitle) {
+				if (undefined == thisTitle.dataset.helpersStopReplaceTitle) {
+					thisTitle.textContent = message;
 				}
-			},
+			}
+		},
 
-			/**
-			 * Устанавливает "лайк" стиль заголовка
-			 */
-			setTitleLikeStyle : function() {
-				var thisTitle = BX.findChild(BX(this.namespace), {className : 'helpers-fancy-title'}, true);
+		/**
+		 * Устанавливает "лайк" стиль заголовка
+		 */
+		PopupSetTitleLikeStyle : function() {
+			var thisTitle = BX.findChild(BX(this.namespace), {className : 'helpers-fancy-title'}, true);
 
-				if (null != thisTitle) {
-					BX.addClass(thisTitle, 'like');
-				}
-			},
+			if (null != thisTitle) {
+				BX.addClass(thisTitle, 'like');
+			}
+		},
 
-			/**
-			 * Установка нового контента
-			 */
-			setContent : function(content) {
-				var thisContent = BX.findChild(BX(this.namespace), {className : 'helpers-fancy-content'}, true);
+		/**
+		 * Установка нового контента
+		 */
+		PopupSetContent : function(content) {
+			var thisContent = BX.findChild(BX(this.namespace), {className : 'helpers-fancy-content'}, true);
 
-				if (null != thisContent) {
-					thisContent.innerHTML = content;
-				}
-			},
+			if (null != thisContent) {
+				thisContent.innerHTML = content;
+			}
+		},
 
-			/**
-			 * Вывод сообщения об ошибке
-			 */
-			showError : function(message) {
-				var errorNode = BX.findChild(BX(this.namespace), {className : 'helpers-form-error'}, true);
-
-				if (null != errorNode) {
-					errorNode.textContent = message;
-				}
-			},
-
-			/**
-			 * Очистка сообщения об ошибке
-			 */
-			cleanError : function() {
-				var errorNode = BX.findChild(BX(this.namespace), {className : 'helpers-form-error'}, true);
-
-				if (null != errorNode) {
-					errorNode.textContent = '';
-				}
-			},
-
-			/**
-			 * Обновление Captcha
-			 */
-			refreshCaptcha : function() {
-				var oldCaptcha = BX.findChild(BX(this.namespace), {className : 'helpers-form-captcha'}, true);
-
-				if (null != oldCaptcha) {
-					BX.SavitskyiHub.BxHelpers.Helpers.Content.Base.refreshCaptcha(oldCaptcha);
-				}
-			},
-
-			/**
-			 * Обновление глобальных событий (для нового контента)
-			 */
-			updateGlobalEvents : function() {
-				BX.SavitskyiHub.BxHelpers.Helpers.Content.Form.checkFields();
-				BX.SavitskyiHub.BxHelpers.Helpers.Content.Form.checkWebForm();
-
-				if ('function' === typeof(helpersAfterShowPopup)) {
-					setTimeout(function() { helpersAfterShowPopup(); }, 250);
-				}
+		/**
+		 * Обновление глобальных событий (для нового контента)
+		 */
+		PopupUpdateEvent: function() {
+			if ('function' === typeof(helpersContentPopupUpdateEvent)) {
+				setTimeout(function() { helpersContentPopupUpdateEvent(); }, 250);
 			}
 		}
 	};

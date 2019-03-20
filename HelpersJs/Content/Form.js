@@ -21,28 +21,21 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 		 */
 		debugMessage : [],
 
-		//		/**
-		//		 * - инициализирует работу вывода модальных окон при нажатии на соответствующий элемент;
-		//		 * - автоматизирует процесс получения модальных окон;
-		//		 * - после вывода возможно выполнить работу своего метода (передать в атрибут строку на вызов функции);
-		//		 */
-		init : function() {
-			//			this.checkFields();
-			//			this.checkWebForm();
-			//			this.submitAjaxControl();
+		/**
+		 * Инициализирует работу валидации и контролем поляй у Web формах
+		 */
+		FormInit : function() {
+			this.FormCheckFields();
+			this.FormCheckWebForm();
+			this.FormSubmitAjaxControl();
 
 			/**
-			 *
+			 * После подгрузки данных с помощью композита события на элементы будут потеряны, нужно их перезапустить
 			 */
-			//			BX.addCustomEvent('onajaxsuccessfinish', BX.delegate(function() {
-
-			// После композита JS события на елементы будут утрачены, нужно их перезапустить самостоятельно
-			//				setTimeout(BX.delegate(function() {
-			//					this.checkFields();
-			//                  this.checkWebForm();
-			//				}, this) 250);
-
-			//			}, this));
+			BX.addCustomEvent('onajaxsuccessfinish', BX.delegate(function() {
+				this.FormCheckFields();
+				this.FormCheckWebForm();
+			}, this));
 		},
 
 		/**
@@ -51,14 +44,29 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 		 * @param formNode
 		 * @returns {}
 		 */
-		getFieldsValue : function(formNode) {
+		FormGetFieldsValue : function(formNode) {
 			return BX.ajax.prepareForm(formNode).data;
+		},
+
+		/**
+		 * Получение формы как элемента DOM дерева
+		 */
+		FormGetFormNode : function() {
+			if (undefined != this.namespace) {
+				var formNode = BX.findChild(BX('bx-html'), {tag : 'FORM', attrs : {'name' : this.namespace}}, true);
+
+				if (null != formNode) {
+					return formNode;
+				}
+			}
+
+			return null;
 		},
 
 		/**
 		 * Проверка полей Web формы на актуальность данных
 		 */
-		checkFields : function() {
+		FormCheckFields : function() {
 			var arFields = [], tagName, formsNode = BX.findChildren(BX('bx-html'), {className : 'helpers-form'}, true);
 
 			if (null != formsNode) {
@@ -68,7 +76,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 
 						if (undefined != tagName) {
 							if ("INPUT" == tagName || "TEXTAREA" == tagName) {
-								if (0 > ["text", "number", "password", "hidden"].indexOf(e.type)) {
+								if ("INPUT" == tagName && 0 > ["text", "number", "password", "hidden"].indexOf(e.type)) {
 									return false;
 								}
 
@@ -111,7 +119,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 		/**
 		 * Проверка полной Web формы
 		 */
-		checkWebForm : function () {
+		FormCheckWebForm : function () {
 			var tagName, formsNode = BX.findChildren(BX('bx-html'), {className : 'helpers-form'}, true);
 
 			if (null != formsNode) {
@@ -123,8 +131,8 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 						 * При отправке осуществляем валидацию всех полей
 						 */
 						if (undefined != tagName && "INPUT" == tagName && "submit" == e.type) {
-							BX.bind(e, 'click', BX.delegate(function() { this.enableValidation(e); }, this));
-							BX.bind(e, 'touch', BX.delegate(function() { this.enableValidation(e); }, this));
+							BX.bind(e, 'click', BX.delegate(function() { this.FormEnableValidation(e); }, this));
+							BX.bind(e, 'touch', BX.delegate(function() { this.FormEnableValidation(e); }, this));
 						}
 
 						/**
@@ -147,7 +155,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 		/**
 		 * Активирует валидацию всех полей Web формы
 		 */
-		enableValidation : function(submitNode) {
+		FormEnableValidation : function(submitNode) {
 			var formNode = BX.findParent(submitNode, {tag : 'FORM'}, true);
 
 			if (null != formNode) {
@@ -159,20 +167,20 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 		 * Инициализирует обработчики при выполнении Ajax запроса, для блокировок и разблокировок кнопок отправки Web форм
 		 * (чтобы, при медленном ответе не дублировать отправку нагружая на канал повторными запросами)
 		 */
-		submitAjaxControl : function () {
+		FormSubmitAjaxControl : function () {
 			$(document).ajaxSend(BX.delegate(function() {
-				this.submitDisabled();
+				this.FormSubmitDisabled();
 			}, this)).ajaxSuccess(BX.delegate(function() {
-				this.submitEnabled();
+				this.FormSubmitEnabled();
 			}, this)).ajaxError(BX.delegate(function() {
-				this.submitEnabled();
+				this.FormSubmitEnabled();
 			}, this));
 		},
 
 		/**
 		 * Блокирование всех кнопок отправки данных из Web формы до получения результата (чтобы не отправлять дубли)
 		 */
-		submitDisabled : function() {
+		FormSubmitDisabled : function() {
 			var formsNode = BX.findChildren(BX('bx-html'), {className : 'helpers-form'}, true),
 				submitsNode;
 
@@ -181,9 +189,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 					submitsNode = BX.findChild(parentFormNode, {tag : 'INPUT', attrs : {'type' : 'submit'}}, true);
 
 					if (null != submitsNode) {
-						submitsNode.forEach(function(e) {
-							e.disabled = true;
-						});
+						submitsNode.disabled = true;
 					}
 				});
 			}
@@ -192,7 +198,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 		/**
 		 * Выполняет разблокировку ранее заблокированных кнопок для отправки данных Web формы
 		 */
-		submitEnabled : function() {
+		FormSubmitEnabled : function() {
 			var formsNode = BX.findChildren(BX('bx-html'), {className : 'helpers-form'}, true),
 				submitsNode;
 
@@ -201,63 +207,69 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 					submitsNode = BX.findChild(parentFormNode, {tag : 'INPUT', attrs : {'type' : 'submit'}}, true);
 
 					if (null != submitsNode) {
-						submitsNode.forEach(function(e) {
-							e.disabled = false;
-						});
+						submitsNode.disabled = false;
 					}
 				});
 			}
 		},
 
 		/**
-		 * Вспомогательный объект для наследования в дочерние экземпляры Web форм, самостоятельно не используется
+		 * Вывод сообщения об ошибке
 		 */
-		obHelpers : {
+		FormShowError : function(message) {
+			var errorNode, formNode = this.FormGetFormNode();
 
-			// вместо BX(this.namespace) сделать поиск на форму по name
-			//			/**
-			//			 * Установка нового контента
-			//			 */
-			//			setContent : function(content) {
-			//				var thisContent = BX.findChild(BX(this.namespace), {className : 'helpers-fancy-content'}, true);
-			//
-			//				if (null != thisContent) {
-			//					thisContent.innerHTML = content;
-			//				}
-			//			},
+			if (null != formNode) {
+				errorNode = BX.findChild(formNode, {className : 'helpers-form-error'}, true);
 
-			/**
-			 * Вывод сообщения об ошибке
-			 */
-			showError : function(message) {
-				//				var errorNode = BX.findChild(BX('bx-html'), {className : 'helpers-form-error'}, true);
-				//
-				//				if (null != errorNode) {
-				//					errorNode.textContent = message;
-				//				}
-			},
+				if (null != errorNode) {
+					errorNode.textContent = message;
+				}
+			}
+		},
 
-			/**
-			 * Очистка сообщения об ошибке
-			 */
-			cleanError : function() {
-				//				var errorNode = BX.findChild(BX(this.namespace), {className : 'helpers-form-error'}, true);
-				//
-				//				if (null != errorNode) {
-				//					errorNode.textContent = '';
-				//				}
-			},
+		/**
+		 * Очистка сообщения об ошибке
+		 */
+		FormCleanError : function() {
+			var errorNode, formNode = this.FormGetFormNode();
 
-			//			/**
-			//			 * Обновление Captcha
-			//			 */
-			//			refreshCaptcha : function() {
-			//				var oldCaptcha = BX.findChild(BX(this.namespace), {className : 'helpers-form-captcha'}, true);
-			//
-			//				if (null != oldCaptcha) {
-			//					BX.SavitskyiHub.BxHelpers.Helpers.Content.Base.refreshCaptcha(oldCaptcha);
-			//				}
-			//			}
+			if (null != formNode) {
+				errorNode = BX.findChild(formNode, {className : 'helpers-form-error'}, true);
+
+				if (null != errorNode) {
+					errorNode.textContent = '';
+				}
+			}
+		},
+
+		/**
+		 * Обновление Captcha
+		 */
+		FormRefreshCaptcha : function() {
+			var oldCaptcha, formNode = this.FormGetFormNode();
+
+			if (null != formNode) {
+				oldCaptcha = BX.findChild(formNode, {className : 'helpers-form-captcha'}, true);
+
+				if (null != oldCaptcha) {
+					BX.SavitskyiHub.BxHelpers.Helpers.Content.Base.refreshCaptcha(oldCaptcha);
+				}
+			}
+		},
+
+		/**
+		 * Обновление глобальных событий (для нового контента)
+		 */
+		FormUpdateEvent : function() {
+			setTimeout(BX.delegate(function() {
+				this.FormCheckWebForm();
+				this.FormCheckFields();
+
+				if ('function' === typeof(helpersContenFormUpdateEvent)) {
+					helpersContenFormUpdateEvent();
+				}
+			}, this), 250);
 		}
 	};
 
@@ -265,6 +277,6 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 	 * Запускаем инициализацию объекта
 	 */
 	BX.ready(function() {
-		BX.SavitskyiHub.BxHelpers.Helpers.Content.Form.init();
+		BX.SavitskyiHub.BxHelpers.Helpers.Content.Form.FormInit();
 	});
 })();

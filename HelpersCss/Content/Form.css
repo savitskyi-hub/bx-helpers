@@ -1,0 +1,77 @@
+/**
+ * This file is part of the savitskyi-hub/bx-helpers package.
+ *
+ * (c) Andrew Savitskyi <admin@savitskyi.com.ua>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+.helpers-form-error,
+.helpers-form-group,
+.helpers-form-input,
+.helpers-form-select,
+.helpers-form-captcha,
+.helpers-form-textarea {
+  position: relative;
+}
+
+.helpers-form-error,
+.helpers-form-field-error,
+.helpers-form-field-title {
+  font-size: 12px;
+}
+
+.helpers-form-error,
+.helpers-form-field-error {
+  display: none;
+  color: #ec102d;
+}
+
+.helpers-form-error:not(:empty) {
+  display: block;
+}
+
+.helpers-form-field-error {
+  position: absolute;
+  white-space: nowrap;
+}
+
+.helpers-form-textarea textarea {
+  resize: none;
+}
+
+.helpers-form-select select {
+  position: absolute;
+  height: 0;
+  border: 0;
+  outline: 0;
+  opacity: 0;
+}
+
+.helpers-form form.helpers-validation input:invalid,
+.helpers-form form.helpers-validation textarea:invalid,
+.helpers-form form.helpers-validation select:invalid,
+.helpers-form form.helpers-validation input:invalid ~ .helpers-form-select-visual .helpers-form-select-visual-linear,
+.helpers-form form.helpers-validation textarea:invalid ~ .helpers-form-select-visual .helpers-form-select-visual-linear,
+.helpers-form form.helpers-validation select:invalid ~ .helpers-form-select-visual .helpers-form-select-visual-linear {
+  border-color: #ec102d;
+}
+
+.helpers-form form.helpers-validation input:invalid ~ .helpers-form-field-error,
+.helpers-form form.helpers-validation textarea:invalid ~ .helpers-form-field-error,
+.helpers-form form.helpers-validation select:invalid ~ .helpers-form-field-error {
+  display: block;
+}
+
+.helpers-form input[type="submit"] {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.helpers-form input[type="submit"]:disabled,
+.helpers-form input[type="submit"]:disabled:hover {
+  cursor: not-allowed;
+}
