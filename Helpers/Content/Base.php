@@ -12,6 +12,7 @@
 namespace SavitskyiHub\BxHelpers\Helpers\Content;
 
 use Bitrix\Main\Text\HtmlFilter;
+use SavitskyiHub\BxHelpers\Helpers\Main\Variable;
 
 /**
  * Class Base
@@ -112,5 +113,31 @@ class Base
 				<div class="helpers-error-text">'.HtmlFilter::encode($description).'</div>
 				'.$otherContent.'
 			</div>';
+	}
+	
+	/**
+	 * Возвращает тег <link> со значением атрибута rel="canonical"
+	 *
+	 * @param bool $lastSlash
+	 * @return string
+	 */
+	public static function getCanonicalTag(bool $lastSlash = true): string {
+		$protocol = Variable::$bxRequest->isHttps()? 'https://' : 'http://';
+		$queryString = Variable::$bxServer->get('QUERY_STRING');
+		
+		$url = $protocol.Variable::$bxServer->getServerName().Variable::$bxServer->getRequestUri();
+		
+		if ('' != $queryString){
+			$url = str_replace($queryString, '', $url);
+			$url = substr($url, 0, -1);
+		}
+		
+		if (!$lastSlash) {
+			if ('/' == mb_substr($url, -1)) {
+				$url = substr($url, 0, -1);
+			}
+		}
+		
+		return '<link rel="canonical" href="'.HtmlFilter::encode($url).'">';
 	}
 }
