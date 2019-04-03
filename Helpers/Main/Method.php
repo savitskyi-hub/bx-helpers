@@ -13,6 +13,7 @@ namespace SavitskyiHub\BxHelpers\Helpers\Main;
 
 use Bitrix\Main\Application;
 use Bitrix\Main\Config\Option;
+use Bitrix\Main\Text\BinaryString;
 use Bitrix\Main\Text\HtmlFilter;
 
 /**
@@ -54,6 +55,26 @@ class Method
 	 */
 	public static function isSection(string $pathSecton): bool {
 		return preg_match("#^".SITE_DIR.$pathSecton."#ui", Application::getInstance()->getContext()->getRequest()->getRequestedPage());
+	}
+	
+	/**
+	 * Проверяет есть ли текущий сайт продакшн версией сайта или тестовой
+	 *
+	 * @return bool
+	 */
+	public static function isProductionSite(): bool {
+		$serverName = Application::getInstance()->getContext()->getServer()->get("SERVER_NAME");
+		$serverName = ($serverName? $serverName : (new Directory(Application::getDocumentRoot()))->getName());
+		
+		if ("www" == BinaryString::getSubstring($serverName, 0, 3)) {
+			$serverName = BinaryString::getSubstring($serverName, 4);
+		}
+		
+		if ("dev-" == BinaryString::getSubstring($serverName, 0, 4)) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 	
 	/**

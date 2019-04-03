@@ -80,7 +80,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 									return false;
 								}
 
-								if (e.required || e.pattern.length) {
+								if (e.required || (e.pattern && e.pattern.length)) {
 									arFields.push(e);
 								}
 							}
