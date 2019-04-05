@@ -106,10 +106,10 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 					 * Отмечаем валидацию
 					 */
 					BX.bind(e, 'keyup', BX.delegate(function() {
-						if (!BX.hasClass(e, 'hellpers-filled') && e.value.length) {
-							BX.addClass(e, 'hellpers-filled');
+						if (!BX.hasClass(e, 'helpers-filled') && e.value.length) {
+							BX.addClass(e, 'helpers-filled');
 						} else if (!e.value.length) {
-							BX.removeClass(e, 'hellpers-filled');
+							BX.removeClass(e, 'helpers-filled');
 						}
 					}, this));
 				});
@@ -139,10 +139,10 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 						 * Производим добавление отметки что поле было проверено
 						 */
 						if (undefined != tagName && ("INPUT" == tagName || "TEXTAREA" == tagName)) {
-							e.value.length? BX.addClass(e, 'hellpers-filled') : BX.removeClass(e, 'hellpers-filled');
+							e.value.length? BX.addClass(e, 'helpers-filled') : BX.removeClass(e, 'helpers-filled');
 
 							BX.bind(e, 'keyup', BX.delegate(function() {
-								e.value.length? BX.addClass(e, 'hellpers-filled') : BX.removeClass(e, 'hellpers-filled');
+								e.value.length? BX.addClass(e, 'helpers-filled') : BX.removeClass(e, 'helpers-filled');
 							}, this));
 						}
 
