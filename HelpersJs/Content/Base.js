@@ -159,6 +159,11 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Base');
 									}
 								}
 
+								/**
+								 * Обновление событий
+								 */
+								BX.SavitskyiHub.BxHelpers.Helpers.Content.Form.FormUpdateEvent();
+
 							} else {
 								this.debugMessage.push(response.message);
 							}
