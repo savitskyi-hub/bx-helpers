@@ -259,6 +259,23 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 		},
 
 		/**
+		 * Замена Web формы на новый контент
+		 */
+		FormReplaceContent : function(content) {
+			var tmpNode, parentNode, formNode = this.FormGetFormNode();
+
+			if (formNode.outerHTML) {
+				formNode.outerHTML = content;
+			} else {
+				tmpNode = BX.create("DIV", {html : '<!--THIS DATA SHOULD BE REPLACED-->'});
+				parentNode = formNode.parentNode;
+
+				parentNode.replaceChild(tmpNode, formNode);
+				parentNode.innerHTML = parentNode.innerHTML.replace('<div><!--THIS DATA SHOULD BE REPLACED--></div>', content);
+			}
+		},
+
+		/**
 		 * Обновление глобальных событий (для нового контента)
 		 */
 		FormUpdateEvent : function() {

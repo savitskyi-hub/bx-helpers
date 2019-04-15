@@ -35,7 +35,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
 					setTimeout(BX.delegate(function(response) {
 						this.PopupGet(obData);
 						this.PopupFinishLoader();
-					}, this), 100);
+					}, this), 150);
 				} else {
 					this.PopupShow(popup, obData.fancyHelpersAfterShow, obData.fancyHelpersBeforeShow);
 				}
@@ -67,7 +67,15 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
 
 							doc = new DOMParser().parseFromString(response.data.content, "text/html");
 							popup = BX.findChild(doc, {attribute : {"id" : prop.fancyHelpers}}, true);
-							popupsBlock = BX.findChild(BX('bx-html'), {attribute : {"data-content" : "POPUPS"}}, true);
+							popupsBlock = BX.findChild(BX('bx-html'), {attribute : {"data-content-helpers" : "POPUPS"}}, true);
+
+							/**
+							 * Добавляем блок в котором будут хранится подгружаемые попапы
+							 */
+							if (null == popupsBlock) {
+								popupsBlock = BX.create("DIV", {attrs : {'class' : 'hide', 'data-content-helpers' : 'POPUPS'}});
+								document.body.appendChild(popupsBlock);
+							}
 
 							/**
 							 * Добавляем в DOM чтобы следующий раз не делать запрос
@@ -125,6 +133,17 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
 					}
 				}
 			});
+		},
+
+		/**
+		 * Закрытие модального окна
+		 */
+		PopupClose : function() {
+			var thisClose = BX.findChild(BX(this.namespace), {className : 'helpers-fancy-close'}, true);
+
+			if (null != thisClose) {
+				thisClose.click();
+			}
 		},
 
 		/**
