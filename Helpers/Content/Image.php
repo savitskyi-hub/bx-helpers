@@ -256,6 +256,15 @@ class Image
 	}
 	
 	/**
+	 * Возвращает текущею версию подзагрузки файлов
+	 *
+	 * @return string
+	 */
+	public static function getFileVersion(): string {
+		return HtmlFilter::encode(self::$sxFileVersion);
+	}
+	
+	/**
 	 * Возвращает строку из перечисленных атрибутов HTML тега
 	 *
 	 * @param array $arAttrs
