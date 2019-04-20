@@ -6,44 +6,55 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 .clear-both {
-	clear: both;
+  clear: both;
 }
 
 .clear-fix::after,
 .bx-context-toolbar-empty-area::after {
-	display: table;
-	clear: both;
-	content: " ";
+  display: table;
+  clear: both;
+  content: " ";
 }
 
 pre {
-	width: 100%;
-	margin: 10px 0;
-	padding: 10px;
-	overflow: auto;
-	overflow-y: hidden;
-	border: 1px solid #dedede;
-	background: #f9f9f9;
-	color: #333;
-	font-size: 12px;
-	line-height: 20px;
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  overflow: auto;
+  overflow-y: hidden;
+  border: 1px solid #dedede;
+  background: #f9f9f9;
+  color: #333;
+  font-size: 12px;
+  line-height: 20px;
 }
 
 .helpers-notice {
-	color: #36353a;
+  color: #36353a;
 }
 
 .helpers-error {
-	color: #f44336;
+  color: #f44336;
 }
 
 .helpers-notice-header,
 .helpers-error-header {
-	font-size: 20px;
+  font-size: 20px;
 }
 
 .helpers-notice-header:empty,
 .helpers-error-header:empty {
-	display: none;
+  display: none;
+}
+
+.helpers-smoke {
+  visibility: hidden;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
 }

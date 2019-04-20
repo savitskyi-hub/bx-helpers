@@ -76,7 +76,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 
 						if (undefined != tagName) {
 							if ("INPUT" == tagName || "TEXTAREA" == tagName) {
-								if ("INPUT" == tagName && 0 > ["text", "number", "password", "hidden"].indexOf(e.type)) {
+								if ("INPUT" == tagName && 0 > ["text", "number", "password", "hidden", "radio"].indexOf(e.type)) {
 									return false;
 								}
 

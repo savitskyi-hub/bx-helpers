@@ -30,12 +30,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
 				 * Если попап отсутствует на странице
 				 */
 				if (undefined != obData.fancyHelpers && null == (popup = BX(obData.fancyHelpers))) {
-					this.PopupStartLoader();
-
-					setTimeout(BX.delegate(function(response) {
-						this.PopupGet(obData);
-						this.PopupFinishLoader();
-					}, this), 150);
+					this.PopupGet(obData);
 				} else {
 					this.PopupShow(popup, obData.fancyHelpersAfterShow, obData.fancyHelpersBeforeShow);
 				}
@@ -43,96 +38,131 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
 		},
 
 		/**
+		 * Проверяет загружен ли уже попал в тело страницы
+		 */
+		PopupIsLoad : function() {
+			return (null == this.PopupGetNode()? false : true);
+		},
+
+		/**
+		 * Получение попапа как DOM елемента
+		 */
+		PopupGetNode : function() {
+			return BX(this.namespace);
+		},
+
+		/**
 		 * Получение контента из шаблонов компонента (внимание, необходим специальный компонент!!!)
 		 */
 		PopupGet : function(prop) {
-			BX.ajax({
-				url : '/bitrix/services/main/ajax.php?mode=class&c=savitskyi.helpers:content.ajax&action=controller',
-				data : {
-					SITE_ID : BX.SavitskyiHub.BxHelpers.Helpers.Option.SITE_ID,
-					sessid : BX.bitrix_sessid(),
-					post : {
-						templateName : 'popup.' + prop.fancyHelpers,
-						logicMode : 'get',
-						prop : prop
-					}
-				},
-				method : 'POST',
-				dataType : 'json',
-				async : false,
-				onsuccess : BX.delegate(function(response) {
-					if ('success' === response.status) {
-						if (response.data.content) {
-							var doc, popup, popupsBlock;
+			if (undefined == prop) {
+				prop = {
+					fancyHelpers : this.namespace,
+					fancyHelpersAfterShow : undefined,
+					fancyHelpersBeforeShow : undefined
+				};
+			}
 
-							doc = new DOMParser().parseFromString(response.data.content, "text/html");
-							popup = BX.findChild(doc, {attribute : {"id" : prop.fancyHelpers}}, true);
-							popupsBlock = BX.findChild(BX('bx-html'), {attribute : {"data-content-helpers" : "POPUPS"}}, true);
+			if (this.PopupIsLoad()) {
+				this.PopupShow(this.PopupGetNode(), prop.fancyHelpersAfterShow, prop.fancyHelpersBeforeShow);
+			} else {
+				this.PopupStartLoader();
 
-							/**
-							 * Добавляем блок в котором будут хранится подгружаемые попапы
-							 */
-							if (null == popupsBlock) {
-								popupsBlock = BX.create("DIV", {attrs : {'class' : 'hide', 'data-content-helpers' : 'POPUPS'}});
-								document.body.appendChild(popupsBlock);
+				setTimeout(BX.delegate(function(response) {
+					BX.ajax({
+						url : '/bitrix/services/main/ajax.php?mode=class&c=savitskyi.helpers:content.ajax&action=controller',
+						data : {
+							SITE_ID : BX.SavitskyiHub.BxHelpers.Helpers.Option.SITE_ID,
+							sessid : BX.bitrix_sessid(),
+							post : {
+								templateName : 'popup.' + prop.fancyHelpers,
+								logicMode : 'get',
+								prop : prop
 							}
+						},
+						method : 'POST',
+						dataType : 'json',
+						async : false,
+						onsuccess : BX.delegate(function(response) {
+							if ('success' === response.status) {
+								if (response.data.content) {
+									var doc, popup, popupsBlock;
 
-							/**
-							 * Добавляем в DOM чтобы следующий раз не делать запрос
-							 */
-							popupsBlock.appendChild(popup);
+									doc = new DOMParser().parseFromString(response.data.content, "text/html");
+									popup = BX.findChild(doc, {attribute : {"id" : prop.fancyHelpers}}, true);
+									popupsBlock = BX.findChild(BX('bx-html'), {attribute : {"data-content-helpers" : "POPUPS"}}, true);
 
-							/**
-							 * Выводим попап
-							 */
-							this.PopupShow(popup, prop.fancyHelpersAfterShow, prop.fancyHelpersBeforeShow);
-						}
-					} else {
-						console.error(response.errors);
-					}
-				}, this)
-			});
+									/**
+									 * Добавляем блок в котором будут хранится подгружаемые попапы
+									 */
+									if (null == popupsBlock) {
+										popupsBlock = BX.create("DIV", {attrs : {'class' : 'hide', 'data-content-helpers' : 'POPUPS'}});
+										document.body.appendChild(popupsBlock);
+									}
+
+									/**
+									 * Добавляем в DOM чтобы следующий раз не делать запрос
+									 */
+									popupsBlock.appendChild(popup);
+
+									/**
+									 * Выводим попап
+									 */
+									this.PopupFinishLoader();
+									this.PopupShow(popup, prop.fancyHelpersAfterShow, prop.fancyHelpersBeforeShow);
+								}
+							} else {
+								console.error(response.errors);
+							}
+						}, this)
+					});
+
+					this.PopupFinishLoader();
+				}, this), 150);
+			}
 		},
 
 		/**
 		 * Показ контента в модальном окне
 		 */
 		PopupShow : function(content, afterShowInit, beforeShowInit) {
-			$.fancybox.open(content, {
-				animationEffect : "fade",
-				autoFocus : false,
-				trapFocus : false,
-				touch : false,
-				baseTpl : '' +
-				'<div class="fancybox-container">' +
-					'<div class="fancybox-bg"></div>' +
-					'<div class="fancybox-inner"><div class="fancybox-stage"></div></div>' +
-				'</div>',
-				btnTpl : {
-					smallBtn : '' +
-					'<button class="helpers-fancy-close" data-fancybox-close>' +
-						'<div class="icon g-close-fancy"></div>' +
-					'</button>'
-				},
-				beforeShow : function() {
-					if (undefined != beforeShowInit) {
-						eval(beforeShowInit);
-					}
+			if (undefined != content) {
+				$.fancybox.open(content, {
+					animationEffect : "fade",
+					autoFocus : false,
+					trapFocus : false,
+					touch : false,
+					baseTpl : '' +
+					'<div class="fancybox-container">' +
+						'<div class="fancybox-bg"></div>' +
+						'<div class="fancybox-inner"><div class="fancybox-stage"></div></div>' +
+					'</div>',
+					btnTpl : {
+						smallBtn : '' +
+						'<button class="helpers-fancy-close" data-fancybox-close>' +
+							'<div class="icon g-close-fancy"></div>' +
+						'</button>'
+					},
+					beforeShow : function() {
+						if (undefined != beforeShowInit) {
+							eval(beforeShowInit);
+						}
 
-					if ('function' === typeof(helpersBeforeShowPopup)) {
-						helpersBeforeShowPopup();
-					}
-				},
-				afterShow : function() {
-					if (undefined != afterShowInit) {
-						eval(afterShowInit);
-					}
+						if ('function' === typeof(helpersBeforeShowPopup)) {
+							helpersBeforeShowPopup();
+						}
+					},
+					afterShow : function() {
+						if (undefined != afterShowInit) {
+							eval(afterShowInit);
+						}
 
-					if ('function' === typeof(helpersAfterShowPopup)) {
-						helpersAfterShowPopup();
+						if ('function' === typeof(helpersAfterShowPopup)) {
+							helpersAfterShowPopup();
+						}
 					}
-				}
-			});
+				});
+			}
 		},
 
 		/**
