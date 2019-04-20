@@ -96,6 +96,13 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 					$(e).off();
 
 					/**
+					 * Отключаем автодополнение
+					 */
+					if ("SELECT" != e.tagName) {
+						$(e).attr('autocomplete', 'off');
+					}
+
+					/**
 					 * Избавляемся от браузерных HTML5 подсказок
 					 */
 					BX.bind(e, 'invalid', BX.delegate(function(ev) {

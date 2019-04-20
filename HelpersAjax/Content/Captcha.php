@@ -32,7 +32,7 @@ try {
 					<div class="helpers-form-input">
 						<div class="helpers-form-field-title"></div>
 						<input name="captcha_code" value="'.$captcha["code"].'" type="hidden">
-						<input name="captcha_word" type="text" value required autocomplete="off">
+						<input name="captcha_word" type="text" value required>
 						<div class="helpers-form-field-error"></div>
 					</div>
 				</div>';
@@ -57,7 +57,7 @@ try {
 						<div class="helpers-form-input">
 							<div class="helpers-form-field-title"></div>
 							<input name="captcha_code" type="hidden" value="'.$captcha["code"].'">
-							<input name="captcha_word" type="text" value required autocomplete="off">
+							<input name="captcha_word" type="text" value required>
 							<div class="helpers-form-field-error"></div>
 						</div>
 					</div>';
