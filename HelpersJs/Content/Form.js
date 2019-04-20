@@ -75,12 +75,12 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 						tagName = e.tagName;
 
 						if (undefined != tagName) {
-							if ("INPUT" == tagName || "TEXTAREA" == tagName) {
-								if ("INPUT" == tagName && 0 > ["text", "number", "password", "hidden", "radio"].indexOf(e.type)) {
-									return false;
-								}
-
+							if ("INPUT" == tagName || "TEXTAREA" == tagName || "SELECT" == tagName) {
 								if (e.required || (e.pattern && e.pattern.length)) {
+									if ("INPUT" == tagName && 0 > ["text", "number", "password", "hidden", "radio"].indexOf(e.type)) {
+										return false;
+									}
+
 									arFields.push(e);
 								}
 							}

@@ -64,61 +64,79 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
 			}
 
 			if (this.PopupIsLoad()) {
-				this.PopupShow(this.PopupGetNode(), prop.fancyHelpersAfterShow, prop.fancyHelpersBeforeShow);
+				this.PopupStartLoader();
+
+				setTimeout(BX.delegate(function() {
+					this.PopupFinishLoader();
+
+					setTimeout(BX.delegate(function() {
+						this.PopupShow(this.PopupGetNode(), prop.fancyHelpersAfterShow, prop.fancyHelpersBeforeShow);
+					}, this), 700);
+				}, this), 700);
 			} else {
 				this.PopupStartLoader();
 
-				setTimeout(BX.delegate(function(response) {
-					BX.ajax({
-						url : '/bitrix/services/main/ajax.php?mode=class&c=savitskyi.helpers:content.ajax&action=controller',
-						data : {
-							SITE_ID : BX.SavitskyiHub.BxHelpers.Helpers.Option.SITE_ID,
-							sessid : BX.bitrix_sessid(),
-							post : {
-								templateName : 'popup.' + prop.fancyHelpers,
-								logicMode : 'get',
-								prop : prop
-							}
-						},
-						method : 'POST',
-						dataType : 'json',
-						async : false,
-						onsuccess : BX.delegate(function(response) {
-							if ('success' === response.status) {
-								if (response.data.content) {
-									var doc, popup, popupsBlock;
+				BX.ajax({
+					url : '/bitrix/services/main/ajax.php?mode=class&c=savitskyi.helpers:content.ajax&action=controller',
+					data : {
+						SITE_ID : BX.SavitskyiHub.BxHelpers.Helpers.Option.SITE_ID,
+						sessid : BX.bitrix_sessid(),
+						post : {
+							templateName : 'popup.' + prop.fancyHelpers,
+							logicMode : 'get',
+							prop : prop
+						}
+					},
+					method : 'POST',
+					dataType : 'json',
+					async : false,
+					onsuccess : BX.delegate(function(response) {
+						if ('success' === response.status) {
+							if (response.data.content) {
+								var doc, popup, popupsBlock;
 
-									doc = new DOMParser().parseFromString(response.data.content, "text/html");
-									popup = BX.findChild(doc, {attribute : {"id" : prop.fancyHelpers}}, true);
-									popupsBlock = BX.findChild(BX('bx-html'), {attribute : {"data-content-helpers" : "POPUPS"}}, true);
+								doc = new DOMParser().parseFromString(response.data.content, "text/html");
+								popup = BX.findChild(doc, {attribute : {"id" : prop.fancyHelpers}}, true);
+								popupsBlock = BX.findChild(BX('bx-html'), {attribute : {"data-content-helpers" : "POPUPS"}}, true);
 
-									/**
-									 * Добавляем блок в котором будут хранится подгружаемые попапы
-									 */
-									if (null == popupsBlock) {
-										popupsBlock = BX.create("DIV", {attrs : {'class' : 'hide', 'data-content-helpers' : 'POPUPS'}});
-										document.body.appendChild(popupsBlock);
-									}
+								/**
+								 * Добавляем блок в котором будут хранится подгружаемые попапы
+								 */
+								if (null == popupsBlock) {
+									popupsBlock = BX.create("DIV", {
+										attrs : {
+											'class' : 'hide',
+											'data-content-helpers' : 'POPUPS'
+										}
+									});
 
-									/**
-									 * Добавляем в DOM чтобы следующий раз не делать запрос
-									 */
-									popupsBlock.appendChild(popup);
-
-									/**
-									 * Выводим попап
-									 */
-									this.PopupFinishLoader();
-									this.PopupShow(popup, prop.fancyHelpersAfterShow, prop.fancyHelpersBeforeShow);
+									document.body.appendChild(popupsBlock);
 								}
-							} else {
-								console.error(response.errors);
-							}
-						}, this)
-					});
 
-					this.PopupFinishLoader();
-				}, this), 150);
+								/**
+								 * Добавляем в DOM чтобы следующий раз не делать запрос
+								 */
+								popupsBlock.appendChild(popup);
+
+								/**
+								 * Выводим попап
+								 */
+								this.PopupFinishLoader();
+
+								setTimeout(BX.delegate(function() {
+									this.PopupShow(popup, prop.fancyHelpersAfterShow, prop.fancyHelpersBeforeShow);
+								}, this), 700);
+							}
+						} else {
+							console.error(response.errors);
+							this.PopupFinishLoader();
+						}
+					}, this),
+					onfailure : BX.delegate(function(response) {
+						console.error(response.errors);
+						this.PopupFinishLoader();
+					}, this)
+				});
 			}
 		},
 
@@ -134,13 +152,13 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
 					touch : false,
 					baseTpl : '' +
 					'<div class="fancybox-container">' +
-						'<div class="fancybox-bg"></div>' +
-						'<div class="fancybox-inner"><div class="fancybox-stage"></div></div>' +
+					'<div class="fancybox-bg"></div>' +
+					'<div class="fancybox-inner"><div class="fancybox-stage"></div></div>' +
 					'</div>',
 					btnTpl : {
 						smallBtn : '' +
 						'<button class="helpers-fancy-close" data-fancybox-close>' +
-							'<div class="icon g-close-fancy"></div>' +
+						'<div class="icon g-close-fancy"></div>' +
 						'</button>'
 					},
 					beforeShow : function() {
@@ -253,7 +271,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
 		/**
 		 * Обновление глобальных событий (для нового контента)
 		 */
-		PopupUpdateEvent: function() {
+		PopupUpdateEvent : function() {
 			if ('function' === typeof(helpersContentPopupUpdateEvent)) {
 				setTimeout(function() { helpersContentPopupUpdateEvent(); }, 250);
 			}
