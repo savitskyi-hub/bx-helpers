@@ -77,7 +77,7 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 						if (undefined != tagName) {
 							if ("INPUT" == tagName || "TEXTAREA" == tagName || "SELECT" == tagName) {
 								if (e.required || (e.pattern && e.pattern.length)) {
-									if ("INPUT" == tagName && 0 > ["text", "number", "password", "hidden", "radio"].indexOf(e.type)) {
+									if ("INPUT" == tagName && 0 > ["text", "email", "number", "password", "hidden", "radio"].indexOf(e.type)) {
 										return false;
 									}
 
@@ -90,11 +90,6 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 				}, this));
 
 				arFields.forEach(function(e) {
-					/**
-					 * Удаляем все обработчики
-					 */
-					$(e).off();
-
 					/**
 					 * Отключаем автодополнение
 					 */
@@ -112,13 +107,16 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 					/**
 					 * Отмечаем валидацию
 					 */
-					BX.bind(e, 'keyup', BX.delegate(function() {
-						if (!BX.hasClass(e, 'helpers-filled') && e.value.length) {
-							BX.addClass(e, 'helpers-filled');
-						} else if (!e.value.length) {
-							BX.removeClass(e, 'helpers-filled');
-						}
-					}, this));
+					if ("Y" != BX.data(e, 'helpers-filled')) {
+						BX.data(e, 'helpers-filled', "Y");
+						BX.bind(e, 'keyup', BX.delegate(function() {
+							if (!BX.hasClass(e, 'helpers-filled') && e.value.length) {
+								BX.addClass(e, 'helpers-filled');
+							} else if (!e.value.length) {
+								BX.removeClass(e, 'helpers-filled');
+							}
+						}, this));
+					}
 				});
 			}
 		},
@@ -163,11 +161,57 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 		 * Активирует валидацию всех полей Web формы
 		 */
 		FormEnableValidation : function(submitNode) {
-			var formNode = BX.findParent(submitNode, {tag : 'FORM'}, true);
+			var formNode = BX.findParent(submitNode, {tag : 'FORM'}, true),
+				errorField = this.FormGetFieldError(formNode);
+
+			if (undefined != errorField) {
+				if (this.FormIsEnabledToScrollFieldError(formNode)) {
+					this.FormScrollToErrorField(errorField);
+				}
+			}
 
 			if (null != formNode) {
 				BX.addClass(formNode, 'helpers-validation');
 			}
+		},
+
+		/**
+		 * Получение поля с ошибкой
+		 */
+		FormGetFieldError : function(formNode) {
+			var errorFields = BX.findChildren(formNode, {className : 'helpers-form-field-error'}, true),
+				returnField;
+
+			errorFields.forEach(function(e){
+				if ('none' != getComputedStyle(e).display) {
+					returnField = e;
+				}
+			});
+
+			return returnField;
+		},
+
+		/**
+		 * Нужно ли производить скролл
+		 */
+		FormIsEnabledToScrollFieldError : function(formNode) {
+			return "Y" == BX.data(formNode, 'helpers-form-scroll2error')? true : false;
+		},
+
+		/**
+		 * Выполняет плавный скролл к полю с ошибкой
+		 */
+		FormScrollToErrorField : function(errorField) {
+			var errorFieldPost = errorField.parentNode.getBoundingClientRect(),
+				windowPos = BX.GetWindowScrollPos(),
+				lastPosition = errorFieldPost.top + windowPos.scrollTop - (errorFieldPost.height  / 2);
+
+			(new BX.easing({
+				duration : 700,
+				start : {scroll : windowPos.scrollTop},
+				finish : {scroll : lastPosition},
+				step : function(state) {window.scrollTo(0, state.scroll);}
+			})).animate();
 		},
 
 		/**
