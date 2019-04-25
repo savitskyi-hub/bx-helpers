@@ -180,13 +180,23 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 		 */
 		FormGetFieldError : function(formNode) {
 			var errorFields = BX.findChildren(formNode, {className : 'helpers-form-field-error'}, true),
-				returnField;
+				errorResult, returnField;
 
 			errorFields.forEach(function(e){
 				if ('none' != getComputedStyle(e).display) {
 					returnField = e;
 				}
 			});
+
+			if (undefined == returnField) {
+				errorResult = BX.findChild(formNode, {className : 'helpers-form-error'}, true);
+
+				if (null != errorResult) {
+					if ('none' != getComputedStyle(errorResult).display) {
+						returnField = errorResult;
+					}
+				}
+			}
 
 			return returnField;
 		},
