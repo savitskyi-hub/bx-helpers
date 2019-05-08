@@ -10,12 +10,6 @@
 (function(window) {
 	'use strict';
 
-	if (!!window.BX.SavitskyiHub.BxHelpers.Helpers.Polyfills) {
-		return;
-	}
-
-	BX.namespace("SavitskyiHub.BxHelpers.Helpers.Polyfills");
-
 	/**
 	 * Element.matches
 	 */
