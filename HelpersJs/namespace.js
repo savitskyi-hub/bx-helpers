@@ -7,14 +7,20 @@
  * file that was distributed with this source code.
  */
 
-/**
- * Создадим свою область видимости библиотеки в объекте "BX"
- */
-BX.namespace("SavitskyiHub.BxHelpers.Helpers");
-BX.namespace('SavitskyiHub.BxHelpers.Helpers.Option');
-
-(function() {
+(function(window) {
 	'use strict';
+
+	if (!!window.BX.SavitskyiHub) {
+		return;
+	}
+
+	/**
+	 * Создадим свою область видимости библиотеки в объекте "BX"
+	 */
+	BX.namespace("SavitskyiHub.BxHelpers.Helpers");
+	BX.namespace("SavitskyiHub.BxHelpers.Helpers.Content");
+	BX.namespace("SavitskyiHub.BxHelpers.Helpers.Main");
+	BX.namespace('SavitskyiHub.BxHelpers.Helpers.Option');
 
 	/**
 	 * Глобальные параметры что будут переданы из PHP
@@ -26,4 +32,4 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Option');
 		SITE_COOKIE_PREFIX : "",
 		SITE_TEMPLATE_PATH : ""
 	};
-})();
+})(window);

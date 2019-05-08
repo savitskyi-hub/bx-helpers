@@ -7,10 +7,14 @@
  * file that was distributed with this source code.
  */
 
-BX.namespace('SavitskyiHub.BxHelpers.Helpers.Main.Variable');
-
-(function() {
+(function(window) {
 	'use strict';
+
+	if (!!window.BX.SavitskyiHub.BxHelpers.Helpers.Main.Variable) {
+		return;
+	}
+
+	BX.namespace('SavitskyiHub.BxHelpers.Helpers.Main.Variable');
 
 	/**
 	 * Объект для удобной работы с свойствами или их обработки, которые нужны при реализации или поддержки проекта
@@ -34,4 +38,4 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Main.Variable');
 			return newArray;
 		}
 	};
-})();
+})(window);

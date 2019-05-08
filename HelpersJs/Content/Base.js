@@ -7,10 +7,14 @@
  * file that was distributed with this source code.
  */
 
-BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Base');
-
-(function() {
+(function(window) {
 	'use strict';
+
+	if (!!window.BX.SavitskyiHub.BxHelpers.Helpers.Content.Base) {
+		return;
+	}
+
+	BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Base');
 
 	/**
 	 * Объект для работы с базовыми методами что нужны для удобной и качественной роботы проекта
@@ -212,4 +216,4 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Base');
 	BX.ready(function() {
 		BX.SavitskyiHub.BxHelpers.Helpers.Content.Base.init();
 	});
-})();
+})(window);

@@ -7,10 +7,14 @@
  * file that was distributed with this source code.
  */
 
-BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
-
-(function() {
+(function(window) {
 	'use strict';
+
+	if (!!window.BX.SavitskyiHub.BxHelpers.Helpers.Content.Form) {
+		return;
+	}
+
+	BX.namespace("SavitskyiHub.BxHelpers.Helpers.Content.Form");
 
 	/**
 	 * Объект для работы с Web формами
@@ -357,4 +361,4 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Form');
 	BX.ready(function() {
 		BX.SavitskyiHub.BxHelpers.Helpers.Content.Form.FormInit();
 	});
-})();
+})(window);

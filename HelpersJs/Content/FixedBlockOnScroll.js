@@ -7,10 +7,14 @@
  * file that was distributed with this source code.
  */
 
-BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.FixedBlockOnScroll');
-
-(function() {
+(function(window) {
 	'use strict';
+
+	if (!!window.BX.SavitskyiHub.BxHelpers.Helpers.Content.FixedBlockOnScroll) {
+		return;
+	}
+
+	BX.namespace("SavitskyiHub.BxHelpers.Helpers.Content.FixedBlockOnScroll");
 
 	/**
 	 * Реализация фиксирования блоков при скроллинге, само фиксирование начинается от момента:
@@ -221,4 +225,4 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.FixedBlockOnScroll');
 			}
 		}
 	};
-})();
+})(window);

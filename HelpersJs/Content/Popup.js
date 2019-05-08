@@ -7,10 +7,14 @@
  * file that was distributed with this source code.
  */
 
-BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
-
-(function() {
+(function(window) {
 	'use strict';
+
+	if (!!window.BX.SavitskyiHub.BxHelpers.Helpers.Content.Popup) {
+		return;
+	}
+
+	BX.namespace("SavitskyiHub.BxHelpers.Helpers.Content.Popup");
 
 	/**
 	 * Объект для работы с модальными окнами
@@ -277,4 +281,4 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Popup');
 			}
 		}
 	};
-})();
+})(window);

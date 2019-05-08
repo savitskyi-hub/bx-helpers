@@ -7,10 +7,14 @@
  * file that was distributed with this source code.
  */
 
-BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Image');
-
-(function() {
+(function(window) {
 	'use strict';
+
+	if (!!window.BX.SavitskyiHub.BxHelpers.Helpers.Content.Image) {
+		return;
+	}
+
+	BX.namespace("SavitskyiHub.BxHelpers.Helpers.Content.Image");
 
 	/**
 	 * Объект для работы с изображениями
@@ -78,4 +82,4 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Image');
 			}
 		}
 	};
-})();
+})(window);

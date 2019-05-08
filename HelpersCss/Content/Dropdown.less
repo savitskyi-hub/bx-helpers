@@ -8,10 +8,10 @@
  */
 
 /**
- * Подготовленные стили с примером структуры HTML кода для использования открывающегося контенту с обратным закрытием
+ * Подготовленные стиле с примером структуры HTML кода для использования открывающего контента с обратной закрытием
  *
  * <div class="helpers-dropdown">
- *     <input class="helpers-dropdown-checkbox" type="checkbox" name="#УНИКАЛЬНЫЙ_ID#" id="#УНИКАЛЬНЫЙ_ID#">
+ *     <input class="helpers-dropdown-checkbox" type="checkbox" name="#УНИКАЛЬНОЕ_НАЗВАНИЕ#" id="#УНИКАЛЬНЫЙ_ID#">
  *
  *	   <div class="helpers-dropdown-title">
  *	       <label for="#УНИКАЛЬНЫЙ_ID#" class="helpers-dropdown-title-open">Подробнее <i></i></label>
@@ -43,9 +43,9 @@
 
 	&-title {
 		display: flex;
-		justify-content: center;
 		flex-direction: column;
 		align-items: center;
+		justify-content: center;
 
 		label {
 			cursor: pointer;
@@ -58,8 +58,8 @@
 
 	&-content {
 		max-height: 0;
+		overflow: hidden;
 		opacity: 0;
 		transition: all 0.5s ease-out;
-		overflow: hidden;
 	}
 }

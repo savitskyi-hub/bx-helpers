@@ -6,11 +6,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 .helpers-scroller-y.fixed-start {
-	position: fixed;
-	top: 0;
+  position: fixed;
+  top: 0;
 }
 
 .helpers-scroller-y.fixed-stop {
-	position: absolute !important;
+  position: absolute !important;
 }

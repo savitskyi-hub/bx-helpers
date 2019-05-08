@@ -7,10 +7,14 @@
  * file that was distributed with this source code.
  */
 
-BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Text');
-
-(function() {
+(function(window) {
 	'use strict';
+
+	if (!!window.BX.SavitskyiHub.BxHelpers.Helpers.Content.Text) {
+		return;
+	}
+
+	BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Text');
 
 	/**
 	 * Объект для работы с текстом (полезные методы для решения многих задач)
@@ -71,4 +75,4 @@ BX.namespace('SavitskyiHub.BxHelpers.Helpers.Content.Text');
 			document.body.removeChild(textArea);
 		}
 	};
-})();
+})(window);
