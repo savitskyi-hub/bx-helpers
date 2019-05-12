@@ -15,7 +15,6 @@ use Bitrix\Main\Data\Cache;
 use Bitrix\Main\Loader;
 use Bitrix\Main\SystemException;
 use Bitrix\Main\UserTable;
-use Bitrix\Main\Web\Cookie;
 use SavitskyiHub\BxHelpers\Helpers\ClassTrait;
 use SavitskyiHub\BxHelpers\Helpers\Content\Image;
 use SavitskyiHub\BxHelpers\Helpers\IO\Dir;
@@ -41,7 +40,7 @@ final class User
 	 * Название кэша для отслеживания очистки данных пользователя
 	 * @var string
 	 */
-	private static $nameCookieCleanCache = 'HELPERS_MAIN_USER_CLEAN_CACHE';
+	private static $nameSessionCleanCache = 'HELPERS_MAIN_USER_CLEAN_CACHE';
 	
 	/**
 	 * Приватные параметры кеша
@@ -237,34 +236,32 @@ final class User
 	}
 	
 	/**
-	 * Отслеживаем куку что создается после изменения данных пользователя
-	 * - если есть, чистим кэш и удаляем куку
+	 * Отслеживаем сессию что создается после изменения данных пользователя
+	 * - если есть, чистим кэш и удаляем сессию
 	 *
-	 * @return int|bool
+	 * @return int
 	 */
-	private function isClearCache(): bool {
-		if ($key = Variable::$bxRequest->getCookie(self::$nameCookieCleanCache)) {
-			$cookie = new Cookie(self::$nameCookieCleanCache, "", time() - 60);
-			$cookie->setDomain(Variable::$bxServer->getServerName());
+	private function isClearCache(): int {
+		if (isset($_SESSION[self::$nameSessionCleanCache])) {
+			$sessionTime = explode("|", $_SESSION[self::$nameSessionCleanCache]);
 			
-			Variable::$bxResponse->addCookie($cookie);
+			if ((time() - $sessionTime[0]) <= 60) {
+				$return = (int) $sessionTime[1];
+			}
 			
-			return (int) $key;
+			unset($_SESSION[self::$nameSessionCleanCache]);
 		}
 		
-		return false;
+		return $return ?? 0;
 	}
 	
 	/**
-	 * После изменения данных пользователя создадим куку для отслеживания очистки кэша
+	 * После изменения данных пользователя создадим сессию для отслеживания очистки кэша
 	 *
 	 * @param array $arFields - свойства пользователя;
 	 */
 	public function setClearCacheVar(array &$arFields) {
-		$cookie = new Cookie(self::$nameCookieCleanCache, $arFields["ID"], time() + 60);
-		$cookie->setDomain(Variable::$bxServer->getServerName());
-		
-		Variable::$bxResponse->addCookie($cookie);
+		$_SESSION[self::$nameSessionCleanCache] = time().'|'.$arFields["ID"];
 	}
 	
 	/**
