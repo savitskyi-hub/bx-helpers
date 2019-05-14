@@ -42,6 +42,28 @@
 		},
 
 		/**
+		 * Выполняет запуск скриптов что были переданы в HTML контенте
+		 */
+		PopupInitScriptsContent : function(content) {
+			var doc = new DOMParser().parseFromString(content, "text/html"),
+				scripts = doc.getElementsByTagName("script"),
+				i;
+
+			if (scripts.length) {
+				for (i = 0; i < scripts.length; ++i) {
+					BX.ajax.processScripts(BX.processHTML(scripts[i].outerHTML).SCRIPT);
+				}
+			}
+		},
+
+		/**
+		 * Вывод ошибки в консоль браузера
+		 */
+		PopupConsoleError : function(errors) {
+			console.error(errors);
+		},
+
+		/**
 		 * Проверяет загружен ли уже попал в тело страницы
 		 */
 		PopupIsLoad : function() {
@@ -131,18 +153,19 @@
 								 * Выводим попап
 								 */
 								this.PopupFinishLoader();
+								this.PopupInitScriptsContent(response.data.content);
 
 								setTimeout(BX.delegate(function() {
 									this.PopupShow(popup, prop.fancyHelpersAfterShow, prop.fancyHelpersBeforeShow);
 								}, this), 700);
 							}
 						} else {
-							console.error(response.errors);
+							this.PopupConsoleError(response.errors);
 							this.PopupFinishLoader();
 						}
 					}, this),
 					onfailure : BX.delegate(function(response) {
-						console.error(response.errors);
+						this.PopupConsoleError(response.errors);
 						this.PopupFinishLoader();
 					}, this)
 				});
