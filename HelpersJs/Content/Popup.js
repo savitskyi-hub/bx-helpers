@@ -56,6 +56,24 @@
 		},
 
 		/**
+		 * Добавляет блок в котором будут хранится подгружаемые попапы
+		 */
+		PopupCreateBlockedSave : function() {
+			var popupsBlock = BX.findChild(BX('bx-html'), {attribute : {"data-content-helpers" : "POPUPS"}}, true);
+
+			if (null == popupsBlock) {
+				popupsBlock = BX.create("DIV", {
+					attrs : {
+						'class' : 'hide',
+						'data-content-helpers' : 'POPUPS'
+					}
+				});
+
+				document.body.appendChild(popupsBlock);
+			}
+		},
+
+		/**
 		 * Получение контента из шаблонов компонента (внимание, необходим специальный компонент!!!)
 		 */
 		PopupGet : function(prop) {
@@ -79,6 +97,7 @@
 				}, this), 700);
 			} else {
 				this.PopupStartLoader();
+				this.PopupCreateBlockedSave();
 
 				BX.ajax({
 					url : '/bitrix/services/main/ajax.php?mode=class&c=savitskyi.helpers:content.ajax&action=controller',
@@ -102,20 +121,6 @@
 								doc = new DOMParser().parseFromString(response.data.content, "text/html");
 								popup = BX.findChild(doc, {attribute : {"id" : prop.fancyHelpers}}, true);
 								popupsBlock = BX.findChild(BX('bx-html'), {attribute : {"data-content-helpers" : "POPUPS"}}, true);
-
-								/**
-								 * Добавляем блок в котором будут хранится подгружаемые попапы
-								 */
-								if (null == popupsBlock) {
-									popupsBlock = BX.create("DIV", {
-										attrs : {
-											'class' : 'hide',
-											'data-content-helpers' : 'POPUPS'
-										}
-									});
-
-									document.body.appendChild(popupsBlock);
-								}
 
 								/**
 								 * Добавляем в DOM чтобы следующий раз не делать запрос
@@ -156,13 +161,13 @@
 					touch : false,
 					baseTpl : '' +
 					'<div class="fancybox-container">' +
-					'<div class="fancybox-bg"></div>' +
-					'<div class="fancybox-inner"><div class="fancybox-stage"></div></div>' +
+						'<div class="fancybox-bg"></div>' +
+						'<div class="fancybox-inner"><div class="fancybox-stage"></div></div>' +
 					'</div>',
 					btnTpl : {
 						smallBtn : '' +
 						'<button class="helpers-fancy-close" data-fancybox-close>' +
-						'<div class="icon g-close-fancy"></div>' +
+							'<span class="icon g-close-fancy"></span>' +
 						'</button>'
 					},
 					beforeShow : function() {
