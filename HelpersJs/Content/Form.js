@@ -338,6 +338,23 @@
 				parentNode.replaceChild(tmpNode, formNode);
 				parentNode.innerHTML = parentNode.innerHTML.replace('<div><!--THIS DATA SHOULD BE REPLACED--></div>', content);
 			}
+
+			this.FormInitScriptsInNewContent(content);
+		},
+
+		/**
+		 * Выполняет запуск скриптов что были переданы в HTML контенте
+		 */
+		FormInitScriptsInNewContent : function(content) {
+			var doc = new DOMParser().parseFromString(content, "text/html"),
+				scripts = doc.getElementsByTagName("script"),
+				i;
+
+			if (scripts.length) {
+				for (i = 0; i < scripts.length; ++i) {
+					BX.ajax.processScripts(BX.processHTML(scripts[i].outerHTML).SCRIPT);
+				}
+			}
 		},
 
 		/**
