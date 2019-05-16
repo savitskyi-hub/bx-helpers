@@ -191,12 +191,12 @@
 				if (typeof(arFunction) !== "undefined") {
 					for (j in arFunction) {
 						if (!obList[j].scrollingTag) {
-							window.addEventListener("scroll", function() { arFunction[j](j); });
+							BX.bind(window, 'scroll', function() { arFunction[j](j); });
 						} else {
-							document.querySelector(obList[j].scrollingTag).onscroll = function() { arFunction[j](j); };
+							BX.bind(document.querySelector(obList[j].scrollingTag), 'scroll', function() { arFunction[j](j); });
 						}
 
-						window.addEventListener("resize", function() { arFunction[j](j); });
+						BX.bind(window, 'resize', function() { arFunction[j](j); });
 					}
 				}
 			}
