@@ -145,9 +145,8 @@ class Send
 	 *
 	 * @param string $typeEmailEvent - символьный код почтового события;
 	 * @param array $arFields - массив параметров события;
-	 * @return bool
 	 */
-	static function Mail(string $typeEmailEvent, array $arFields): bool {
+	static function Mail(string $typeEmailEvent, array $arFields) {
 		try {
 			
 			Loader::includeModule('main');
