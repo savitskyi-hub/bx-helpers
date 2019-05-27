@@ -25,7 +25,6 @@
 		 */
 		params : {
 			useFlexContainerEditMode : true,
-			useReplaceCallto2TellInLink : true,
 			useReplaceCaptchaSections : true
 		},
 
@@ -40,10 +39,6 @@
 		init : function() {
 			if (this.params.useFlexContainerEditMode) {
 				this.stylizeSystemBlock();
-			}
-
-			if (this.params.useReplaceCallto2TellInLink) {
-				this.autoReplaceCallto2TellInLink();
 			}
 
 			if (this.params.useReplaceCaptchaSections) {
@@ -88,31 +83,6 @@
 							}
 						}
 					}
-				}
-			}
-		},
-
-		/**
-		 * Производит автозамену "callto" на "tel" в требуте "href" в случаи:
-		 *
-		 * - если пользователь зашел на сайт из телефона;
-		 * - в атрибуте "href" присутствует "callto";
-		 */
-		autoReplaceCallto2TellInLink : function() {
-			'use strict';
-
-			if (!BX.browser.IsMobile()) {
-				var links = BX.findChild(BX('bx-html'), {tag : 'A'}, true, true),
-					href;
-
-				if (null != links) {
-					links.forEach(function(node) {
-						href = node.getAttribute('href');
-
-						if (href && "callto" == href.substr(0, 6)) {
-							node.setAttribute('href', 'tel' + href.substr(6));
-						}
-					});
 				}
 			}
 		},

@@ -34,7 +34,7 @@ final class User
 	/**
 	 * Singleton Instance
 	 */
-	private static $instance = null;
+	private static $instance = [];
 	
 	/**
 	 * Название кэша для отслеживания очистки данных пользователя
@@ -93,7 +93,7 @@ final class User
 	/**
 	 * User constructor
 	 */
-	private function __construct() {
+	private function __construct($ID) {
 		try {
 			Loader::includeModule("main");
 			
@@ -108,7 +108,7 @@ final class User
 			/**
 			 * Если были изменены данные скидываем кэш
 			 */
-			if ($keyUserCache = $this->isClearCache()) {
+			if ($keysUserCache = $this->isClearCache()) {
 				$сache->clean($cacheIdSysG, $cacheDirSysG);
 			}
 			
@@ -125,15 +125,23 @@ final class User
 				]);
 			}
 			
-			if ($USER->IsAuthorized()) {
-				$this->isAuth = 1;
-				$this->ID = $USER->GetID();
+			if ($USER->IsAuthorized() || $ID) {
+				$this->ID = $ID? $ID : $USER->GetID();
+				$this->isAuth = 0;
+				
+				if ($USER->IsAuthorized() && $ID == $USER->GetID()) {
+					$this->isAuth = 1;
+				} elseif (!$ID) {
+					$this->isAuth = 1;
+				}
 				
 				/**
 				 * Если были изменены данные скидываем кэш
 				 */
-				if ($keyUserCache) {
-					$сache->clean($cacheIdUser.$keyUserCache, $cacheDirUser.'/'.$keyUserCache);
+				if (!empty($keysUserCache)) {
+					foreach ($keysUserCache as $cleanCacheUserID) {
+						$сache->clean($cacheIdUser.$cleanCacheUserID, $cacheDirUser.'/'.$cleanCacheUserID);
+					}
 				}
 				
 				$cacheDirUser = $cacheDirUser.'/'.$this->ID;
@@ -241,18 +249,26 @@ final class User
 	 *
 	 * @return int
 	 */
-	private function isClearCache(): int {
+	private function isClearCache(): array {
+		$return = [];
+		
 		if (isset($_SESSION[self::$nameSessionCleanCache])) {
-			$sessionTime = explode("|", $_SESSION[self::$nameSessionCleanCache]);
-			
-			if ((time() - $sessionTime[0]) <= 60) {
-				$return = (int) $sessionTime[1];
+			if (!is_array($_SESSION[self::$nameSessionCleanCache])) {
+				return $return;
 			}
 			
-			unset($_SESSION[self::$nameSessionCleanCache]);
+			foreach ($_SESSION[self::$nameSessionCleanCache] as $k => $data) {
+				$sessionTime = explode("|", $data);
+				
+				if ((time() - $sessionTime[0]) <= 60) {
+					$return[] = (int) $sessionTime[1];
+				}
+				
+				unset($_SESSION[self::$nameSessionCleanCache][$k]);
+			}
 		}
 		
-		return $return ?? 0;
+		return $return;
 	}
 	
 	/**
@@ -261,7 +277,11 @@ final class User
 	 * @param array $arFields - свойства пользователя;
 	 */
 	public function setClearCacheVar(array &$arFields) {
-		$_SESSION[self::$nameSessionCleanCache] = time().'|'.$arFields["ID"];
+		if (!isset($_SESSION[self::$nameSessionCleanCache])) {
+			$_SESSION[self::$nameSessionCleanCache] = [];
+		}
+		
+		$_SESSION[self::$nameSessionCleanCache][] = time().'|'.$arFields["ID"];
 	}
 	
 	/**
@@ -415,11 +435,13 @@ final class User
 	 *
 	 * @return null|Instance
 	 */
-	static function getInstance() {
-		if (null == self::$instance) {
-			self::$instance = new User();
+	static function getInstance($ID = 0) {
+		if (empty(self::$instance)) {
+			self::$instance[$ID] = new User($ID);
+		} elseif (!array_key_exists($ID, self::$instance)) {
+			self::$instance[$ID] = new User($ID);
 		}
 		
-		return self::$instance;
+		return self::$instance[$ID];
 	}
 }
