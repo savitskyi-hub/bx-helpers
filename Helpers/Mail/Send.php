@@ -145,10 +145,10 @@ class Send
 	 *
 	 * @param string $typeEmailEvent - символьный код почтового события;
 	 * @param array $arFields - массив параметров события;
+	 * @return bool
 	 */
-	static function Mail(string $typeEmailEvent, array $arFields) {
+	static function Mail(string $typeEmailEvent, array $arFields): bool {
 		try {
-			
 			Loader::includeModule('main');
 			
 			if (!$typeEmailEvent || !$arFields) {
@@ -165,8 +165,11 @@ class Send
 				throw new SystemException('Ошибка отправки письма: '.implode("\r\n", $rsMail->getErrorMessages()));
 			}
 			
+			return true;
 		} catch (SystemException $e) {
 			Debug::writeToFile($e->getMessage(), false);
+			
+			return false;
 		}
 	}
 }
