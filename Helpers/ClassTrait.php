@@ -22,31 +22,31 @@ use SavitskyiHub\BxHelpers\Helpers\Main\Debug;
 trait ClassTrait
 {
 	public function __call($name, $arguments) {
-		Debug::writeToFile('Method "'.$name.'()" was not found in - '.self::getCalledClassName());
+		self::writeToLog('Method "'.$name.'()" was not found in - '.self::getCalledClassName());
 	}
 	
 	public static function __callStatic($name, $arguments) {
-		Debug::writeToFile('The static method "::'.$name.'()" was not found in - '.self::getCalledClassName());
+		self::writeToLog('The static method "::'.$name.'()" was not found in - '.self::getCalledClassName());
 	}
 	
 	public function __unset($name) {
-		Debug::writeToFile('The property "'.$name.'" cannot be removed in - '.self::getCalledClassName());
+		self::writeToLog('The property "'.$name.'" cannot be removed in - '.self::getCalledClassName());
 	}
 	
 	public function __set($name, $value) {
-		Debug::writeToFile('Can not set "'.$value.'" to property "'.$name.'" in'.self::getCalledClassName());
+		self::writeToLog('Can not set "'.$value.'" to property "'.$name.'" in'.self::getCalledClassName());
 	}
 	
 	public function __clone() {
-		Debug::writeToFile('Cloning "'.self::getCalledClassName().'" is not allowed');
+		self::writeToLog('Cloning "'.self::getCalledClassName().'" is not allowed');
 	}
 	
 	public function __wakeup() {
-		Debug::writeToFile('Unserializing "'.self::getCalledClassName().'" is not allowed');
+		self::writeToLog('Unserializing "'.self::getCalledClassName().'" is not allowed');
 	}
 	
 	public function __isset($name) {
-		Debug::writeToFile('The property "'.$name.'" does not exist in - '.self::getCalledClassName());
+		self::writeToLog('The property "'.$name.'" does not exist in - '.self::getCalledClassName());
 	}
 	
 	public function __get($name) {
@@ -57,7 +57,7 @@ trait ClassTrait
 			
 			return $this->$name;
 		} catch (SystemException $e) {
-			Debug::writeToFile($e->getMessage());
+			self::writeToLog($e->getMessage());
 		}
 		
 		return null;
@@ -77,7 +77,7 @@ trait ClassTrait
 			
 			return self::${$name};
 		} catch (SystemException $e) {
-			Debug::writeToFile($e->getMessage());
+			self::writeToLog($e->getMessage());
 		}
 		
 		return null;
@@ -90,5 +90,16 @@ trait ClassTrait
 	 */
 	static function getCalledClassName() {
 		return get_called_class();
+	}
+	
+	/**
+	 * Сохраняет исключения в лог
+	 *
+	 * @param $message
+	 */
+	static function writeToLog($message) {
+		$debug = new Debug();
+		$debug->onBacktrace();
+		$debug->writeData($message, false, true);
 	}
 }

@@ -12,7 +12,7 @@
 namespace SavitskyiHub\BxHelpers\Helpers\Mail;
 
 use Bitrix\Main\Loader;
-use Bitrix\Main\Mail\Event;
+use Bitrix\Main\Mail;
 use Bitrix\Main\SystemException;
 use SavitskyiHub\BxHelpers\Helpers\Highload\Instance;
 use SavitskyiHub\BxHelpers\Helpers\Install\Mail_Install_Highload;
@@ -75,7 +75,7 @@ class Send
 				return false;
 			}
 			
-			$rsSend = Event::send([
+			$rsSend = Mail\Event::send([
 				"EVENT_NAME" => $mailEventType,
 				"LID" => (SITE_ID != "ru"? SITE_ID : key(Variable::$bxSitesInfo)),
 				"C_FIELDS" => [
@@ -107,7 +107,9 @@ class Send
 				$isSuccess = true;
 			}
 		} catch (SystemException $e) {
-			Debug::writeToFile($e->getMessage(), false);
+			$debug = new Debug();
+			$debug->onBacktrace();
+			$debug->writeData($e->getMessage());
 		}
 		
 		return $isSuccess ?? false;
@@ -155,7 +157,17 @@ class Send
 				throw new SystemException('Передано не все данные для отправки почтового события');
 			}
 			
-			$rsMail = Event::send([
+			$rsCheckMailEventType = Mail\Internal\EventTypeTable::getList([
+				'select' => ['ID'],
+				'filter' => ["=EVENT_NAME" => $typeEmailEvent],
+				'limit' => 1
+			]);
+			
+			if (!(int) $rsCheckMailEventType->getSelectedRowsCount()) {
+				throw new SystemException('Тип почтового события: "'. $typeEmailEvent. '" не существует');
+			}
+			
+			$rsMail = Mail\Event::send([
 				"EVENT_NAME" => $typeEmailEvent,
 				"C_FIELDS" => $arFields,
 				"LID" => (SITE_ID != "ru"? SITE_ID : key(Variable::$bxSitesInfo))
@@ -167,7 +179,9 @@ class Send
 			
 			return true;
 		} catch (SystemException $e) {
-			Debug::writeToFile($e->getMessage(), false);
+			$debug = new Debug();
+			$debug->onBacktrace();
+			$debug->writeData($e->getMessage());
 			
 			return false;
 		}

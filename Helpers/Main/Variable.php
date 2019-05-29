@@ -116,7 +116,9 @@ final class Variable
 			}
 			
 		} catch (SystemException $e) {
-			Debug::writeToFile($e->getMessage());
+			$debug = new Debug();
+			$debug->onBacktrace();
+			$debug->writeData($e->getMessage(), false, true);
 		}
 	}
 	

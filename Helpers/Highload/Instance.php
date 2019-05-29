@@ -65,7 +65,9 @@ class Instance
 			$this->tableName = $hlBlock["TABLE_NAME"];
 			$this->entityName = $hlBlock["NAME"];
 		} catch (SystemException $e) {
-			Debug::writeToFile($e->getMessage());
+			$debug = new Debug();
+			$debug->onBacktrace();
+			$debug->writeData($e->getMessage(), false, true);
 		}
 		
 		return $this;

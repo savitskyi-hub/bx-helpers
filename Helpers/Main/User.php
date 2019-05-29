@@ -185,7 +185,9 @@ final class User
 				}
 			}
 		} catch (SystemException $e) {
-			Debug::writeToFile($e->getMessage());
+			$debug = new Debug();
+			$debug->onBacktrace();
+			$debug->writeData($e->getMessage(), false, true);
 		}
 	}
 	
@@ -237,7 +239,9 @@ final class User
 			}
 			
 		} catch (SystemException $e) {
-			Debug::writeToFile($e->getMessage());
+			$debug = new Debug();
+			$debug->onBacktrace();
+			$debug->writeData($e->getMessage(), false, true);
 		}
 		
 		return $arProps ?? [];
@@ -410,7 +414,9 @@ final class User
 				$groupId = [$groupId];
 			}
 		} catch (SystemException $e) {
-			Debug::writeToFile($e->getMessage());
+			$debug = new Debug();
+			$debug->onBacktrace();
+			$debug->writeData($e->getMessage(), false, true);
 		}
 		
 		return $groupId ?? 0;
