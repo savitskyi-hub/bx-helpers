@@ -147,13 +147,14 @@ class Send
 	 *
 	 * @param string $typeEmailEvent - символьный код почтового события;
 	 * @param array $arFields - массив параметров события;
+	 * @param array $FILES - массив id файлов (которые используются классом CFile), либо массив абсолютных путей до файлов;
 	 * @return bool
 	 */
-	static function Mail(string $typeEmailEvent, array $arFields): bool {
+	static function Mail(string $typeEmailEvent, array $arFields = [], array $FILES = []): bool {
 		try {
 			Loader::includeModule('main');
 			
-			if (!$typeEmailEvent || !$arFields) {
+			if (!$typeEmailEvent) {
 				throw new SystemException('Передано не все данные для отправки почтового события');
 			}
 			
@@ -170,6 +171,7 @@ class Send
 			$rsMail = Mail\Event::send([
 				"EVENT_NAME" => $typeEmailEvent,
 				"C_FIELDS" => $arFields,
+				"FILE" => $FILES,
 				"LID" => (SITE_ID != "ru"? SITE_ID : key(Variable::$bxSitesInfo))
 			]);
 			
