@@ -45,7 +45,7 @@ final class User
 	/**
 	 * Приватные параметры кеша
 	 */
-	private $cacheTime = 600;
+	private $cacheTime = 5400;
 	private $cacheDir = '_helpers_user';
 	
 	/**
@@ -83,6 +83,12 @@ final class User
 	 * @var bool
 	 */
 	private $isDelete = false;
+	
+	/**
+	 * Администратор ли пользователь
+	 * @var bool
+	 */
+	private $isAdmin = false;
 	
 	/**
 	 * Список системных груп
@@ -170,6 +176,13 @@ final class User
 				
 				if (!isset($isBad)) {
 					/**
+					 * Если пользователь администратор
+					 */
+					if ($this->isInGroup("ADMINISTRATORS")) {
+						$this->isAdmin = true;
+					}
+					
+					/**
 					 * Если пользователь заблокирован делаем отметку
 					 */
 					if ($this->isInGroup("BANED_USERS")) {
@@ -251,7 +264,7 @@ final class User
 	 * Отслеживаем сессию что создается после изменения данных пользователя
 	 * - если есть, чистим кэш и удаляем сессию
 	 *
-	 * @return int
+	 * @return array
 	 */
 	private function isClearCache(): array {
 		$return = [];
@@ -425,7 +438,7 @@ final class User
 	/**
 	 * Проверяет находится ли пользователь в определенной группе
 	 *
-	 * @parap string $groupCode
+	 * @param string $groupCode
 	 * @return bool
 	 */
 	public function isInGroup(string $groupCode): bool {
@@ -439,6 +452,7 @@ final class User
 	/**
 	 * Объект создается внутри самого класса, только если у класса нет экземпляра
 	 *
+	 * @param int $ID
 	 * @return null|Instance
 	 */
 	static function getInstance($ID = 0) {
