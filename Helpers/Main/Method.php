@@ -54,7 +54,10 @@ class Method
 	 * @return bool
 	 */
 	public static function isSection(string $pathSecton): bool {
-		return preg_match("#^".SITE_DIR.$pathSecton."#ui", Application::getInstance()->getContext()->getRequest()->getRequestedPage());
+		$SITE_DIR = SITE_DIR;
+		$SITE_DIR = $SITE_DIR? $SITE_DIR : '/';
+		
+		return preg_match("#^".$SITE_DIR.$pathSecton."#ui", Application::getInstance()->getContext()->getRequest()->getRequestedPage());
 	}
 	
 	/**
