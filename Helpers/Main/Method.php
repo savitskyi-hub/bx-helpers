@@ -44,20 +44,30 @@ class Method
 	 * @return bool
 	 */
 	public static function isMainPage(): bool {
-		return preg_match("#^".SITE_DIR."index.php#ui", Application::getInstance()->getContext()->getRequest()->getRequestedPage());
+		$SITE_DIR = SITE_DIR;
+		$SITE_DIR = $SITE_DIR? $SITE_DIR : '/';
+		
+		return preg_match("#^".$SITE_DIR."index.php#ui", Application::getInstance()->getContext()->getRequest()->getRequestedPage());
 	}
 	
 	/**
 	 * Проверяет находимся ли мы в конкретном разделе сайта
 	 *
-	 * @param string $pathSecton
+	 * @param string $pathSection
+	 * @param bool $checkByRealFilePath
 	 * @return bool
 	 */
-	public static function isSection(string $pathSecton): bool {
+	public static function isSection(string $pathSection, bool $checkByRealFilePath = false): bool {
 		$SITE_DIR = SITE_DIR;
 		$SITE_DIR = $SITE_DIR? $SITE_DIR : '/';
 		
-		return preg_match("#^".$SITE_DIR.$pathSecton."#ui", Application::getInstance()->getContext()->getRequest()->getRequestedPage());
+		$requestPage = Application::getInstance()->getContext()->getRequest()->getRequestedPage();
+		
+		if ($checkByRealFilePath) {
+			$requestPage = Variable::$bxServer->get("REAL_FILE_PATH");
+		}
+		
+		return preg_match("#^".$SITE_DIR.$pathSection."#ui", $requestPage);
 	}
 	
 	/**
