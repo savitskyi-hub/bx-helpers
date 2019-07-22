@@ -123,13 +123,10 @@ class Base
 	 */
 	public static function getCanonicalTag(bool $lastSlash = true): string {
 		$protocol = Variable::$bxRequest->isHttps()? 'https://' : 'http://';
-		$queryString = Variable::$bxServer->get('QUERY_STRING');
-		
 		$url = $protocol.Variable::$bxServer->getServerName().Variable::$bxServer->getRequestUri();
 		
-		if ('' != $queryString){
-			$url = str_replace($queryString, '', $url);
-			$url = substr($url, 0, -1);
+		if (preg_match("#^.+?(\?.+)#u", $url, $queryString, PREG_OFFSET_CAPTURE)) {
+			$url = substr($url, 0, $queryString[1][1]);
 		}
 		
 		if (!$lastSlash) {
