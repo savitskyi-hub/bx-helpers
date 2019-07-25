@@ -145,20 +145,22 @@ class Base
 	 * @return bool
 	 */
 	public static function getPage404() {
-		if (!array_key_exists("APPLICATION", $GLOBALS)) {
+		global $APPLICATION;
+		
+		if (!isset($APPLICATION)) {
 			return false;
 		} elseif (!defined("SITE_TEMPLATE_PATH")) {
 			return false;
 		}
 		
-		$GLOBALS["APPLICATION"]->RestartBuffer();
-
+		$APPLICATION->RestartBuffer();
+		
 		if (!defined("ERROR_404")) {
 			define("ERROR_404", "Y");
 		}
 		
-		require_once(Application::getDocumentRoot().constant("SITE_TEMPLATE_PATH").'/header.php');
-		require_once(Application::getDocumentRoot().'/404.php');
-		require_once(Application::getDocumentRoot().constant("SITE_TEMPLATE_PATH").'/footer.php');
+		require(Application::getDocumentRoot().constant("SITE_TEMPLATE_PATH").'/header.php');
+		require(Application::getDocumentRoot().'/404.php');
+		require(Application::getDocumentRoot().constant("SITE_TEMPLATE_PATH").'/footer.php');
 	}
 }
