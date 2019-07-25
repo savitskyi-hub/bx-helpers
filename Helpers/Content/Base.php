@@ -11,6 +11,7 @@
 
 namespace SavitskyiHub\BxHelpers\Helpers\Content;
 
+use Bitrix\Main\Application;
 use Bitrix\Main\Text\HtmlFilter;
 use SavitskyiHub\BxHelpers\Helpers\Main\Variable;
 
@@ -136,5 +137,28 @@ class Base
 		}
 		
 		return '<link rel="canonical" href="'.HtmlFilter::encode($url).'">';
+	}
+	
+	/**
+	 * Возвращает полноценную 404 страницу
+	 *
+	 * @return bool
+	 */
+	public static function getPage404() {
+		if (!array_key_exists("APPLICATION", $GLOBALS)) {
+			return false;
+		} elseif (!defined("SITE_TEMPLATE_PATH")) {
+			return false;
+		}
+		
+		$GLOBALS["APPLICATION"]->RestartBuffer();
+
+		if (!defined("ERROR_404")) {
+			define("ERROR_404", "Y");
+		}
+		
+		require_once(Application::getDocumentRoot().constant("SITE_TEMPLATE_PATH").'/header.php');
+		require_once(Application::getDocumentRoot().'/404.php');
+		require_once(Application::getDocumentRoot().constant("SITE_TEMPLATE_PATH").'/footer.php');
 	}
 }
