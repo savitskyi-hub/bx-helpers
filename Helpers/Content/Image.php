@@ -209,7 +209,11 @@ class Image
 	 * @return string
 	 */
 	public static function getPathNoImg(): string {
-		$path = SITE_TEMPLATE_PATH.self::$pathNoImg;
+		if (!defined("SITE_TEMPLATE_PATH")) {
+			return "#";
+		}
+		
+		$path = constant("SITE_TEMPLATE_PATH").self::$pathNoImg;
 		
 		if (!file_exists(Application::getDocumentRoot().$path)) {
 			$path = "#";
@@ -226,7 +230,11 @@ class Image
 	 * @return string
 	 */
 	public static function getPathNoAvatar(): string {
-		$path = SITE_TEMPLATE_PATH.self::$pathNoAvatar;
+		if (!defined("SITE_TEMPLATE_PATH")) {
+			return "#";
+		}
+		
+		$path = constant("SITE_TEMPLATE_PATH").self::$pathNoAvatar;
 		
 		if (!file_exists(Application::getDocumentRoot().$path)) {
 			$path = "#";
