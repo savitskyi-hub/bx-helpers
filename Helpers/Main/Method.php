@@ -16,6 +16,7 @@ use Bitrix\Main\Config\Option;
 use Bitrix\Main\Text\BinaryString;
 use Bitrix\Main\Text\HtmlFilter;
 use Bitrix\Main\Authentication\ApplicationPasswordTable;
+use Bitrix\Main\IO\Directory;
 
 /**
  * Class Base
