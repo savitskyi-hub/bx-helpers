@@ -137,6 +137,13 @@
 						tagName = e.tagName;
 
 						/**
+						 * Скрытые поля пропускаем
+						 */
+						if ("hidden" == e.type) {
+							return true;
+						}
+
+						/**
 						 * При отправке осуществляем валидацию всех полей
 						 */
 						if (undefined != tagName && "INPUT" == tagName && "submit" == e.type) {
